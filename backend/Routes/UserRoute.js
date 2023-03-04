@@ -7,11 +7,11 @@ const { checkRole } = require("../middlewares/checkRole");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.send("Bienvenue sur la page d'accueil");
+  res.send("Welcome to the main page!");
 });
 
 router.get("/register", (req, res) => {
-  res.send("Bienvenue sur la page d'inscription");
+  res.send("Welcome to the registration page!");
 });
 
 router.post("/register", async (req, res) => {
@@ -36,12 +36,12 @@ router.post("/register", async (req, res) => {
 router.get("/profile", requireAuth, (req, res) => {
   const token = req.cookies.jwt;
 
-  res.send("c'est le profile du user qui a le  token " + token);
+  res.send("Profile with token:" + token);
   //res.json({ token });
 });
 
 router.get("/login", (req, res) => {
-  res.send("Bienvenue sur la page de connexion");
+  res.send("Welcome to the login page!");
 });
 
 router.post("/login", async (req, res) => {
@@ -50,11 +50,11 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({ errorMessage: "L'adresse email ou le mot de passe est incorrect." });
+      res.status(400).json({ errorMessage: "Please provide an email and a password." });
     } else {
       const isPasswordCorrect = await user.isValidPassword(password);
       if (!isPasswordCorrect) {
-        res.status(400).json({ errorMessage: "L'adresse email ou le mot de passe est incorrect." });
+        res.status(400).json({ errorMessage: "Incorrect e-mail or password." });
       } else {
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
           expiresIn: "1d",
@@ -65,14 +65,32 @@ router.post("/login", async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(400).json({ errorMessage: "Requête invalide." });
+    res.status(400).json({ errorMessage: "Invalid request." });
   }
 });
 
-router.get("/profileformateur", requireAuth, checkRole("formateur"), (req, res) => {
-  // Si l'utilisateur est authentifié et a le rôle de formateur,
-  // il peut accéder à la route /profileformateur
-  res.send("Bienvenue sur votre profil de formateur");
+router.get("/TrainerProfile", requireAuth, checkRole("TRAINER"), (req, res) => {
+  // Si l'utilisateur est authentifié et a le rôle de TRAINER,
+  // il peut accéder à la route /TrainerProfile
+  res.send("Welcome to trainer profile.");
+});
+
+router.get("/CompanyProfile", requireAuth, checkRole("COMPANY"), (req, res) => {
+  // Si l'utilisateur est authentifié et a le rôle de COMPANY,
+  // il peut accéder à la route /CompanyProfile
+  res.send("Welcome to company profile.");
+});
+
+router.get("/AdminProfile", requireAuth, checkRole("ADMIN"), (req, res) => {
+  // Si l'utilisateur est authentifié et a le rôle de ADMIN,
+  // il peut accéder à la route /AdminProfile
+  res.send("Welcome to admin profile.");
+});
+
+router.get("/CandidateProfile", requireAuth, checkRole("CANDIDATE"), (req, res) => {
+  // Si l'utilisateur est authentifié et a le rôle de CANDIDATE,
+  // il peut accéder à la route /CandidateProfile
+  res.send("Welcome to candidate profile.");
 });
 
 router.delete("/deactivate-account/:userId", requireAuth, async (req, res) => {

@@ -5,7 +5,7 @@ const checkRole = (role) => {
       next();
     } else {
       // Sinon, nous renvoyons une réponse d'erreur
-      res.status(403).json({ message: "Accès refusé" });
+      res.status(403).json({ message: "Access denied." });
     }
   };
 };
