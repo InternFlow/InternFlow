@@ -16,14 +16,18 @@ router.get("/register", (req, res) => {
 
 router.post("/register", async (req, res) => {
   const { email, password, role } = req.body;
-
   try {
+    if(JSON.stringify(password).length<8 ){
+      res.status(400).json({ errorMessage: "Password must be at least 8 characters in length." });
+    }
+    else{
     const user = await User.create({ email, password, role });
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
     res.cookie("jwt", token, { httpOnly: true, maxAge: 864000 });
     res.json({ token });
+  }
   } catch (err) {
     if (err.code === 11000) {
       res.status(400).json({ errorMessage: "Email already in use" });
