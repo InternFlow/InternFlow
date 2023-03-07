@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "auth-nodejs",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -13,8 +13,11 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "mongoose": "^6.10.0",
+    "mongoose": "^7.0.0",
     "morgan": "~1.9.1",
-    "nodemon": "^2.0.20"
+    "nodemailer": "^6.9.1",
+    "nodemon": "^2.0.21",
+    "passport": "^0.6.0",
+    "passport-github": "^1.1.0"
   }
 }
