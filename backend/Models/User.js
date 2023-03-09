@@ -13,19 +13,20 @@ const userSchema = new mongoose.Schema({
   skills:[{type: mongoose.Schema.Types.ObjectId, ref:'Skills'}],
   categories: [{ type: mongoose.Types.ObjectId, ref: 'Category' }],
   companies: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
-  interns: [{ type: mongoose.Types.ObjectId, ref: 'User' }]
+  interns: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+  uploadedFiles: [{type: String }]
 });
 
-userSchema.pre('save', async function (next) {
+userSchema.methods.hashPassword = async function (newPassword) {
   try {
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(this.password, salt);
+    const hash = await bcrypt.hash(newPassword, salt);
     this.password = hash;
-    next();
+    await this.save();
   } catch (error) {
-    next(error);
+    throw error;
   }
-});
+};
 
 userSchema.methods.isValidPassword = async function (password) {
   try {

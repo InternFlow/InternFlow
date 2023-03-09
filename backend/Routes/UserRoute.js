@@ -4,6 +4,7 @@ const User = require("../models/User");
 const { requireAuth } = require("../middlewares/requireAuth");
 const { checkRole } = require("../middlewares/checkRole");
 const twilio = require('twilio');
+const path = require('path');
 
 
 const config = require('../config');
@@ -28,6 +29,7 @@ router.post("/register", async (req, res) => {
 
   try {
     const user = await User.create({ name,lastName,email, password, role });
+    await user.hashPassword(user.password);
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
@@ -36,19 +38,11 @@ router.post("/register", async (req, res) => {
 
     /****************** SMS *********************/
     // Use the client to send an SMS message
-  client.messages.create({
-    body: 'Welcome to our Web Application, you have successfully registred!',
+  /* client.messages.create({
+    body: 'Welcometo our Web Application, you have successfully registred!',
     to: '+21697121266', // the recipient's phone number
     from: '+18087360181' // your Twilio phone number
-  })
-  .then(message =>{
-  console.log(`SMS message sent to ${message.to}: ${message.body}`);
-  res.status(200).json('Registration complete!');
-  })
-  .catch(error => {
-    console.error(`Failed to send SMS message: ${error}`);
-    res.status(500).json('Registration failed!');
-  });
+  }); */
 
   } catch (err) {
     if (err.code === 11000) {
@@ -94,7 +88,7 @@ router.get("/profile", requireAuth,function (req, res)  {
 
 
 router.get("/login", (req, res) => {
-  res.send("Bienvenue sur la page de connexion");
+  res.sendFile(path.join(__dirname, 'tests', 'login.html'));
 });
 
 router.post("/login", async (req, res) => {

@@ -12,6 +12,9 @@ const educationRoutes = require('./routes/EducationRoute');
 const experienceRoutes = require('./routes/ExperienceRoute');
 const categoryRoutes = require('./routes/CategoryRoute');
 const skillsRoutes = require('./routes/SkillsRoute');
+const uploadRoutes = require('./routes/UploadRoute');
+const adminRoutes =require('./routes/AdminRoute');
+
 
 dotenv.config();
 
@@ -52,6 +55,8 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/experience', experienceRoutes);
     app.use('/category', categoryRoutes);
     app.use('/skills', skillsRoutes);
+    app.use('/upload', uploadRoutes);
+    app.use('/Admin', adminRoutes);
     passport.serializeUser(function (user, cb) {
       cb(null, user);
     });
