@@ -20,14 +20,14 @@ router.get("/register", (req, res) => {
 
 //-------------------------- Register -----------------------------------//
 router.post("/register", async (req, res) => {
-  const { email, password, role } = req.body;
+  const { name,lastName,email, password, role } = req.body;
 
   const client = new twilio(config.ACCOUNT_SID, config.AUTH_TOKEN);
 
 
 
   try {
-    const user = await User.create({ email, password, role });
+    const user = await User.create({ name,lastName,email, password, role });
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
@@ -54,6 +54,7 @@ router.post("/register", async (req, res) => {
     if (err.code === 11000) {
       res.status(400).json({ errorMessage: "Email already in use" });
     } else {
+      console.log(err);
       res.status(500).json({ errorMessage: "Server error" });
     }
   }
@@ -130,7 +131,8 @@ router.get("/profileformateur", requireAuth, checkRole("formateur"), (req, res) 
 router.delete("/deactivate-account/:userId", requireAuth, async (req, res) => {
   try {
     const user = req.user;
-    if (user.role !== "admin") {
+    const verif = await User.findByEmail(req.user.email)  
+    if (user.role !== "admin" || verif  ) {
       res.status(403).json({ errorMessage: "You do not have the necessary permissions to perform this action." });
     } else {
       const userId = req.params.userId;
@@ -142,6 +144,58 @@ router.delete("/deactivate-account/:userId", requireAuth, async (req, res) => {
     res.status(500).json({ errorMessage: "An error occurred while processing your request." });
   }
 });
+
+router.put("/updateUser",requireAuth, async (req, res) => {
+  try {
+    const { name, lastName, password, role } = req.body;
+
+    const user = await User.findByIdAndUpdate(req.user._id, {
+      name,
+      lastName,
+      password,
+      role,
+    });
+const updatedUser= await User.findById(req.user._id);
+res.status(200).json(updatedUser);
+
+  }
+catch(err){
+    console.log(err)
+    res.status(500).json({ errorMessage: "An error occurred while processing your request." });
+}
+
+});
+
+
+router.put("/subscribe/:idC",requireAuth, async (req, res) => {
+  try {
+   const  idC = req.params.idC;
+   const  intern = req.user;
+  intern.companies.push(idC);
+  await intern.save();
+ //  const user = await User.findByIdAndUpdate(idI,push(),{new:true});
+   console.log(intern);
+   res.status(200).json("subscribe ok");
+  } catch (error) {
+   res.status(500).json(error.message);
+  }
+ });
+
+
+
+
+router.put("/confirmCompanyandTrainer/:id", async (req, res) => {
+  try {
+   const {id} = req.params;
+   const user = await User.findByIdAndUpdate(id,{confirmed:true},{new:true});
+   console.log(user);
+  } catch (error) {
+   res.status(500).json(error.message);
+  }
+ });
+
+
+
 
 router.get("/logout", (req, res) => {
   res.clearCookie("jwt");

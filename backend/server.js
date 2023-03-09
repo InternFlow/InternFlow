@@ -8,7 +8,10 @@ const passport = require('passport');
 const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
-
+const educationRoutes = require('./routes/EducationRoute');
+const experienceRoutes = require('./routes/ExperienceRoute');
+const categoryRoutes = require('./routes/CategoryRoute');
+const skillsRoutes = require('./routes/SkillsRoute');
 
 dotenv.config();
 
@@ -45,7 +48,10 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.set('view engine', 'ejs');
     app.use('/Facebook', googleFacebookRoutes);
     app.use('/github', githubRoutes);
-
+    app.use('/education', educationRoutes);
+    app.use('/experience', experienceRoutes);
+    app.use('/category', categoryRoutes);
+    app.use('/skills', skillsRoutes);
     passport.serializeUser(function (user, cb) {
       cb(null, user);
     });
