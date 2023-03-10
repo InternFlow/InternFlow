@@ -3,11 +3,14 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
+//----------------- Passport & Authentification ------------------------//
 const session = require('express-session');
 const passport = require('passport');
 const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
+//------------------ Routes -----------------------------------------//
 const educationRoutes = require('./routes/EducationRoute');
 const experienceRoutes = require('./routes/ExperienceRoute');
 const categoryRoutes = require('./routes/CategoryRoute');
@@ -32,6 +35,14 @@ const config = require('./config');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:3001',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
+  credentials: true
+
+}));
+
 app.use(session({
   resave: false,
   saveUninitialized: true,

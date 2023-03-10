@@ -3,6 +3,7 @@ const User = require("../models/User");
 const { requireAuth } = require("../middlewares/requireAuth");
 
 const Category = require("../models/Category");
+const mongoose = require("mongoose");
 const router = express.Router();
 /*
 router.post("/registerEducation/:id", async (req, res) => {
@@ -46,7 +47,7 @@ router.delete('/delete/:id',requireAuth , async (req, res) => {
     try {
       const category = new Category({
         name: req.body.name,
-        users:     [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+        users:    [{ type: mongoose.Types.ObjectId, ref: 'User' }],
 
       
       });  

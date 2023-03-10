@@ -22,6 +22,8 @@ router.get("/register", (req, res) => {
 //-------------------------- Register -----------------------------------//
 router.post("/register", async (req, res) => {
   const { name,lastName,email, password, role } = req.body;
+  // const { name,email, password, role } = req.body;
+
 
   const client = new twilio(config.ACCOUNT_SID, config.AUTH_TOKEN);
 
@@ -29,6 +31,8 @@ router.post("/register", async (req, res) => {
 
   try {
     const user = await User.create({ name,lastName,email, password, role });
+    // const user = await User.create({ name,email, password, role });
+
     await user.hashPassword(user.password);
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
@@ -38,11 +42,19 @@ router.post("/register", async (req, res) => {
 
     /****************** SMS *********************/
     // Use the client to send an SMS message
-  /* client.messages.create({
-    body: 'Welcometo our Web Application, you have successfully registred!',
-    to: '+21697121266', // the recipient's phone number
-    from: '+18087360181' // your Twilio phone number
-  }); */
+  //  client.messages.create({
+  //   body: 'Welcometo our Web Application, you have successfully registred!',
+  //   to: '+21697121266', // the recipient's phone number
+  //   from: '+18087360181' // your Twilio phone number
+  // })
+  // .then(message =>{
+  //   console.log(`SMS message sent to ${message.to}: ${message.body}`);
+  //   res.send('Registration complete!');
+  // })
+  // .catch(error => {
+  //   console.error(`Failed to send SMS message: ${error}`);
+  //   res.status(500).send('Registration failed!');
+  // });
 
   } catch (err) {
     if (err.code === 11000) {
