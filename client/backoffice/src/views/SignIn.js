@@ -34,7 +34,7 @@ import {
   Col
 } from "reactstrap";
 import signin from "../assets/img/signin.jpg";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 
 
@@ -55,6 +55,7 @@ function SignIn() {
   
   const [formErrors, setFormErrors] = useState({});
 
+
   const handleSubmit = async(e) => {
     e.preventDefault();
 
@@ -71,15 +72,33 @@ function SignIn() {
       );
 
        const { token } = await response.json();
-   localStorage.setItem("token", token);
+       localStorage.setItem("token", token);
     // localStorage.setItem("token", response.data.token);
-
       history.push("/admin/dashboard");
+
     } catch (error) {
+
       console.error("There was a problem with the fetch operation:", error);
     }
   
+  };
 
+  const forgotPassword = async () => {
+    try {
+      const email = formData.email;
+      const response = await fetch(`${API}/email/forgot-password`, {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      console.log(data); // { message: "Email sent successfully" }
+      history.push("/resetPassword");
+    } catch (error) {
+      console.error(error);
+    }
   };
   
  
@@ -247,6 +266,14 @@ function SignIn() {
                         type="submit"
                       >
                         SignIn
+                      </Button>
+                      <Button
+                        className="btn-round"
+                        color="secondary"
+                        type="submit"
+                        onClick={forgotPassword}
+                      >
+                        Forgot Password?
                       </Button>
                     </div>
                   </Row>

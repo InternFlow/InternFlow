@@ -33,88 +33,51 @@ import {
   Row,
   Col
 } from "reactstrap";
-import signup from "../assets/img/signup.jpg";
-import { useHistory } from "react-router-dom";
+import signin from "../assets/img/signin.jpg";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 
 
 
 
-function SignUp() {
-  // const [name, setName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+function ForgotPassword() {
+  
 
   //FormData
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+//   const [formData, setFormData] = useState({
+//     email: "",
+//     password: "",
+//   });
+    
+
   const history = useHistory();
   
   const [formErrors, setFormErrors] = useState({});
+  const [email, setEmail] = useState("");
+
+
 
   const handleSubmit = async(e) => {
+    const formData = new FormData();
+    formData.append("email", email);
+
     e.preventDefault();
 
-    try {
-      const response = await fetch(`${API}/register`, {
+   try {
+    const response = await fetch(`${API}/email/forgot-password`, {
         method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      // body: JSON.stringify({ name,email, password })
-      body: JSON.stringify(formData)
-
+        body: formData,
       });
+      const data = await response.json();
+      console.log(data); // { message: "Email sent successfully" }
+   } catch (error) {
+    console.error(error);
 
-      const { token } = await response.json();
-      localStorage.setItem("token", token);
-      history.push("/signin");
-    } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
-    }
-  
-    // fetch(`${API}/register`, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(formData),
-    // })
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       throw new Error("Network response was not ok");
-    //     }
-    //     return response.json();
-    //     history.push("/admin/dashboard");
+   }
 
-    //   })
-    //   // .then((data) => {
-    //   //   console.log(data);
-    //   //   // do something with the response data
-    //   // })
-    //   .catch((error) => {
-    //     console.error("There was a problem with the fetch operation:", error);
-    //   });
   };
   
-  // async function handleSubmit(event) {
-  //   event.preventDefault();
-  //   try {
-  //     const response = await fetch(`${API}/register`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify({ name,email, password })
-  //     });
-  //     const { token } = await response.json();
-  //     localStorage.setItem("token", token);
-  //     history.push("/dashboard"); // Naviguer vers la page de dashboard
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
+ 
   
   const cardStyles = {
     width: '280%',
@@ -129,7 +92,7 @@ function SignUp() {
     <>
       <div className="content"
         style={{
-            backgroundImage: `url(${signup})`,
+            backgroundImage: `url(${signin})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             width: "100vw",
@@ -137,7 +100,6 @@ function SignUp() {
             position: "relative"
           }}
       >
-        {/* <img alt="bg signup" src={require("assets/img/signup.jpg")} height="500px" /> */}
 
         <div className="content d-flex justify-content-center align-items-center" >
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -147,75 +109,28 @@ function SignUp() {
           <Col md="12">
             <Card className="card-user" style={cardStyles}>
               <CardHeader>
-                <CardTitle tag="h5">SignUp</CardTitle>
+                <CardTitle tag="h5">Forgot Password</CardTitle>
               </CardHeader>
               <CardBody 
               >
-                      {/* <div style={{ backgroundColor: "white", padding: "2rem" }}> */}
 
                 <Form onSubmit={handleSubmit}>
+                 
                   <Row>
-                  <Col className="px-1" md="8">
-                      <FormGroup>
-                        <label>Name</label>
-                        <Input
-                          defaultValue="michael23"
-                          placeholder="Name..."
-                          type="text"
-                          value={formData.name}
-                          onChange= {(e)=> setFormData({ ...formData, name: e.target.value})
-                          }
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    {/* <Col className="pr-1" md="5">
-                      <FormGroup>
-                        <label>Company (disabled)</label>
-                        <Input
-                          defaultValue="Creative Code Inc."
-                          disabled
-                          placeholder="Company"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col> */}
+                   
                     <Col className="pl-1" md="8">
                       <FormGroup>
                         <label htmlFor="exampleInputEmail1">
                           Email address
                         </label>
                         <Input placeholder="Email" type="email" 
-                          value={formData.email}
-                          onChange= {(e)=> setFormData({ ...formData, email: e.target.value})
-                          }
+                          value={email} 
+                          onChange={(e) => setEmail(e.target.value)}
                         />
                       </FormGroup>
                     </Col>
                   </Row>
-                  {/* <Row>
-                    <Col className="pr-1" md="6">
-                      <FormGroup>
-                        <label>First Name</label>
-                        <Input
-                          defaultValue="Chet"
-                          placeholder="Company"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-1" md="6">
-                      <FormGroup>
-                        <label>Last Name</label>
-                        <Input
-                          defaultValue="Faker"
-                          placeholder="Last Name"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row> */}
+               
                   <Row>
                   <Col className="pr-1" md="8">
                       <FormGroup>
@@ -230,7 +145,7 @@ function SignUp() {
                   </Row>
                   <Row>
                   <Col className="px-1" md="8">
-                      <FormGroup>
+                      {/* <FormGroup>
                         <label>Password</label>
                         <Input
                           // defaultValue="michael23"
@@ -240,7 +155,7 @@ function SignUp() {
                           onChange= {(e)=> setFormData({...formData, password: e.target.value})
                           }
                         />
-                      </FormGroup>
+                      </FormGroup> */}
                     </Col>
                   </Row>
                   <Row>
@@ -289,7 +204,7 @@ function SignUp() {
                         color="primary"
                         type="submit"
                       >
-                        SignUp
+                        SignIn
                       </Button>
                     </div>
                   </Row>
@@ -306,4 +221,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default ForgotPassword;
