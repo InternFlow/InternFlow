@@ -81,7 +81,9 @@ router.get("/profile", requireAuth,function (req, res)  {
 
 
 router.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, 'tests', 'login.html'));
+  // res.sendFile(path.join(__dirname, 'tests', 'login.html'));
+  res.sendFile(path.join(__dirname, 'tests', "/signin"));
+
 });
 
 router.post("/login", async (req, res) => {
@@ -107,6 +109,8 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(400).json({ errorMessage: "Requête invalide." });
+    res.redirect("/signup");
+
   }
 });
 
