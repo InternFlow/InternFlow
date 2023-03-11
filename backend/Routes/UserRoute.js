@@ -100,7 +100,8 @@ router.post("/login", async (req, res) => {
           expiresIn: "1d",
         });
         res.cookie("jwt", token, { httpOnly: true, maxAge: 864000 });
-        res.json({ token });
+        // res.json({ token });
+        res.redirect("/admin/dashboard");
       }
     }
   } catch (err) {
