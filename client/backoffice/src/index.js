@@ -30,7 +30,6 @@ import SignUp from "views/SignUp";
 import SignIn from "views/SignIn";
 import ForgotPassword from "views/forgotPassword";
 import ResetPassword from "views/resetPassword";
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -39,8 +38,7 @@ root.render(
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Route path="/signup" component={SignUp} />
       <Route path="/signin" component={SignIn} />
-      <Route path="/forgotPassword" component={ForgotPassword} />
-      <Route path="/resetPassword" component={ResetPassword} />
+      <Route path="/forgotPassword" component={ResetPassword} />
 
 
       <Redirect to="/signup" />

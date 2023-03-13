@@ -20,23 +20,20 @@ router.get("/register", (req, res) => {
 });
 
 //-------------------------- Register -----------------------------------//
+
 router.post("/register", async (req, res) => {
-  const { name,email, password } = req.body;
-  // const { name,email, password, role } = req.body;
-  // const client = new twilio(config.ACCOUNT_SID, config.AUTH_TOKEN);
+  const { name, email, password, role } = req.body;
+
   try {
-    const user = await User.create({ name,email, password });
-    // const user = await User.create({ name,email, password, role });
+    const user = await User.create({ name, email, password, role });
 
     await user.hashPassword(user.password);
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
     res.cookie("jwt", token, { httpOnly: true, maxAge: 864000 });
-    //res.json({ token });
-    res.redirect("/admin/dashboard");
 
-
+    res.status(200).json({ successMessage: "User created successfully" });
   } catch (err) {
     if (err.code === 11000) {
       res.status(400).json({ errorMessage: "Email already in use" });
@@ -47,37 +44,14 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.get("/profile", requireAuth,function (req, res)  {
-  const token = req.cookies.jwt;
-  console.log("token:", token);
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-    if (err) {
-      res.json("bbb");
-    } else {
-      const userId = decodedToken.userId;
-      console.log("User ID from token:", userId);
-
-      User.findById(userId)
-        .then((user) => {
-          if (!user) {
-            console.log("User not found");
-            res.json("User not found");
-          } else {
-            console.log("User found:", user);
-            res.render('profile.ejs', { user: user });
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          res.json("aaaaa");
-        });
-    }
-  });
 
 
+
+
+
+router.get("/admin/dashboard", checkRole("admin"), (req, res) => {
+  res.status(400).json({ errorMessage: "merci" });
 });
-
 
 
 router.get("/login", (req, res) => {
@@ -123,7 +97,7 @@ router.get("/profileformateur", requireAuth, checkRole("formateur"), (req, res) 
 router.delete("/deactivate-account/:userId", requireAuth, async (req, res) => {
   try {
     const user = req.user;
-    const verif = await User.findByEmail(req.user.email)  
+    const verif = await User.findByEmail(req.user.email)
     if (user.role !== "admin" || verif  ) {
       res.status(403).json({ errorMessage: "You do not have the necessary permissions to perform this action." });
     } else {

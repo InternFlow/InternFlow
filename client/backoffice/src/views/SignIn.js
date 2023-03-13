@@ -52,7 +52,7 @@ function SignIn() {
   });
 
   const history = useHistory();
-  
+
   const [formErrors, setFormErrors] = useState({});
 
 
@@ -60,7 +60,7 @@ function SignIn() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API}/login`, 
+      const response = await fetch(`${API}/login`,
       {
         method: "POST",
       headers: {
@@ -80,29 +80,17 @@ function SignIn() {
 
       console.error("There was a problem with the fetch operation:", error);
     }
-  
+
   };
 
   const forgotPassword = async () => {
-    try {
-      const email = formData.email;
-      const response = await fetch(`${API}/email/forgot-password`, {
-        method: "POST",
-        body: JSON.stringify({ email }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      console.log(data); // { message: "Email sent successfully" }
-      history.push("/resetPassword");
-    } catch (error) {
-      console.error(error);
-    }
+
+      history.push("/forgotpassword");
+
   };
-  
- 
-  
+
+
+
   const cardStyles = {
     width: '280%',
     margin: 'auto',
@@ -110,7 +98,7 @@ function SignIn() {
     margin: 'auto'
   };
 
-  
+
 
   return (
     <>
@@ -129,13 +117,13 @@ function SignIn() {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
 
         <Row>
-         
+
           <Col md="12">
             <Card className="card-user" style={cardStyles}>
               <CardHeader>
                 <CardTitle tag="h5">Sign In</CardTitle>
               </CardHeader>
-              <CardBody 
+              <CardBody
               >
                       {/* <div style={{ backgroundColor: "white", padding: "2rem" }}> */}
 
@@ -156,13 +144,13 @@ function SignIn() {
                     </Col>
                   </Row> */}
                   <Row>
-                   
+
                     <Col className="pl-1" md="8">
                       <FormGroup>
                         <label htmlFor="exampleInputEmail1">
                           Email address
                         </label>
-                        <Input placeholder="Email" type="email" 
+                        <Input placeholder="Email" type="email"
                           value={formData.email}
                           onChange= {(e)=> setFormData({ ...formData, email: e.target.value})
                           }

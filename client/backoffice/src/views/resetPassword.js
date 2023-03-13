@@ -1,25 +1,4 @@
-/*!
-
-=========================================================
-* Paper Dashboard React - v1.3.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-* Licensed under MIT (https://github.com/creativetimofficial/paper-dashboard-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import { API } from "../config";
 import React, { useState } from "react";
-
-// reactstrap components
 import {
   Button,
   Card,
@@ -31,165 +10,127 @@ import {
   Form,
   Input,
   Row,
-  Col
+  Col,
+  Alert,
 } from "reactstrap";
-import forgotPassword from "../assets/img/forgotPassword.jpg";
-import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
+const ResetPassword = () => {
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [buttonText, setButtonText] = useState("Forgot Password");
+  const history = useHistory();
 
-
-
-function ResetPassword() {
-    const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
-    const history = useHistory();
-
- 
-  //FormData
-  
-  const handleSubmit = async (event) => {
+  const handleForgotPassword = async (event) => {
     event.preventDefault();
-
-    const token = window.location.pathname.split("/")[2];
-    const formData = new FormData();
-    formData.append("password", password);
-
     try {
-        const response = await fetch(`${API}/email/reset-password/${token}`, {
-            method: "POST",
-            body: formData,
-        }); 
-
-        const data = await response.json();
-
-        if (response.ok) {
-            setMessage(data.message);
-        } else {
-            setMessage(data.errorMessage);
-        }
-
+      const response = await axios.post(
+        "http://localhost:5000/email/forgot-password",
+        { email }
+      );
+      setMessage(response.data.message);
+      setError("");
+      setShowForm(true);
+      setButtonText("Reset Password");
+      setEmail(email); // Ajout de cette ligne
     } catch (error) {
-        console.error(error);
-        setMessage("Server error");
+      setError(error.response.data.errorMessage);
+      setMessage("");
     }
   };
-  
- 
 
- 
- 
-  
+  const handleResetPassword = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/email/reset-password",
+        { email, otp, password }
+      );
+      setMessage(response.data.message);
+      setError("");
+      history.push("/signin");
+    } catch (error) {
+      setError(error.response.data.errorMessage);
+      setMessage("");
+    }
+  };
+
   const cardStyles = {
-    width: '180%',
+    width: '40%',
     margin: 'auto',
     padding: '1rem',
     margin: 'auto'
   };
 
-  
+
 
   return (
-    <>
-      <div className="content"
-        style={{
-            backgroundImage: `url(${forgotPassword})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            width: "100vw",
-            height: "90vh",
-            position: "relative"
-          }}
-      >
-
-        <div className="content d-flex justify-content-center align-items-center" >
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-
-        <Row>
-         
-          <Col md="12">
-            <Card className="card-user" style={cardStyles}>
-              <CardHeader>
-                <CardTitle tag="h5">Reset Password</CardTitle>
-              </CardHeader>
-              <CardBody 
-              >
-
-                <Form onSubmit={handleSubmit}>
-                 
-                  <Row>
-                   
-                    <Col className="pl-1" md="8">
-                      {/* <FormGroup>
-                        <label htmlFor="exampleInputEmail1">
-                          Email address
-                        </label>
-                        <Input placeholder="Email" type="email" 
-                          value={formData.email}
-                          onChange= {(e)=> setFormData({ ...formData, email: e.target.value})
-                          }
-                        />
-                      </FormGroup> */}
-                    </Col>
-                  </Row>
-                  
-                  <Row>
-                  <Col className="pr-1" md="8">
-                      <FormGroup>
-                        {/* <label>Address</label>
-                        <Input
-                          defaultValue="Melbourne, Australia"
-                          placeholder="Home Address"
-                          type="text"
-                        /> */}
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                  <Col className="px-1" md="8">
-                      <FormGroup>
-                        <label htmlFor="password">New Password</label>
-                        <Input
-                          // defaultValue="michael23"
-                          placeholder="New Password..."
-                          type="password"
-                          value={password}
-                          onChange={(event) => setPassword(event.target.value)} 
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="pr-1" md="4">
-                      
-                    </Col>
-                    
-                   
-                  </Row>
-                  
-                  <Row>
-                    <div className="update ml-auto mr-auto">
-                      <Button
-                        className="btn-round"
-                        color="primary"
-                        type="submit"
-                      >
-                        Reset Password
-                      </Button>
-                      {/* {message && <p>{message}</p>} */}
-                    </div>
-                  </Row>
-                </Form>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </div>
-      </div>
-      </div>
-
-    </>
+    <div className="content">
+      <Row>
+        <Col md="12">
+          <Card className="card-user" style={cardStyles}>
+            <CardHeader>
+              <CardTitle tag="h5">Reset Password</CardTitle>
+            </CardHeader>
+            <CardBody>
+              {message && (
+                <Alert color="success" className="text-center">
+                  {message}
+                </Alert>
+              )}
+              {error && (
+                <Alert color="danger" className="text-center">
+                  {error}
+                </Alert>
+              )}
+              <Form onSubmit={showForm ? handleResetPassword : handleForgotPassword}>
+                <FormGroup>
+                  <label>Email address</label>
+                  <Input
+                    type="email"
+                    placeholder="Enter email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    readOnly={showForm} // Ajout de cette ligne
+                  />
+                </FormGroup>
+                {showForm && (
+                  <>
+                    <FormGroup>
+                      <label>OTP code</label>
+                      <Input
+                        type="text"
+                        placeholder="Enter OTP code"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <label>New Password</label>
+                      <Input
+                        type="password"
+                        placeholder="Enter new password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </FormGroup>
+                  </>
+                )}
+                <Button color="primary" type="submit" block>
+                  {buttonText}
+                </Button>
+              </Form>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+    </div>
   );
-}
+};
 
 export default ResetPassword;

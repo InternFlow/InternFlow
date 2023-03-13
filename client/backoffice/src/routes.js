@@ -25,6 +25,15 @@ import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
 import SignUp from "views/SignUp";
+import ViewUsers from "views/users/viewUsers";
+import CreateUser from "views/users/createUsers";
+import EditUser from "views/users/editUser";
+import CreateSkill from "views/skills/createSkill";
+import ViewSkills from "views/skills/viewSkills";
+import EditSkill from "views/skills/editSkill";
+import CreateExperience from "views/experience/createExp";
+import ViewExperience from "views/experience/viewExp";
+import EditExp from "views/experience/editExp";
 
 var routes = [
   {
@@ -34,27 +43,7 @@ var routes = [
     component: Dashboard,
     layout: "/admin"
   },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "nc-icon nc-diamond",
-    component: Icons,
-    layout: "/admin"
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "nc-icon nc-pin-3",
-    component: Maps,
-    layout: "/admin"
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "nc-icon nc-bell-55",
-    component: Notifications,
-    layout: "/admin"
-  },
+  
   {
     path: "/user-page",
     name: "User Profile",
@@ -62,34 +51,70 @@ var routes = [
     component: UserPage,
     layout: "/admin"
   },
+  
   {
-    path: "/tables",
-    name: "Table List",
-    icon: "nc-icon nc-tile-56",
-    component: TableList,
+    path: "/createUser",
+    name: "Add A new User",
+    icon: "nc-icon nc-simple-add",
+    component: CreateUser,
     layout: "/admin"
   },
   {
-    path: "/typography",
-    name: "Typography",
-    icon: "nc-icon nc-caps-small",
-    component: Typography,
+    path: "/createSkill",
+    name: "Add A new Skill",
+    icon: "nc-icon nc-simple-add",
+    component: CreateSkill,
     layout: "/admin"
   },
   {
-    path: "/signup",
-    name: "SignUp",
-    icon: "nc-icon nc-caps-small",
-    component: SignUp,
+    path: "/createExp",
+    name: "Add A new Experience",
+    icon: "nc-icon nc-simple-add",
+    component: CreateExperience,
     layout: "/admin"
   },
   {
-    pro: true,
-    path: "/upgrade",
-    name: "Upgrade to PRO",
-    icon: "nc-icon nc-spaceship",
-    component: UpgradeToPro,
+    path: "/editUser",
+    name: "Edit A User",
+    icon: "nc-icon nc-settings",
+    component: EditUser,
+    layout: "/admin"
+  },
+  {
+    path: "/editSkill",
+    name: "Edit A Skill",
+    icon: "nc-icon nc-settings",
+    component: EditSkill,
+    layout: "/admin"
+  },
+  {
+    path: "/editExp",
+    name: "Edit An Experience",
+    icon: "nc-icon nc-settings",
+    component: EditExp,
+    layout: "/admin"
+  },
+  {
+    path: "/viewUser",
+    name: "Display Users",
+    icon: "nc-icon nc-laptop",
+    component: ViewUsers,
+    layout: "/admin"
+  },
+  {
+    path: "/viewSkill",
+    name: "Display Skills",
+    icon: "nc-icon nc-laptop",
+    component: ViewSkills,
+    layout: "/admin"
+  },
+  {
+    path: "/viewExp",
+    name: "Display Experiences",
+    icon: "nc-icon nc-laptop",
+    component: ViewExperience,
     layout: "/admin"
   }
+
 ];
 export default routes;

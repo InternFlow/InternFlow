@@ -41,81 +41,28 @@ import axios from "axios";
 
 
 function SignUp() {
-  // const [name, setName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-
-  //FormData
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    role: "admin",
   });
-  const history = useHistory();
-  
-  const [formErrors, setFormErrors] = useState({});
 
-  const handleSubmit = async(e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const history = useHistory()
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API}/register`, {
-        method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      // body: JSON.stringify({ name,email, password })
-      body: JSON.stringify(formData)
-
-      });
-
-      const { token } = await response.json();
-      localStorage.setItem("token", token);
+      const res = await axios.post("http://localhost:5000/register", formData);
+      console.log(res.data);
       history.push("/signin");
-    } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
+    } catch (err) {
+      console.log(err.response.data.errorMessage);
     }
-  
-    // fetch(`${API}/register`, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(formData),
-    // })
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       throw new Error("Network response was not ok");
-    //     }
-    //     return response.json();
-    //     history.push("/admin/dashboard");
-
-    //   })
-    //   // .then((data) => {
-    //   //   console.log(data);
-    //   //   // do something with the response data
-    //   // })
-    //   .catch((error) => {
-    //     console.error("There was a problem with the fetch operation:", error);
-    //   });
   };
-  
-  // async function handleSubmit(event) {
-  //   event.preventDefault();
-  //   try {
-  //     const response = await fetch(`${API}/register`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify({ name,email, password })
-  //     });
-  //     const { token } = await response.json();
-  //     localStorage.setItem("token", token);
-  //     history.push("/dashboard"); // Naviguer vers la page de dashboard
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-  
   const cardStyles = {
     width: '280%',
     margin: 'auto',
@@ -123,7 +70,7 @@ function SignUp() {
     margin: 'auto'
   };
 
-  
+
 
   return (
     <>
@@ -143,13 +90,13 @@ function SignUp() {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
 
         <Row>
-         
+
           <Col md="12">
             <Card className="card-user" style={cardStyles}>
               <CardHeader>
                 <CardTitle tag="h5">SignUp</CardTitle>
               </CardHeader>
-              <CardBody 
+              <CardBody
               >
                       {/* <div style={{ backgroundColor: "white", padding: "2rem" }}> */}
 
@@ -186,7 +133,7 @@ function SignUp() {
                         <label htmlFor="exampleInputEmail1">
                           Email address
                         </label>
-                        <Input placeholder="Email" type="email" 
+                        <Input placeholder="Email" type="email"
                           value={formData.email}
                           onChange= {(e)=> setFormData({ ...formData, email: e.target.value})
                           }
