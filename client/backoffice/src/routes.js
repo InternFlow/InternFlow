@@ -25,15 +25,10 @@ import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
 import SignUp from "views/SignUp";
-import ViewUsers from "views/users/viewUsers";
-import CreateUser from "views/users/createUsers";
-import EditUser from "views/users/editUser";
-import CreateSkill from "views/skills/createSkill";
-import ViewSkills from "views/skills/viewSkills";
-import EditSkill from "views/skills/editSkill";
-import CreateExperience from "views/experience/createExp";
-import ViewExperience from "views/experience/viewExp";
-import EditExp from "views/experience/editExp";
+import ViewUsers from "views/users/ViewUsers";
+import CreateUsers from "views/users/CreateUsers";
+import EditUser from "views/users/EditUser";
+import EditProfileUser from "views/users/EditProfileUser";
 
 var routes = [
   {
@@ -43,7 +38,20 @@ var routes = [
     component: Dashboard,
     layout: "/admin"
   },
-  
+  {
+    path: "/icons",
+    name: "Icons",
+    icon: "nc-icon nc-diamond",
+    component: Icons,
+    layout: "/admin"
+  },
+  {
+    path: "/notifications",
+    name: "Notifications",
+    icon: "nc-icon nc-bell-55",
+    component: Notifications,
+    layout: "/admin"
+  },
   {
     path: "/user-page",
     name: "User Profile",
@@ -51,26 +59,18 @@ var routes = [
     component: UserPage,
     layout: "/admin"
   },
-  
+  // {
+  //   path: "/tables",
+  //   name: "Table List",
+  //   icon: "nc-icon nc-tile-56",
+  //   component: TableList,
+  //   layout: "/admin"
+  // },
   {
     path: "/createUser",
     name: "Add A new User",
     icon: "nc-icon nc-simple-add",
-    component: CreateUser,
-    layout: "/admin"
-  },
-  {
-    path: "/createSkill",
-    name: "Add A new Skill",
-    icon: "nc-icon nc-simple-add",
-    component: CreateSkill,
-    layout: "/admin"
-  },
-  {
-    path: "/createExp",
-    name: "Add A new Experience",
-    icon: "nc-icon nc-simple-add",
-    component: CreateExperience,
+    component: CreateUsers,
     layout: "/admin"
   },
   {
@@ -81,17 +81,10 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/editSkill",
-    name: "Edit A Skill",
+    path: "/editProfileCondidat",
+    name: "Edit A User",
     icon: "nc-icon nc-settings",
-    component: EditSkill,
-    layout: "/admin"
-  },
-  {
-    path: "/editExp",
-    name: "Edit An Experience",
-    icon: "nc-icon nc-settings",
-    component: EditExp,
+    component: EditProfileUser,
     layout: "/admin"
   },
   {
@@ -99,20 +92,6 @@ var routes = [
     name: "Display Users",
     icon: "nc-icon nc-laptop",
     component: ViewUsers,
-    layout: "/admin"
-  },
-  {
-    path: "/viewSkill",
-    name: "Display Skills",
-    icon: "nc-icon nc-laptop",
-    component: ViewSkills,
-    layout: "/admin"
-  },
-  {
-    path: "/viewExp",
-    name: "Display Experiences",
-    icon: "nc-icon nc-laptop",
-    component: ViewExperience,
     layout: "/admin"
   }
 

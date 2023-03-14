@@ -47,7 +47,7 @@ async function getUser(req, res, next) {
 
 //router.patch('/users/:id',checkRole("admin"), getUser, async (req, res) => {
 
-router.put('/users/:id', getUser, async (req, res) => {
+router.patch('/editU/:id', getUser, async (req, res) => {
   if (req.body.name != null) {
     res.user.name = req.body.name;
   }

@@ -35,7 +35,7 @@ import {
   Col
 } from "reactstrap";
 
-function CreateUser() {
+function CreateUsers() {
   // const [name, setName] = useState("");
   // const [lastName, setLastName] = useState("");
   // const [email, setEmail] = useState("");
@@ -214,4 +214,4 @@ function CreateUser() {
   );
 }
 
-export default CreateUser;
+export default CreateUsers;

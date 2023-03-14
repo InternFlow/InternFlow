@@ -1,3 +1,5 @@
+
+
 import { API } from "../../config";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -52,13 +54,13 @@ function EditUser({ user = { name: "", lastName: "", email: "", role: "condidat"
     };
     body.password = body.password === "" ? undefined : body.password;
     const requestOptions = {
-        method: "PUT",
+        method: "PATCH",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
     };
-    const response = await fetch(`${API}/Admin/users/${id}`, requestOptions);
+    const response = await fetch(`${API}/Admin/editU/${id}`, requestOptions);
       const data = await response.json();
       //   onUpdate(data.user);
 console.log(data)

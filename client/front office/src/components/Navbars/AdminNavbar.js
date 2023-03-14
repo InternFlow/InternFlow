@@ -19,7 +19,6 @@ export default function AdminNavbar(props) {
     children,
     fixed,
     secondary,
-    brandText,
     onOpen,
     ...rest
   } = props;

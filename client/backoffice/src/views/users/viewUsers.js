@@ -59,8 +59,26 @@ function ViewUsers() {
     }
 
     const editUser =  (id)=>{
-      history.push(`/admin/editUser/?id=${id}`)
+      history.push(`/Admin/editUser/?id=${id}`);
     }
+
+    const editProfileCondidat =  async(id)=>{
+      console.log(id)
+
+      const response = await fetch(`${API}/Condidat/getUser/${id}`);
+
+      const data = await response.json();
+
+      console.log(data.role  )
+      if (data.role !== 'condidat' ) {
+        console.log('Vous n\'êtes pas candidat');
+      }else{
+        history.push(`/Admin/editProfileCondidat/?id=${id}`);
+
+      }
+
+          }
+
 
     const pageCount = Math.ceil(users.length / usersPerPage);
     const changePage = ({ selected }) => {
@@ -104,6 +122,21 @@ function ViewUsers() {
                       onClick={()=> deleteUser(user._id)}
                      >Delete</Button></td>
 
+                     <td>
+                      <Button
+                       style={{marginTop: "22px" }}
+                       variant="secondary"
+                       onClick={()=> editUser(user._id)}
+                      >Edit</Button>
+                     </td>
+
+                     <td>
+                      <Button
+                       style={{marginTop: "22px" }}
+                       variant="secondary"
+                       onClick={()=> editProfileCondidat(user._id)}
+                      >Edit Profile</Button>
+                     </td>
                      <td>
                       <Button
                        style={{marginTop: "22px" }}

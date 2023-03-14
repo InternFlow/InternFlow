@@ -28,7 +28,7 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 import AdminLayout from "layouts/Admin.js";
 import SignUp from "views/SignUp";
 import SignIn from "views/SignIn";
-import ForgotPassword from "views/forgotPassword";
+import Dashboard from "layouts/Admin";
 import ResetPassword from "views/resetPassword";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

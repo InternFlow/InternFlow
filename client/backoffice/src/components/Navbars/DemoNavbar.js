@@ -18,6 +18,8 @@
 */
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import axios from "axios";
+
 import {
   Collapse,
   Navbar,
@@ -38,6 +40,24 @@ import {
 
 import routes from "routes.js";
 
+import { API } from "config";
+
+function handleLogout() {
+  axios
+    .get(`${API}/logout`)
+    .then((res) => {
+      console.log(res);
+      // Supprimer le token et le rôle de l'utilisateur du stockage local
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      // Rediriger l'utilisateur vers la page de connexion
+      window.location.href = "/login";
+    })
+    .catch((err) => console.log(err));
+}
+
+
+
 function Header(props) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
@@ -55,16 +75,7 @@ function Header(props) {
   const dropdownToggle = (e) => {
     setDropdownOpen(!dropdownOpen);
   };
-  const getBrand = () => {
-    let brandName = "Default Brand";
-    routes.map((prop, key) => {
-      if (window.location.href.indexOf(prop.layout + prop.path) !== -1) {
-        brandName = prop.name;
-      }
-      return null;
-    });
-    return brandName;
-  };
+
   const openSidebar = () => {
     document.documentElement.classList.toggle("nav-open");
     sidebarToggle.current.classList.toggle("toggled");
@@ -108,18 +119,8 @@ function Header(props) {
       <Container fluid>
         <div className="navbar-wrapper">
           <div className="navbar-toggle">
-            <button
-              type="button"
-              ref={sidebarToggle}
-              className="navbar-toggler"
-              onClick={() => openSidebar()}
-            >
-              <span className="navbar-toggler-bar bar1" />
-              <span className="navbar-toggler-bar bar2" />
-              <span className="navbar-toggler-bar bar3" />
-            </button>
+
           </div>
-          <NavbarBrand href="/">{getBrand()}</NavbarBrand>
         </div>
         <NavbarToggler onClick={toggle}>
           <span className="navbar-toggler-bar navbar-kebab" />
@@ -138,14 +139,7 @@ function Header(props) {
             </InputGroup>
           </form>
           <Nav navbar>
-            <NavItem>
-              <Link to="#pablo" className="nav-link btn-magnify">
-                <i className="nc-icon nc-layout-11" />
-                <p>
-                  <span className="d-lg-none d-md-block">Stats</span>
-                </p>
-              </Link>
-            </NavItem>
+
             <Dropdown
               nav
               isOpen={dropdownOpen}
@@ -164,11 +158,11 @@ function Header(props) {
               </DropdownMenu>
             </Dropdown>
             <NavItem>
-              <Link to="#pablo" className="nav-link btn-rotate">
-                <i className="nc-icon nc-settings-gear-65" />
-                <p>
-                  <span className="d-lg-none d-md-block">Account</span>
-                </p>
+              <Link to="#pablo" onClick={handleLogout} className="nav-link btn-rotate">
+              <li>
+                        <i className="nc-icon nc-button-power" />
+                        <p>logout</p>
+                      </li>
               </Link>
             </NavItem>
           </Nav>
