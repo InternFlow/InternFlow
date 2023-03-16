@@ -22,6 +22,7 @@ import React, { useState } from "react";
 // reactstrap components
 import { Button, Card, Form, Input, Container, Row, Col } from "reactstrap";
 import { useForm } from "react-hook-form";
+import axios from "axios"
 
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
@@ -82,26 +83,22 @@ function Login() {
 
     // const { email, password } = user;
     try {
-      const res = await fetch('http://127.0.0.1:3000/login', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email, password
-        })
-      });
-
-      if (res.status === 400 || !res) {
-        window.alert("Invalid Credentials")
-      } else {
+      axios
+    .post('http://127.0.0.1:3000/login', {
+      email, password
+    })
+    .then((response) => {
+      console.log("response data signin : ",response.data)
+      if (response.data.accessToken) {
+        localStorage.setItem("user", JSON.stringify(response.data));
         window.alert("Login Successfull");
-        // registration successful
         history.push('/profile-page');
-        const data = await res.json();
-        console.log(data);
+      } else if(response.status === 400 || !response){
+        window.alert("Invalid Credentials")
       }
 
+      return response.data;
+    });
     } catch (error) {
       console.log(error);
     }
@@ -190,7 +187,17 @@ function Login() {
                   </Button>
                 </Form>
 
-
+                <div className="forgot">
+                  <Button
+                    className="btn-link"
+                    color="danger"
+                    href="#pablo"
+                    // onClick={(e) => e.preventDefault()}
+                    onClick={() => history.push("/sign-up")}
+                  >
+                    Sign Up
+                  </Button>
+                </div>
 
                 <div className="forgot">
                   <Button

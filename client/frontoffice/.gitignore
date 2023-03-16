@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/client/frontoffice/node_modules
 /.pnp
 .pnp.js
 

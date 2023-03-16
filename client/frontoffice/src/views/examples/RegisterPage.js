@@ -187,9 +187,9 @@ function RegisterPage() {
                     className="btn-link"
                     color="danger"
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}
+                    onClick={(e) => history.push("/sign-in")}
                   >
-                    Forgot password?
+                    Sign In
                   </Button>
                 </div>
               </Card>
