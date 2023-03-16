@@ -1,94 +1,76 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { requireAuth } = require("../middlewares/requireAuth");
-
-const Category = require("../models/Category");
-const mongoose = require("mongoose");
+const { checkRole } = require("../middlewares/checkRole");
 const router = express.Router();
-router.post('/addU', async (req, res) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    await user.hashPassword(user.password);
+const path = require('path');
 
-    res.json(user);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('Error creating user');
-  }
-});
+router.get("/UserList",requireAuth, checkRole("ADMIN"), async (req, res) => {
+    try{
+        const users = await User.find();
+          res.send(users); 
+    } 
+    catch(err){
+        console.log(err)
+        res.status(500).json({ errorMessage: "An error occurred while processing your request." });
 
-//Get Users
-// Route pour récupérer tous les utilisateurs
-router.get('/allU', async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('Error getting users');
-  }
-});
-
-
-async function getUser(req, res, next) {
-  let user;
-  try {
-    user = await User.findById(req.params.id);
-    if (user == null) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-  res.user = user;
-  next();
+
+  });
+
+router.delete("/DeleteUser/:userId",requireAuth, checkRole("ADMIN"), async (req, res) => {
+  try{
+    const user = await User.findById(req.params.userId);
+    if (user){
+      await User.deleteOne({_id: user._id});
+      res.send("User deleted."); 
+    }
+} 
+catch(err){
+    console.log(err)
+    res.status(500).json({ errorMessage: "An error occurred while processing your request." });
 }
+});
 
-//router.patch('/users/:id',checkRole("admin"), getUser, async (req, res) => {
-
-router.patch('/editU/:id', getUser, async (req, res) => {
-  if (req.body.name != null) {
-    res.user.name = req.body.name;
-  }
-  if (req.body.lastName != null) {
-    res.user.lastName = req.body.lastName;
-  }
-  if (req.body.email != null) {
-    res.user.email = req.body.email;
-  }
-  if (req.body.password != null) {
-    res.user.password = req.body.password;
-  }
-  if (req.body.role != null) {
-    res.user.role = req.body.role;
-  }
-  try {
-    const updatedUser = await res.user.save();
-    await updatedUser.hashPassword(updatedUser.password);
-    res.json(updatedUser);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+router.post("/CreateUser",requireAuth, checkRole("ADMIN"), async (req, res) => {
+  try{
+      const user = req.newUser;
+       const newUser= await User.save(user);
+        res.send(200).json(newUser);
+  } 
+  catch(err){
+      console.log(err)
+      res.status(500).json({ errorMessage: "An error occurred while processing your request." });
   }
 });
 
 
 
-
-// Route pour supprimer un utilisateur
-router.delete('/deleteU/:userId', async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.userId);
-    if (!user) {
-      res.status(404).send('User not found');
-    } else {
-      res.json(user);
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('Error deleting user');
+router.put("/UpdateUser",requireAuth, checkRole("ADMIN"), async (req, res) => {
+  try{
+      const user = req.UpdatedUser;
+        await User.updateOne(user);
+        res.send(200).json(user);
+  } 
+  catch(err){
+      console.log(err)
+      res.status(500).json({ errorMessage: "An error occurred while processing your request." });
   }
 });
+
+router.put("/AddUserList",requireAuth, checkRole("ADMIN"), async (req, res) => {
+  try{
+    const user = req.newUser;
+    const newUserList =await User.bulkSave(user);
+        res.send(200).json(newUserList)
+  } 
+  catch(err){
+      console.log(err)
+      res.status(500).json({ errorMessage: "An error occurred while processing your request." });
+  }
+});
+
 
 
   module.exports = router;

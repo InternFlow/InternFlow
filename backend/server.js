@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+var morgan = require('morgan');
 //----------------- Passport & Authentification ------------------------//
 const session = require('express-session');
 const passport = require('passport');
@@ -22,14 +23,13 @@ const adminRoutes =require('./routes/AdminRoute');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 const dbURI = process.env.DB_URI;
 const userRoutes = require('./routes/UserRoute');
 const EmailUser = require('./routes/EmailUser');
 const linkedInRoute = require('./routes/LinkedInUserRoute');
 const googleFacebookRoutes = require('./routes/GoogleFacebookRoute');
 const githubRoutes = require('./Routes/GithubRoute');
-const ProfileUserRoutes = require('./Routes/ProfileUserRoutes');
 
 const config = require('./config');
 
@@ -37,7 +37,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:3001',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
   credentials: true
@@ -51,6 +51,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(morgan("dev"))
 
 
 //---------------------- Connecting to MongoDB --------------------------//
@@ -69,7 +70,6 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/skills', skillsRoutes);
     app.use('/upload', uploadRoutes);
     app.use('/Admin', adminRoutes);
-    app.use('/Condidat',ProfileUserRoutes);
     passport.serializeUser(function (user, cb) {
       cb(null, user);
     });

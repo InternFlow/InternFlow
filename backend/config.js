@@ -9,8 +9,8 @@ module.exports = {
   EMAIL_TEXT: "Voici votre lien de réinitialisation de mot de passe :",
   LINKEDIN_CLIENT_ID: "78gbaa5pmaau37",
   LINKEDIN_CLIENT_SECRET: "vY5GehMDGciXbXPf",
-  CALLBACK_URL: "http://localhost:5000/linkedIn/auth/callback",
-  FACEBBOK_CALLBACK_URL: "http://localhost:5000/Facebook/auth/callback",
+  CALLBACK_URL: "http://localhost:3000/linkedIn/auth/callback",
+  FACEBBOK_CALLBACK_URL: "http://localhost:3000/Facebook/auth/callback",
 
  /*GOOGLE_CLIENT_ID :'854785160029-os1k6kg6kqu7fedbmul2esrni3lmbvnv.apps.googleusercontent.com',
  GOOGLE_CLIENT_SECRET : 'BuzoCOXyBnVzII6kxV7utDVX',*/
@@ -24,6 +24,6 @@ module.exports = {
  //GITHUB
  GITHUB_CLIENT_ID : 'e82296c80066609bfa88',
  GITHUB_CLIENT_SECRET_KEY : '77909bb68977419ca0e3241726e544006aaae0d4',
- GITHUB_CALLBACK_URL: 'http://localhost:5000/github/auth/callback'
+ GITHUB_CALLBACK_URL: 'http://localhost:3000/github/auth/callback'
 
 };

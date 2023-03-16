@@ -6,25 +6,16 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['formateur', 'company', 'admin','condidat'], default: 'condidat' },
+  role: { type: String, enum: ['formateur', 'company', 'condidat'], default: 'condidat' },
   confirmed: { type: Boolean },
-  educations: [{
-    schoolName: { type: String },
-    degree: { type: String},
-    fieldOfStudy: { type: String },
-  }],
-  experiences: [{
-    jobTitle: { type: String},
-    company: { type: String },
-    description: { type: String }
-  }],
-  skills: [{ type: String }],
-  local: { type: String },
+  educations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Education' }],
+  experiences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Experience' }],
+  skills: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Skills' }],
+  categories: [{ type: mongoose.Types.ObjectId, ref: 'Category' }],
   companies: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
   interns: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
   uploadedFiles: [{ type: String }]
 });
-
 
 userSchema.methods.hashPassword = async function (newPassword) {
   try {

@@ -41,51 +41,68 @@ import axios from "axios";
 
 
 function SignIn() {
+  // const [name, setName] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
 
+  //FormData
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
   const history = useHistory();
-
+  
   const [formErrors, setFormErrors] = useState({});
 
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API}/login`, {
+      const response = await fetch(`${API}/login`, 
+      {
         method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+
+      }
+      );
+
+       const { token } = await response.json();
+       localStorage.setItem("token", token);
+    // localStorage.setItem("token", response.data.token);
+      history.push("/admin/dashboard");
+
+    } catch (error) {
+
+      console.error("There was a problem with the fetch operation:", error);
+    }
+  
+  };
+
+  const forgotPassword = async () => {
+    try {
+      const email = formData.email;
+      const response = await fetch(`${API}/email/forgot-password`, {
+        method: "POST",
+        body: JSON.stringify({ email }),
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
       });
-
-      const { token,user } = await response.json();
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", user.role);
-      localStorage.setItem("id", user.id);
-
-      history.push("/admin/dashboard");
-
-
+      const data = await response.json();
+      console.log(data); // { message: "Email sent successfully" }
+      history.push("/resetPassword");
     } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
+      console.error(error);
     }
   };
-
-
-  const forgotPassword = async () => {
-
-    history.push("/forgotpassword");
-
-  };
-
-
-
+  
+ 
+  
   const cardStyles = {
     width: '280%',
     margin: 'auto',
@@ -93,37 +110,37 @@ function SignIn() {
     margin: 'auto'
   };
 
-
+  
 
   return (
     <>
       <div className="content"
         style={{
-          backgroundImage: `url(${signin})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          width: "100vw",
-          height: "100vh",
-          position: "relative"
-        }}
+            backgroundImage: `url(${signin})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            width: "100vw",
+            height: "100vh",
+            position: "relative"
+          }}
       >
 
         <div className="content d-flex justify-content-center align-items-center" >
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
 
-            <Row>
+        <Row>
+         
+          <Col md="12">
+            <Card className="card-user" style={cardStyles}>
+              <CardHeader>
+                <CardTitle tag="h5">Sign In</CardTitle>
+              </CardHeader>
+              <CardBody 
+              >
+                      {/* <div style={{ backgroundColor: "white", padding: "2rem" }}> */}
 
-              <Col md="12">
-                <Card className="card-user" style={cardStyles}>
-                  <CardHeader>
-                    <CardTitle tag="h5">Sign In</CardTitle>
-                  </CardHeader>
-                  <CardBody
-                  >
-                    {/* <div style={{ backgroundColor: "white", padding: "2rem" }}> */}
-
-                    <Form onSubmit={handleSubmit}>
-                      {/* <Row>
+                <Form onSubmit={handleSubmit}>
+                  {/* <Row>
                   <Col className="px-1" md="8">
                       <FormGroup>
                         <label>Name</label>
@@ -138,22 +155,22 @@ function SignIn() {
                       </FormGroup>
                     </Col>
                   </Row> */}
-                      <Row>
-
-                        <Col className="pl-1" md="8">
-                          <FormGroup>
-                            <label htmlFor="exampleInputEmail1">
-                              Email address
-                            </label>
-                            <Input placeholder="Email" type="email"
-                              value={formData.email}
-                              onChange={(e) => setFormData({ ...formData, email: e.target.value })
-                              }
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      {/* <Row>
+                  <Row>
+                   
+                    <Col className="pl-1" md="8">
+                      <FormGroup>
+                        <label htmlFor="exampleInputEmail1">
+                          Email address
+                        </label>
+                        <Input placeholder="Email" type="email" 
+                          value={formData.email}
+                          onChange= {(e)=> setFormData({ ...formData, email: e.target.value})
+                          }
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  {/* <Row>
                     <Col className="pr-1" md="6">
                       <FormGroup>
                         <label>First Name</label>
@@ -175,36 +192,36 @@ function SignIn() {
                       </FormGroup>
                     </Col>
                   </Row> */}
-                      <Row>
-                        <Col className="pr-1" md="8">
-                          <FormGroup>
-                            {/* <label>Address</label>
+                  <Row>
+                  <Col className="pr-1" md="8">
+                      <FormGroup>
+                        {/* <label>Address</label>
                         <Input
                           defaultValue="Melbourne, Australia"
                           placeholder="Home Address"
                           type="text"
                         /> */}
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col className="px-1" md="8">
-                          <FormGroup>
-                            <label>Password</label>
-                            <Input
-                              // defaultValue="michael23"
-                              placeholder="Password..."
-                              type="password"
-                              value={formData.password}
-                              onChange={(e) => setFormData({ ...formData, password: e.target.value })
-                              }
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col className="pr-1" md="4">
-                          {/* <FormGroup>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                  <Col className="px-1" md="8">
+                      <FormGroup>
+                        <label>Password</label>
+                        <Input
+                          // defaultValue="michael23"
+                          placeholder="Password..."
+                          type="password"
+                          value={formData.password}
+                          onChange= {(e)=> setFormData({...formData, password: e.target.value})
+                          }
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="pr-1" md="4">
+                      {/* <FormGroup>
                         <label>City</label>
                         <Input
                           defaultValue="Melbourne"
@@ -212,8 +229,8 @@ function SignIn() {
                           type="text"
                         />
                       </FormGroup> */}
-                        </Col>
-                        {/* <Col className="px-1" md="4">
+                    </Col>
+                    {/* <Col className="px-1" md="4">
                       <FormGroup>
                         <label>Country</label>
                         <Input
@@ -223,14 +240,14 @@ function SignIn() {
                         />
                       </FormGroup>
                     </Col> */}
-                        {/* <Col className="pl-1" md="4">
+                    {/* <Col className="pl-1" md="4">
                       <FormGroup>
                         <label>Postal Code</label>
                         <Input placeholder="ZIP Code" type="number" />
                       </FormGroup>
                     </Col> */}
-                      </Row>
-                      {/* <Row>
+                  </Row>
+                  {/* <Row>
                     <Col md="12">
                       <FormGroup>
                         <label>About Me</label>
@@ -241,32 +258,32 @@ function SignIn() {
                       </FormGroup>
                     </Col>
                   </Row> */}
-                      <Row>
-                        <div className="update ml-auto mr-auto">
-                          <Button
-                            className="btn-round"
-                            color="primary"
-                            type="submit"
-                          >
-                            SignIn
-                          </Button>
-                          <Button
-                            className="btn-round"
-                            color="secondary"
-                            type="submit"
-                            onClick={forgotPassword}
-                          >
-                            Forgot Password?
-                          </Button>
-                        </div>
-                      </Row>
-                    </Form>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-          </div>
-        </div>
+                  <Row>
+                    <div className="update ml-auto mr-auto">
+                      <Button
+                        className="btn-round"
+                        color="primary"
+                        type="submit"
+                      >
+                        SignIn
+                      </Button>
+                      <Button
+                        className="btn-round"
+                        color="secondary"
+                        type="submit"
+                        onClick={forgotPassword}
+                      >
+                        Forgot Password?
+                      </Button>
+                    </div>
+                  </Row>
+                </Form>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+      </div>
       </div>
 
     </>

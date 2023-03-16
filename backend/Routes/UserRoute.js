@@ -11,26 +11,32 @@ const config = require('../config');
 
 const router = express.Router();
 
-
-router.get("/login", async (req, res) =>{
-  res.status(200).json({ Message: "bonjour" });
-
+router.get("/", (req, res) => {
+  res.send("Bienvenue sur la page d'accueil");
 });
+
+router.get("/register", (req, res) => {
+  res.send("Bienvenue sur la page d'inscription");
+});
+
 //-------------------------- Register -----------------------------------//
-
 router.post("/register", async (req, res) => {
-  const { name, email, password, role } = req.body;
-
+  const { name,email, password,role } = req.body;
+  // const { name,email, password, role } = req.body;
+  // const client = new twilio(config.ACCOUNT_SID, config.AUTH_TOKEN);
   try {
-    const user = await User.create({ name, email, password, role });
+    const user = await User.create({ name,email, password,role });
+    // const user = await User.create({ name,email, password, role });
 
     await user.hashPassword(user.password);
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
     res.cookie("jwt", token, { httpOnly: true, maxAge: 864000 });
+    //res.json({ token });
+    res.redirect("/admin/dashboard");
 
-    res.status(200).json({ successMessage: "User created successfully" });
+
   } catch (err) {
     if (err.code === 11000) {
       res.status(400).json({ errorMessage: "Email already in use" });
@@ -41,28 +47,44 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.get("/profile", requireAuth,function (req, res)  {
+  const token = req.cookies.jwt;
+  console.log("token:", token);
 
-//ca
+  jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+    if (err) {
+      res.json("bbb");
+    } else {
+      const userId = decodedToken.userId;
+      console.log("User ID from token:", userId);
 
-router.get("/admin/dashboard", checkRole("admin"), (req, res) => {
-  // If the user is authenticated and has the "admin" role, show the dashboard
-  res.status(200).json({ successMessage: "You have access to the admin dashboard" });
-}, (err, req, res, next) => {
-  // If the user is not authenticated, show an error message
-  if (err.name === "UnauthorizedError") {
-    res.status(401).json({ errorMessage: "You need to log in to access this page" });
-  } else {
-    next(err);
-  }
+      User.findById(userId)
+        .then((user) => {
+          if (!user) {
+            console.log("User not found");
+            res.json("User not found");
+          } else {
+            console.log("User found:", user);
+            res.render('profile.ejs', { user: user });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          res.json("aaaaa");
+        });
+    }
+  });
+
 
 });
 
 
 
+router.get("/login", (req, res) => {
+  // res.sendFile(path.join(__dirname, 'tests', 'login.html'));
+  res.sendFile(path.join(__dirname, 'tests', "/signin"));
 
-
-
-
+});
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -79,8 +101,15 @@ router.post("/login", async (req, res) => {
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
           expiresIn: "1d",
         });
-        res.cookie("jwt", token, { httpOnly: true, maxAge: 864000 });
-         res.json({ token,user });
+        res.send({
+          name :user._id,
+          name :user.name,
+          email :user.email,
+          role :user.role,
+          accessToken: token
+        })
+        // res.json({ token });
+        //res.redirect("/admin/dashboard");
       }
     }
   } catch (err) {
@@ -91,12 +120,16 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
+router.get("/profileformateur", requireAuth, checkRole("formateur"), (req, res) => {
+  // Si l'utilisateur est authentifié et a le rôle de formateur,
+  // il peut accéder à la route /profileformateur
+  res.send("Bienvenue sur votre profil de formateur");
+});
 
 router.delete("/deactivate-account/:userId", requireAuth, async (req, res) => {
   try {
     const user = req.user;
-    const verif = await User.findByEmail(req.user.email)
+    const verif = await User.findByEmail(req.user.email)  
     if (user.role !== "admin" || verif  ) {
       res.status(403).json({ errorMessage: "You do not have the necessary permissions to perform this action." });
     } else {
@@ -162,9 +195,9 @@ router.put("/confirmCompanyandTrainer/:id", async (req, res) => {
 
 
 
- router.get("/logout", (req, res) => {
+router.get("/logout", (req, res) => {
   res.clearCookie("jwt");
-  res.redirect("/login");
+  res.redirect("/");
 });
 
 module.exports = router;

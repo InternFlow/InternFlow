@@ -25,10 +25,6 @@ import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
 import SignUp from "views/SignUp";
-import ViewUsers from "views/users/ViewUsers";
-import CreateUsers from "views/users/CreateUsers";
-import EditUser from "views/users/EditUser";
-import EditProfileUser from "views/users/EditProfileUser";
 
 var routes = [
   {
@@ -46,6 +42,13 @@ var routes = [
     layout: "/admin"
   },
   {
+    path: "/maps",
+    name: "Maps",
+    icon: "nc-icon nc-pin-3",
+    component: Maps,
+    layout: "/admin"
+  },
+  {
     path: "/notifications",
     name: "Notifications",
     icon: "nc-icon nc-bell-55",
@@ -59,41 +62,34 @@ var routes = [
     component: UserPage,
     layout: "/admin"
   },
-  // {
-  //   path: "/tables",
-  //   name: "Table List",
-  //   icon: "nc-icon nc-tile-56",
-  //   component: TableList,
-  //   layout: "/admin"
-  // },
   {
-    path: "/createUser",
-    name: "Add A new User",
-    icon: "nc-icon nc-simple-add",
-    component: CreateUsers,
+    path: "/tables",
+    name: "Table List",
+    icon: "nc-icon nc-tile-56",
+    component: TableList,
     layout: "/admin"
   },
   {
-    path: "/editUser",
-    name: "Edit A User",
-    icon: "nc-icon nc-settings",
-    component: EditUser,
+    path: "/typography",
+    name: "Typography",
+    icon: "nc-icon nc-caps-small",
+    component: Typography,
     layout: "/admin"
   },
   {
-    path: "/editProfileCondidat",
-    name: "Edit A User",
-    icon: "nc-icon nc-settings",
-    component: EditProfileUser,
+    path: "/signup",
+    name: "SignUp",
+    icon: "nc-icon nc-caps-small",
+    component: SignUp,
     layout: "/admin"
   },
   {
-    path: "/viewUser",
-    name: "Display Users",
-    icon: "nc-icon nc-laptop",
-    component: ViewUsers,
+    pro: true,
+    path: "/upgrade",
+    name: "Upgrade to PRO",
+    icon: "nc-icon nc-spaceship",
+    component: UpgradeToPro,
     layout: "/admin"
   }
-
 ];
 export default routes;
