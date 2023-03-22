@@ -42,19 +42,26 @@ function ViewUsers() {
     const pagesVisited = pageNumber * usersPerPage;
     const history = useHistory();
 
-    useEffect(()=>{
 
-        fetch(`${API}/Admin/allU`)
+    async function getUsers(){
+
+        fetch(`${API}/Admin/allU`, {
+          credentials: 'include'
+        })
       .then((response) => response.json())
       .then((data) => setUsers(data));
-    },[])
+    }
+    useEffect(()=>{getUsers()},[])
 
     const deleteUser = async (id) => {
       const result = window.confirm("Are you sure you want to delete?");
-      await axios.delete(`http://localhost:5000/Admin/deleteU/${id}`)
+      await axios.delete(`http://localhost:5000/Admin/deleteU/${id}`, {
+        withCredentials: true
+      })
       .then((res) => {
         history.push("/admin/viewUser");
-      })
+      });
+      getUsers();
 
     }
 
@@ -63,9 +70,13 @@ function ViewUsers() {
     }
 
     const editProfileCondidat =  async(id)=>{
+try{
       console.log(id)
 
-      const response = await fetch(`${API}/Condidat/getUser/${id}`);
+      const response = await fetch(`${API}/Condidat/getUser/${id}`,{
+        credentials: 'include'
+      }
+);
 
       const data = await response.json();
 
@@ -75,6 +86,10 @@ function ViewUsers() {
       }else{
         history.push(`/Admin/editProfileCondidat/?id=${id}`);
 
+      }
+    }
+      catch (error){
+        console.log("error getting user.",error)
       }
 
           }
@@ -137,13 +152,7 @@ function ViewUsers() {
                        onClick={()=> editProfileCondidat(user._id)}
                       >Edit Profile</Button>
                      </td>
-                     <td>
-                      <Button
-                       style={{marginTop: "22px" }}
-                       variant="secondary"
-                       onClick={()=> editUser(user._id)}
-                      >Edit</Button>
-                     </td>
+                     
                  </tr>
                   ))}
                   </tbody>

@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/User");
 const { requireAuth } = require("../middlewares/requireAuth");
+const { checkRole } = require("../middlewares/checkRole");
 
 const Category = require("../models/Category");
 const mongoose = require("mongoose");
@@ -20,7 +21,7 @@ router.post('/addU', async (req, res) => {
 
 //Get Users
 // Route pour récupérer tous les utilisateurs
-router.get('/allU', async (req, res) => {
+router.get('/allU', requireAuth, checkRole("admin"), async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -47,7 +48,7 @@ async function getUser(req, res, next) {
 
 //router.patch('/users/:id',checkRole("admin"), getUser, async (req, res) => {
 
-router.patch('/editU/:id', getUser, async (req, res) => {
+router.patch('/editU/:id', requireAuth, checkRole("admin"), getUser, async (req, res) => {
   if (req.body.name != null) {
     res.user.name = req.body.name;
   }
@@ -76,7 +77,7 @@ router.patch('/editU/:id', getUser, async (req, res) => {
 
 
 // Route pour supprimer un utilisateur
-router.delete('/deleteU/:userId', async (req, res) => {
+router.delete('/deleteU/:userId', requireAuth, checkRole("admin"), async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.userId);
     if (!user) {

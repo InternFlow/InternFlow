@@ -21,6 +21,28 @@ router.get("/login", async (req, res) =>{
 router.post("/register", async (req, res) => {
   const { name, email, password, role } = req.body;
 
+  let errors = {};
+
+  // Vérifier que le nom contient au moins 8 caractères sans les chiffres
+  if (!/^[a-zA-Z]{8,}$/.test(name) ) {
+    errors.name = "Name should contain at least 8 characters without numbers";
+
+  }
+
+  // Vérifier que le mot de passe contient au moins 8 caractères et au moins un chiffre et une lettre
+  if (!/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/.test(password)) {
+    errors.password = "Password should contain at least 8 characters with at least one letter and one number";
+  }
+
+  // Vérifier que l'adresse email est valide
+  if (!/\S+@\S+\.\S+/.test(email)) {
+    errors.email = "Invalid email address";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ errors });
+  }
+
   try {
     const user = await User.create({ name, email, password, role });
 
@@ -33,18 +55,20 @@ router.post("/register", async (req, res) => {
     res.status(200).json({ successMessage: "User created successfully" });
   } catch (err) {
     if (err.code === 11000) {
-      res.status(400).json({ errorMessage: "Email already in use" });
+      res.status(400).json({ errors: { email: "Email already in use" } });
+     // errors.email = "Email already in use"
     } else {
       console.log(err);
-      res.status(500).json({ errorMessage: "Server error" });
+      res.status(500).json({ errors: { server: "Server error" } });
     }
   }
 });
 
 
+
 //ca
 
-router.get("/admin/dashboard", checkRole("admin"), (req, res) => {
+router.get("/admin/dashboard", requireAuth ,checkRole("admin"), (req, res) => {
   // If the user is authenticated and has the "admin" role, show the dashboard
   res.status(200).json({ successMessage: "You have access to the admin dashboard" });
 }, (err, req, res, next) => {
@@ -67,14 +91,32 @@ router.get("/admin/dashboard", checkRole("admin"), (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
+  let errors = {};
+
+// Vérifier que le mot de passe contient au moins 8 caractères et au moins un chiffre et une lettre
+if (!/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/.test(password)) {
+  errors.password = "Password should contain at least 8 characters with at least one letter and one number";
+}
+
+  // Vérifier que l'adresse email est valide
+  if (!/\S+@\S+\.\S+/.test(email)) {
+    errors.email = "Invalid email address";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ errors });
+  }
+
+
+
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({ errorMessage: "L'adresse email ou le mot de passe est incorrect." });
+      res.status(400).json({ errors: { email: "email incorrecte" } });
     } else {
       const isPasswordCorrect = await user.isValidPassword(password);
       if (!isPasswordCorrect) {
-        res.status(400).json({ errorMessage: "L'adresse email ou le mot de passe est incorrect." });
+        res.status(400).json({ errors: { password: "password incorrecte" } });
       } else {
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
           expiresIn: "1d",
@@ -93,7 +135,7 @@ router.post("/login", async (req, res) => {
 
 
 
-router.delete("/deactivate-account/:userId", requireAuth, async (req, res) => {
+router.delete("/deactivate-account/:userId", requireAuth, checkRole("admin"),async (req, res) => {
   try {
     const user = req.user;
     const verif = await User.findByEmail(req.user.email)
@@ -112,12 +154,11 @@ router.delete("/deactivate-account/:userId", requireAuth, async (req, res) => {
 
 router.put("/updateUser",requireAuth, async (req, res) => {
   try {
-    const { name, lastName, password, role } = req.body;
+    const { name, lastName, role } = req.body;
 
     const user = await User.findByIdAndUpdate(req.user._id, {
       name,
       lastName,
-      password,
       role,
     });
 const updatedUser= await User.findById(req.user._id);
@@ -158,6 +199,19 @@ router.put("/confirmCompanyandTrainer/:id", async (req, res) => {
    res.status(500).json(error.message);
   }
  });
+
+
+
+ router.get('/profile',requireAuth, (req, res) => {
+            var user = req.user;
+            user.password = "";
+            res.status(200).json({ user: user });
+
+  });
+
+
+
+
 
 
 

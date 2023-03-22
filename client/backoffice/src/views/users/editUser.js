@@ -59,6 +59,7 @@ function EditUser({ user = { name: "", lastName: "", email: "", role: "condidat"
             "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
+        credentials: 'include'
     };
     const response = await fetch(`${API}/Admin/editU/${id}`, requestOptions);
       const data = await response.json();

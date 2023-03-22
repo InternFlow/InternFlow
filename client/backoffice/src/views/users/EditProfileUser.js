@@ -107,6 +107,7 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
+        credentials: 'include'
       };
 
       const response = await fetch(`${API}/Condidat/editprofile/${id}`, requestOptions);

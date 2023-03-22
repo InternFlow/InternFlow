@@ -19,10 +19,13 @@ const userSchema = new mongoose.Schema({
     description: { type: String }
   }],
   skills: [{ type: String }],
-  local: { type: String },
+  local: [{ type: String }],
   companies: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
   interns: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
-  uploadedFiles: [{ type: String }]
+  uploadedFiles: [{ type: String }],
+  date:{ type:Date },
+  phoneNumber:{ type:Number},
+  description: { type: String},
 });
 
 

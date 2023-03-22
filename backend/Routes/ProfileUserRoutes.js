@@ -32,7 +32,8 @@ async function getUser(req, res, next) {
 }
 
 //router.patch('/users/:id',checkRole("admin"), getUser, async (req, res) => {
-  router.patch('/editprofile/:id', getUser, async (req, res) => {
+  router.patch('/editprofile/:id', requireAuth, getUser, async (req, res) => {
+    res.user = await User.findById(req.params.id);
     if (req.body.name != null) {
       res.user.name = req.body.name;
     }
@@ -42,9 +43,6 @@ async function getUser(req, res, next) {
     if (req.body.email != null) {
       res.user.email = req.body.email;
     }
-    if (req.body.password != null) {
-      res.user.password = req.body.password;
-    }
     if (req.body.role != null) {
       res.user.role = req.body.role;
     }
@@ -52,12 +50,19 @@ async function getUser(req, res, next) {
       res.user.educations = req.body.educations;
     }
     if (req.body.experiences != null) {
-      res.user.experiences = req.body.experiences;
+      res.user.experiences = req.body.experiences; 
     }
     if (req.body.skills != null) {
       res.user.skills = req.body.skills;
     }
+    if (req.body.description != null && req.body.description != '') {
+      res.user.description = req.body.description;
+    }
+    if (req.body.local != null) {
+      res.user.local = req.body.local;
+    }
     try {
+      
       const updatedUser = await res.user.save();
       await updatedUser.hashPassword(updatedUser.password);
       res.json(updatedUser);
@@ -68,23 +73,24 @@ async function getUser(req, res, next) {
 
 
 
-router.get('/getUser/:id', async (req, res) => {
+router.get('/getUser/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
 
   try {
     // Récupération du user par son id
     const candidate = await User.findById(id);
-
+    
     // Vérification de la présence du candidat
     if (!candidate) {
       return res.status(404).json({ message: 'Le candidat est introuvable.' });
     }
     // Vérification que seul le candidat peut mettre à jour son propre profil
-    if (candidate.role !== 'condidat' ) {
+    if (candidate.role !== 'condidat' || candidate._id !== req.user._id ) {
       return res.status(401).json({ message: 'Vous n\'êtes pas condidat.' });
     }
 
     // Envoi de la réponse
+    candidate.password="";
     res.json(candidate);
   } catch (error) {
     console.error(error);

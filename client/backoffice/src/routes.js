@@ -74,24 +74,20 @@ var routes = [
     layout: "/admin"
   },
   {
+    path: "/viewUser",
+    name: "Display Users",
+    icon: "nc-icon nc-laptop",
+    component: ViewUsers,
+    layout: "/admin"
+  },
+  {
     path: "/editUser",
-    name: "Edit A User",
-    icon: "nc-icon nc-settings",
     component: EditUser,
     layout: "/admin"
   },
   {
     path: "/editProfileCondidat",
-    name: "Edit A User",
-    icon: "nc-icon nc-settings",
     component: EditProfileUser,
-    layout: "/admin"
-  },
-  {
-    path: "/viewUser",
-    name: "Display Users",
-    icon: "nc-icon nc-laptop",
-    component: ViewUsers,
     layout: "/admin"
   }
 

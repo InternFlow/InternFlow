@@ -47,6 +47,9 @@ const transporter = nodemailer.createTransport({
     user: config.SMTP_USERNAME,
     pass: config.SMTP_PASSWORD,
   },
+  tls: {
+    rejectUnauthorized: false
+}
 });
 
 // Définir les options de message

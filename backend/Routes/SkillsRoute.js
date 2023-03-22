@@ -48,7 +48,7 @@ router.delete('/delete/:id',requireAuth, async (req, res) => {
 
       const user = await User.findById(id);
       if (!user) {
-        return res.status(404).send('User not found');
+        return res.status(404).send('User not found');  
       }
       const skills = new Skills({
         name: req.body.name,

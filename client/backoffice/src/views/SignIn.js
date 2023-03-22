@@ -19,6 +19,7 @@
 import { API } from "../config";
 import React, { useState } from "react";
 
+
 // reactstrap components
 import {
   Button,
@@ -28,6 +29,7 @@ import {
   CardFooter,
   CardTitle,
   FormGroup,
+  FormFeedback ,
   Form,
   Input,
   Row,
@@ -51,10 +53,10 @@ function SignIn() {
 
   const [formErrors, setFormErrors] = useState({});
 
-
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await fetch(`${API}/login`, {
         method: "POST",
@@ -63,20 +65,27 @@ function SignIn() {
         },
         body: JSON.stringify(formData),
       });
+      if (response.status === 200) {
+        const { token, user } = await response.json();
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", user.role);
+        localStorage.setItem("id", user.id);
+        history.push("/admin/dashboard");
+      } else if (response.status === 400) {
+        const data = await response.json();
+        console.log(data.errors)
 
-      const { token,user } = await response.json();
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", user.role);
-      localStorage.setItem("id", user.id);
-
-      history.push("/admin/dashboard");
-
-
-    } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
+        if (data.errors) {
+          setFormErrors(data.errors);
+          setEmailError(data.errors.email)
+          setPasswordError(data.errors.password)
+          console.log(formErrors);
+        }
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
-
 
   const forgotPassword = async () => {
 
@@ -87,7 +96,7 @@ function SignIn() {
 
 
   const cardStyles = {
-    width: '280%',
+    width: '150%',
     margin: 'auto',
     padding: '1rem',
     margin: 'auto'
@@ -149,7 +158,12 @@ function SignIn() {
                               value={formData.email}
                               onChange={(e) => setFormData({ ...formData, email: e.target.value })
                               }
+
+                              required
                             />
+   {emailError && (
+                              <p className="text-danger">{emailError}</p>
+                            )}
                           </FormGroup>
                         </Col>
                       </Row>
@@ -198,7 +212,11 @@ function SignIn() {
                               value={formData.password}
                               onChange={(e) => setFormData({ ...formData, password: e.target.value })
                               }
+
                             />
+        {passwordError && (
+                              <p className="text-danger">{passwordError}</p>
+                            )}
                           </FormGroup>
                         </Col>
                       </Row>
