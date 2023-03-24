@@ -84,9 +84,14 @@ function IndexNavbar() {
             data-placement="bottom"
             href="/index"
             target="_blank"
-            title="Coded by Creative Tim"
+            title="internFlow"
+            
           >
-            Paper Kit React
+          <div className="image"
+          style={{
+            backgroundImage: "url(" + require("assets/img/logoI.png") + ")"
+          }}
+          ></div>
           </NavbarBrand>
           <button
             aria-expanded={navbarCollapse}

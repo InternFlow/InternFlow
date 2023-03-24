@@ -31,14 +31,14 @@ function IndexHeader() {
         className="page-header section-dark"
         style={{
           backgroundImage:
-            "url(" + require("assets/img/antoine-barres.jpg") + ")"
+            "url(" + require("assets/img/internship2.jpg") + ")"
         }}
       >
         <div className="filter" />
         <div className="content-center">
           <Container>
             <div className="title-brand">
-              <h1 className="presentation-title">Paper Kit React</h1>
+              <h1 className="presentation-title">InternFlow</h1>
               <div className="fog-low">
                 <img alt="..." src={require("assets/img/fog-low.png")} />
               </div>
@@ -57,7 +57,7 @@ function IndexHeader() {
             backgroundImage: "url(" + require("assets/img/clouds.png") + ")"
           }}
         />
-        <h6 className="category category-absolute">
+        {/* <h6 className="category category-absolute">
           Designed and coded by{" "}
           <a
             href="https://www.creative-tim.com?ref=pkr-index-page"
@@ -69,7 +69,7 @@ function IndexHeader() {
               src={require("assets/img/creative-tim-white-slim2.png")}
             />
           </a>
-        </h6>
+        </h6> */}
       </div>
     </>
   );

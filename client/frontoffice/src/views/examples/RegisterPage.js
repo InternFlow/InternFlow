@@ -19,11 +19,13 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
 // reactstrap components
-import { Button, Card, Form, Input, Container, Row, Col } from "reactstrap";
+import { Button, Card, Form, Input, Container, Row, Col, Alert } from "reactstrap";
 import { useForm } from "react-hook-form";
 
 // core components
 import LoginNavbar from "components/Navbars/LoginNavBar";
+import { event } from "jquery";
+
 
 function RegisterPage() {
 
@@ -39,6 +41,9 @@ function RegisterPage() {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('condidat');
   const [errors, setErrors] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
   const history = useHistory();
 
 
@@ -48,18 +53,28 @@ function RegisterPage() {
     let errors = {};
     if (name.trim() === '') {
       errors.name = 'name is required';
+      setAlertMessage(' Please Fill in with your name! ');
+      setShowAlert(true); 
     }
 
     if (email.trim() === '') {
       errors.email = 'Email is required';
+      setAlertMessage(' Please Fill in with your email! ');
+      setShowAlert(true); 
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       errors.email = 'Email is invalid';
+      setAlertMessage(' your email is lacking ! ');
+      setShowAlert(true); 
     }
     if (password.trim() === '') {
       errors.password = 'Password is required';
+      setAlertMessage(' Please Fill in with your password! ');
+      setShowAlert(true); 
     }
     if (role.trim() === '') {
       errors.role = 'Role is required';
+      setAlertMessage(' Please Fill in with your role! ');
+      setShowAlert(true); 
     }
 
     if (Object.keys(errors).length > 0) {
@@ -74,11 +89,33 @@ function RegisterPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password, role })
 
-    }).then(()=>{window.alert("SignUp Successfull")}).catch((error)=> window.alert(error));
+    }).then(()=>{
+      setAlertMessage("Registration successful!");
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        history.push("/sign-in");
+      }, 2000);
+
+      //window.alert("SignUp Successfull")
+      //  toast.success('SignUp Successful'); // success message
+      // <Alert color="success">SignUp Successful</Alert>
+    
+    }).catch((error)=> 
+    {
+      setAlertMessage('Registration Failed! ');
+        setShowAlert(true);
+    }
+    //window.alert(error)
+    // toast.error('SignUp Failed!')
+    // {
+    //   <Alert color="danger">{error}</Alert>
+    // }
+    );
 
     // registration successful
     // registration successful
-    history.push('/sign-in');
+    //history.push('/sign-in');
 
   }
   return (
@@ -87,7 +124,7 @@ function RegisterPage() {
       <div
         className="page-header"
         style={{
-          backgroundImage: "url(" + require("assets/img/login-image.jpg") + ")",
+          backgroundImage: "url(" + require("assets/img/register.jpg") + ")",
         }}
       >
         <div className="filter" />
@@ -163,7 +200,7 @@ function RegisterPage() {
                       <label htmlFor="role" className="form-label" >
                         Role
                       </label>
-                      <select style={{ width: "290px", height: "30px" }}
+                      {/* <select style={{ width: "290px", height: "30px" }}
                         id="role"
                         value={role}
                         onChange={(event) => setRole(event.target.value)}
@@ -174,12 +211,23 @@ function RegisterPage() {
                         <option value="company">company</option>
                         
 
-                      </select>
+                      </select> */}
+                      <Input type="select" name="role" id="role" value={role}
+                      onChange={(event)=> setRole(event.target.value)}
+                      >
+                         <option value="condidat">condidat</option>
+                        <option value="formateur">formateur</option>
+                        <option value="company">company</option>
+                        
+                      </Input>
                       {errors.role && <span>{errors.role}</span>}
                     </div>
                     <Button block className="btn-round" onClick={handleSubmit} color="danger" type="submit">
                       Register
                     </Button>
+                    {showAlert && (
+        <Alert color="success">{alertMessage}</Alert>
+      )}
                   </Form>
                 </div>
                 <div className="forgot">
@@ -199,12 +247,24 @@ function RegisterPage() {
         <div className="footer register-footer text-center">
           <h6>
             © {new Date().getFullYear()}, made with{" "}
-            <i className="fa fa-heart heart" /> by Creative Tim
+            <i className="fa fa-heart heart" /> InternFlow
           </h6>
         </div>
       </div>
     </>
   );
 }
+
+// Alert.propTypes = {
+//   className: PropTypes.string,
+//   closeClassName: PropTypes.string,
+//   color: PropTypes.string, // default: 'success'
+//   isOpen: PropTypes.bool,  // default: true
+//   toggle: PropTypes.func,
+//   tag: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+//   // Controls the transition of the alert fading in and out
+//   // See Fade for more details
+//   transition: PropTypes.shape(Fade.propTypes),
+// }
 
 export default RegisterPage;
