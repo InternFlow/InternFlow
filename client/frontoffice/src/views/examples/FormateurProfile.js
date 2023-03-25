@@ -22,7 +22,6 @@ import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 import { useHistory } from "react-router-dom";
-import ProfileFormateurHeader from "components/Headers/ProfileFormateurHeader";
 
 function FormateurProfile() {
   const history = useHistory();
@@ -82,7 +81,7 @@ console.log(token)
   return (
     <>
       <ExamplesNavbar />
-      <ProfileFormateurHeader />
+      <ProfilePageHeader />
       <div className="section profile-content">
         <Container>
           <div className="owner">
@@ -95,10 +94,7 @@ console.log(token)
             </div>
             <div className="name">
               <h4 className="title">
-                <strong> 
-                  Jane Faker   
-                </strong>                
-                <br />
+                Jane Faker <br />
               </h4>
               <h6 className="description">Music Producer formateuur</h6>
             </div>

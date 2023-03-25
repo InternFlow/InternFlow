@@ -84,14 +84,9 @@ function IndexNavbar() {
             data-placement="bottom"
             href="/index"
             target="_blank"
-            title="internFlow"
-            
+            title="Coded by Creative Tim"
           >
-          <div className="image"
-          style={{
-            backgroundImage: "url(" + require("assets/img/logoI.png") + ")"
-          }}
-          ></div>
+            InternFlow
           </NavbarBrand>
           <button
             aria-expanded={navbarCollapse}

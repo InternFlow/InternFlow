@@ -90,20 +90,14 @@ function EditCondidatProfile({ user = { name: "", lastName: "", email: "", role:
         name,
         lastName,
         email,
-        password,
         role,
         educations,
         experiences,
         skills,
       };
-      console.log(body);
-
-      console.log(educations);
-      console.log(experiences)
-      console.log(skills)
 
 
-      body.password = body.password === "" ? undefined : body.password;
+
       const requestOptions = {
         method: "PATCH",
         headers: {
@@ -112,6 +106,8 @@ function EditCondidatProfile({ user = { name: "", lastName: "", email: "", role:
         body: JSON.stringify(body)
         ,credentials: 'include'
       };
+console.log(requestOptions);
+console.log(`${API}/Condidat/editprofile/${id}`);
 
       const response = await fetch(`${API}/Condidat/editprofile/${id}`, requestOptions);
       const data = await response.json();

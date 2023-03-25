@@ -6,8 +6,8 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['formateur', 'company', 'admin','condidat'], default: 'condidat' },
-  confirmed: { type: Boolean },
+  role: { type: String, enum: ['formateur', 'company', 'admin','condidat','new'], default: 'condidat' },
+  confirmed: { type: Boolean ,default:true},
   educations: [{
     schoolName: { type: String },
     degree: { type: String},
@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
   date:{ type:Date },
   phoneNumber:{ type:Number},
   description: { type: String},
+  linkedinId: {type:String},
+
+  confirmationToken: { type: String },
+  confirmExpiration: { type: Date }
 });
 
 

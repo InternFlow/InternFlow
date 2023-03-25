@@ -12,7 +12,7 @@ const config = require('../config');
 const router = express.Router();
 
 
-router.get("/login", async (req, res) =>{
+router.get("/login", async (req, res) => {
   res.status(200).json({ Message: "bonjour" });
 
 });
@@ -22,22 +22,38 @@ router.post("/register", async (req, res) => {
   const { name, email, password, role } = req.body;
 
   let errors = {};
+  if (!name) {
+    errors.name = "donner le nom";
 
-  // Vérifier que le nom contient au moins 8 caractères sans les chiffres
-  if (!/^[a-zA-Z]{8,}$/.test(name) ) {
-    errors.name = "Name should contain at least 8 characters without numbers";
+  } else {
+    // Vérifier que le nom contient au moins 8 caractères sans les chiffres
+    if (!/^[a-zA-Z]{8,}$/.test(name)) {
+      errors.name = "Name should contain at least 8 characters without numbers";
 
+    }
   }
 
-  // Vérifier que le mot de passe contient au moins 8 caractères et au moins un chiffre et une lettre
-  if (!/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/.test(password)) {
-    errors.password = "Password should contain at least 8 characters with at least one letter and one number";
+
+
+  if (!password) {
+    errors.password = "donner le password";
+
+  }
+  else {
+    // Vérifier que le mot de passe contient au moins 8 caractères et au moins un chiffre et une lettre
+    if (!/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/.test(password)) {
+      errors.password = "Password should contain at least 8 characters with at least one letter and one number";
+    }
   }
 
-  // Vérifier que l'adresse email est valide
-  if (!/\S+@\S+\.\S+/.test(email)) {
-    errors.email = "Invalid email address";
+  if (!email) { errors.email = "donner un email" }
+  else {
+    // Vérifier que l'adresse email est valide
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = "Invalid email address";
+    }
   }
+
 
   if (Object.keys(errors).length > 0) {
     return res.status(400).json({ errors });
@@ -56,7 +72,7 @@ router.post("/register", async (req, res) => {
   } catch (err) {
     if (err.code === 11000) {
       res.status(400).json({ errors: { email: "Email already in use" } });
-     // errors.email = "Email already in use"
+      // errors.email = "Email already in use"
     } else {
       console.log(err);
       res.status(500).json({ errors: { server: "Server error" } });
@@ -68,7 +84,7 @@ router.post("/register", async (req, res) => {
 
 //ca
 
-router.get("/admin/dashboard", requireAuth ,checkRole("admin"), (req, res) => {
+router.get("/admin/dashboard", requireAuth, checkRole("admin"), (req, res) => {
   // If the user is authenticated and has the "admin" role, show the dashboard
   res.status(200).json({ successMessage: "You have access to the admin dashboard" });
 }, (err, req, res, next) => {
@@ -93,16 +109,24 @@ router.post("/login", async (req, res) => {
 
   let errors = {};
 
-// Vérifier que le mot de passe contient au moins 8 caractères et au moins un chiffre et une lettre
-if (!/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/.test(password)) {
-  errors.password = "Password should contain at least 8 characters with at least one letter and one number";
-}
+  if (!password) {
+    errors.password = "donner le password";
 
-  // Vérifier que l'adresse email est valide
-  if (!/\S+@\S+\.\S+/.test(email)) {
-    errors.email = "Invalid email address";
+  }
+  else {
+    // Vérifier que le mot de passe contient au moins 8 caractères et au moins un chiffre et une lettre
+    if (!/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/.test(password)) {
+      errors.password = "Password should contain at least 8 characters with at least one letter and one number";
+    }
   }
 
+  if (!email) { errors.email = "donner un email" }
+  else {
+    // Vérifier que l'adresse email est valide
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = "Invalid email address";
+    }
+  }
   if (Object.keys(errors).length > 0) {
     return res.status(400).json({ errors });
   }
@@ -118,11 +142,26 @@ if (!/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/.test(password)) {
       if (!isPasswordCorrect) {
         res.status(400).json({ errors: { password: "password incorrecte" } });
       } else {
+       if(user.confirmed==false)
+       {
+        if(user.confirmExpiration < Date.now())
+        {
+          res.status(400).json({ errors: { expiration: "vous aves passé la date limite " } });
+
+        }else{
+          res.status(400).json({ errors: { expiration: "confimé votre compte " } });
+
+        }
+
+       }
+       else{
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
           expiresIn: "1d",
         });
         res.cookie("jwt", token, { httpOnly: true, maxAge: 864000 });
-         res.json({ token,user });
+        res.json({ token, user });
+
+       }
       }
     }
   } catch (err) {
@@ -135,11 +174,11 @@ if (!/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/.test(password)) {
 
 
 
-router.delete("/deactivate-account/:userId", requireAuth, checkRole("admin"),async (req, res) => {
+router.delete("/deactivate-account/:userId", requireAuth, checkRole("admin"), async (req, res) => {
   try {
     const user = req.user;
     const verif = await User.findByEmail(req.user.email)
-    if (user.role !== "admin" || verif  ) {
+    if (user.role !== "admin" || verif) {
       res.status(403).json({ errorMessage: "You do not have the necessary permissions to perform this action." });
     } else {
       const userId = req.params.userId;
@@ -152,7 +191,7 @@ router.delete("/deactivate-account/:userId", requireAuth, checkRole("admin"),asy
   }
 });
 
-router.put("/updateUser",requireAuth, async (req, res) => {
+router.put("/updateUser", requireAuth, async (req, res) => {
   try {
     const { name, lastName, role } = req.body;
 
@@ -161,62 +200,61 @@ router.put("/updateUser",requireAuth, async (req, res) => {
       lastName,
       role,
     });
-const updatedUser= await User.findById(req.user._id);
-res.status(200).json(updatedUser);
+    const updatedUser = await User.findById(req.user._id);
+    res.status(200).json(updatedUser);
 
   }
-catch(err){
+  catch (err) {
     console.log(err)
     res.status(500).json({ errorMessage: "An error occurred while processing your request." });
-}
+  }
 
 });
 
 
-router.put("/subscribe/:idC",requireAuth, async (req, res) => {
+router.put("/subscribe/:idC", requireAuth, async (req, res) => {
   try {
-   const  idC = req.params.idC;
-   const  intern = req.user;
-  intern.companies.push(idC);
-  await intern.save();
- //  const user = await User.findByIdAndUpdate(idI,push(),{new:true});
-   console.log(intern);
-   res.status(200).json("subscribe ok");
+    const idC = req.params.idC;
+    const intern = req.user;
+    intern.companies.push(idC);
+    await intern.save();
+    //  const user = await User.findByIdAndUpdate(idI,push(),{new:true});
+    console.log(intern);
+    res.status(200).json("subscribe ok");
   } catch (error) {
-   res.status(500).json(error.message);
+    res.status(500).json(error.message);
   }
- });
+});
 
 
 
 
-router.put("/confirmCompanyandTrainer/:id", async (req, res) => {
+router.put("/confirm/:id", async (req, res) => {
   try {
-   const {id} = req.params;
-   const user = await User.findByIdAndUpdate(id,{confirmed:true},{new:true});
-   console.log(user);
+    const { id } = req.params;
+    const user = await User.findByIdAndUpdate(id, { confirmed: true }, { new: true });
+    console.log(user);
   } catch (error) {
-   res.status(500).json(error.message);
+    res.status(500).json(error.message);
   }
- });
+});
 
 
 
- router.get('/profile',requireAuth, (req, res) => {
-            var user = req.user;
-            user.password = "";
-            res.status(200).json({ user: user });
+router.get('/profile', requireAuth, (req, res) => {
+  var user = req.user;
+  res.status(200).json({ user: user });
 
-  });
-
-
-
+});
 
 
 
 
 
- router.get("/logout", (req, res) => {
+
+
+
+router.get("/logout", (req, res) => {
   res.clearCookie("jwt");
   res.redirect("/login");
 });

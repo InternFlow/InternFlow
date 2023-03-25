@@ -41,6 +41,7 @@ import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 import { useHistory } from "react-router-dom";
+import ProfileCompanyHeader from "components/Headers/ProfileCompanyHeader";
 
 function CompanyProfile() {
 
@@ -135,7 +136,7 @@ function CompanyProfile() {
   return (
     <>
       <ExamplesNavbar />
-      <ProfilePageHeader />
+      <ProfileCompanyHeader />
       <div className="section profile-content">
         <Container>
           <div className="owner">

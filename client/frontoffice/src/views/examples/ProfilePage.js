@@ -50,7 +50,7 @@ function ProfilePage() {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
-console.log(role)
+//console.log(id)
 
   const handleLogOut = async (event) => {
     try {
@@ -125,7 +125,7 @@ React.useEffect(() => {
       .then(response => response.json())
       .then(data => {
         const userData = data.user;
-        console.log(userData.experiences)
+      //  console.log(userData)
         setUserData(userData);
       })
       .catch(error => console.error(error));
@@ -158,7 +158,7 @@ React.useEffect(() => {
           <Row>
             <Col className="ml-auto mr-auto text-center" md="6">
               <p>
-               
+
               </p>
               <br />
               <Button className="btn-round" color="default" onClick={goedit} outline>

@@ -16,10 +16,14 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { useState, useEffect } from "react";
 // nodejs library that concatenates strings
 import classnames from "classnames";
 // reactstrap components
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//import { faCheckCircle,faCompany, faTimesCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import {faBuilding,faUserTie,faSchool,faCheckCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { useHistory } from "react-router-dom";
 
@@ -32,12 +36,25 @@ import {
   NavItem,
   NavLink,
   Nav,
-  Container
+  Container , Modal, ModalHeader, ModalBody, ModalFooter
 } from "reactstrap";
 
 function ResgisterNavbar() {
 
+  const handleOption1Click = () => {
+    history.push('/sign-up');
+    toggle();
+  }
 
+  const handleOption2Click = () => {
+    history.push('/sign-up-Trainer');
+    toggle();
+  }
+
+  const handleOption3Click = () => {
+    history.push('/sign-up-Company');
+    toggle();
+  }
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [navbarCollapse, setNavbarCollapse] = React.useState(false);
   const history = useHistory();
@@ -71,12 +88,22 @@ function ResgisterNavbar() {
 
 
 
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => setModal(!modal);
+
+
   const handleLogin = async (event) => {
 
         history.push('/sign-up');
 
+
+
   }
   return (
+
+<>
+
     <Navbar className={classnames("fixed-top", navbarColor)} expand="lg">
       <Container>
         <div className="navbar-translate">
@@ -86,7 +113,7 @@ function ResgisterNavbar() {
             target="_blank"
             title="Coded by Creative Tim"
           >
-                        InternFlow
+            InternFlow
           </NavbarBrand>
           <button
             aria-expanded={navbarCollapse}
@@ -164,7 +191,7 @@ function ResgisterNavbar() {
                 color="danger"
                 target="_blank"
                 outline
-                 onClick={handleLogin}
+                 onClick={toggle}
               >
                 <i className="nc-icon nc-spaceship"></i> Register
               </Button>
@@ -175,6 +202,35 @@ function ResgisterNavbar() {
         </Collapse>
       </Container>
     </Navbar>
+
+    <Modal isOpen={modal} toggle={toggle}>
+        <ModalHeader toggle={toggle}>ARE YOU A :</ModalHeader>
+        <ModalBody style={{ paddingLeft: '20px', width: '600px' }}>
+        <Button color="danger" className="mb-2 mr-3" onClick={handleOption1Click}>
+          <FontAwesomeIcon icon={faUserTie} size="6x" className="mr-2"  />
+          <div>I'am a intern</div>
+          </Button>
+
+          <Button color="danger" className="mb-2 mr-3" onClick={handleOption2Click}>
+          <FontAwesomeIcon icon={faSchool} size="6x" className="mr-2"  />
+          <div>I'am a Trainer</div>
+
+          </Button>
+
+                    <Button color="danger" className="mb-2" onClick={handleOption3Click}>
+          <FontAwesomeIcon icon={faBuilding} size="6x" className="mr-2"  />
+          <div>I'am a Company</div>
+
+          </Button>
+
+           </ModalBody>
+        <ModalFooter>
+          <Button  color="secondary" onClick={toggle}>Fermer</Button>
+        </ModalFooter>
+      </Modal>
+
+
+      </>
   );
 }
 

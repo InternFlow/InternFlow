@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const User = require("./models/User");
+
 //----------------- Passport & Authentification ------------------------//
 const session = require('express-session');
 const passport = require('passport');
@@ -70,23 +72,90 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/upload', uploadRoutes);
     app.use('/Admin', adminRoutes);
     app.use('/Condidat',ProfileUserRoutes);
-    passport.serializeUser(function (user, cb) {
-      cb(null, user);
-    });
 
-    passport.deserializeUser(function (obj, cb) {
-      cb(null, obj);
-    });
 
-    passport.use(new LinkedInStrategy({
-      clientID: config.LINKEDIN_CLIENT_ID,
-      clientSecret: config.LINKEDIN_CLIENT_SECRET,
-      callbackURL: config.CALLBACK_URL,
-      scope: ['r_emailaddress', 'r_liteprofile'],
-    }, function (token, tokenSecret, profile, done) {
-      return done(null, profile);
+
+
+passport.serializeUser((user, done) => {
+      done(null, user.id);
+  });
+  passport.deserializeUser(async (id, done) => {
+      const user = await User.findById(id);
+      done(null, user);
+  });
+
+
+
+  passport.use(new LinkedInStrategy({
+    clientID: config.LINKEDIN_CLIENT_ID,
+    clientSecret: config.LINKEDIN_CLIENT_SECRET,
+    callbackURL: config.CALLBACK_URL,
+    scope: ['r_emailaddress', 'r_liteprofile'],
+  }, async (req,token, tokenSecret, profile, done) =>{
+    try {
+      // Vérifier si l'utilisateur existe déjà dans la base de données
+      let user = await User.findOne({ linkedinId: profile.id });
+      if (!user) {
+        user = await User.findOne({ email: profile.emails[0].value });
+      }
+      if (user) {
+        // L'utilisateur existe déjà, renvoyer l'utilisateur existant
+        return done(null, user);
+      } else {
+        // Enregistrer un nouvel utilisateur dans la base de données
+        const newUser = new User({
+          linkedinId: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          password: profile.id,
+          role: 'new' // ou 'admin', 'company', 'formateur' selon votre logique
+        });
+        await newUser.save();
+        return done(null, newUser);
+      }
+    } catch (error) {
+      return done(error);
     }
-    ));
+  }
+  ));
+
+/*
+
+
+passport.use(new LinkedInStrategy({
+    clientID: config.LINKEDIN_CLIENT_ID,
+    clientSecret: config.LINKEDIN_CLIENT_SECRET,
+    callbackURL: config.CALLBACK_URL,
+    scope: ['r_emailaddress', 'r_liteprofile'],
+  }, async (token, tokenSecret, profile, done) => {
+    try {
+      // Vérifier si l'utilisateur existe déjà dans la base de données
+      let user = await User.findOne({ email: profile.emails[0].value });
+      if (user) {
+        // Si l'utilisateur existe déjà, ajouter le LinkedIn ID à son profil
+        user.linkedinId = profile.id;
+        await user.save();
+        return done(null, user);
+      } else {
+        // Si l'utilisateur n'existe pas, créer un nouveau compte
+        const newUser = new User({
+          linkedinId: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          password: profile.id,
+        });
+        await newUser.save();
+        return done(null, newUser);
+      }
+    } catch (error) {
+      return done(error);
+    }
+  }));
+
+
+
+*/
+
 
     passport.use(new FacebookStrategy({
       clientID: config.FACEBOOK_CLIENT_ID,

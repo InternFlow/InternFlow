@@ -21,11 +21,8 @@ import { useHistory } from 'react-router-dom';
 // reactstrap components
 import { Button, Card, Form, Input, Container, Row, Col, Alert } from "reactstrap";
 import { useForm } from "react-hook-form";
-
 // core components
 import LoginNavbar from "components/Navbars/LoginNavBar";
-import { event } from "jquery";
-
 
 function RegisterPage() {
 
@@ -36,6 +33,8 @@ function RegisterPage() {
       document.body.classList.remove("register-page");
     };
   });
+  const [lastName, setLastName] = useState('');
+
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -51,31 +50,41 @@ function RegisterPage() {
     event.preventDefault();
     // validate the form fields
     let errors = {};
+
     if (name.trim() === '') {
       errors.name = 'name is required';
-      setAlertMessage(' Please Fill in with your name! ');
+      setAlertMessage(' Please Fill in with your whole name ! ');
       setShowAlert(true); 
     }
+
+
+    else if (name.length<5 || name>16){
+      errors.name = 'name is invalid';
+      setAlertMessage(' Name must be between 5 and 16 characters ');
+      setShowAlert(true); 
+    }
+
 
     if (email.trim() === '') {
       errors.email = 'Email is required';
       setAlertMessage(' Please Fill in with your email! ');
       setShowAlert(true); 
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } 
+
+   
+
+    else if (!/\S+@\S+\.\S+/.test(email)) {
       errors.email = 'Email is invalid';
       setAlertMessage(' your email is lacking ! ');
       setShowAlert(true); 
     }
+
     if (password.trim() === '') {
       errors.password = 'Password is required';
       setAlertMessage(' Please Fill in with your password! ');
       setShowAlert(true); 
     }
-    if (role.trim() === '') {
-      errors.role = 'Role is required';
-      setAlertMessage(' Please Fill in with your role! ');
-      setShowAlert(true); 
-    }
+    
 
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
@@ -89,7 +98,8 @@ function RegisterPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password, role })
 
-    }).then(()=>{
+    })
+    .then(()=>{
       setAlertMessage("Registration successful!");
       setShowAlert(true);
       setTimeout(() => {
@@ -105,17 +115,12 @@ function RegisterPage() {
     {
       setAlertMessage('Registration Failed! ');
         setShowAlert(true);
-    }
-    //window.alert(error)
-    // toast.error('SignUp Failed!')
-    // {
-    //   <Alert color="danger">{error}</Alert>
-    // }
-    );
+    });
 
-    // registration successful
-    // registration successful
-    //history.push('/sign-in');
+    // // registration successful
+    // window.alert("SignUp Successfull");
+    // // registration successful
+    // history.push('/sign-in');
 
   }
   return (
@@ -124,7 +129,7 @@ function RegisterPage() {
       <div
         className="page-header"
         style={{
-          backgroundImage: "url(" + require("assets/img/register.jpg") + ")",
+          backgroundImage: "url(" + require("assets/img/intern.jpg") + ")",
         }}
       >
         <div className="filter" />
@@ -132,7 +137,7 @@ function RegisterPage() {
           <Row>
             <Col className="ml-auto mr-auto" lg="4">
               <Card className="card-register ml-auto mr-auto">
-                <h3 className="title mx-auto">SignUp</h3>
+                <h3 className="title mx-auto">SignUp As a Candidate</h3>
                 <div className="social-line text-center">
                   <Button
                     className="btn-neutral btn-just-icon mr-1"
@@ -173,6 +178,7 @@ function RegisterPage() {
                       />
                       {errors.name && <span>{errors.name}</span>}
                     </div>
+                  
                     <div>
                       <label>Email</label>
                       <Input
@@ -196,38 +202,14 @@ function RegisterPage() {
                       />
                       {errors.password && <span>{errors.password}</span>}
                     </div>
-                    <div>
-                      <label htmlFor="role" className="form-label" >
-                        Role
-                      </label>
-                      {/* <select style={{ width: "290px", height: "30px" }}
-                        id="role"
-                        value={role}
-                        onChange={(event) => setRole(event.target.value)}
-                        className="role-select"
-                      >
-                        <option value="condidat">condidat</option>
-                        <option value="formateur">formateur</option>
-                        <option value="company">company</option>
-                        
 
-                      </select> */}
-                      <Input type="select" name="role" id="role" value={role}
-                      onChange={(event)=> setRole(event.target.value)}
-                      >
-                         <option value="condidat">condidat</option>
-                        <option value="formateur">formateur</option>
-                        <option value="company">company</option>
-                        
-                      </Input>
-                      {errors.role && <span>{errors.role}</span>}
-                    </div>
                     <Button block className="btn-round" onClick={handleSubmit} color="danger" type="submit">
                       Register
                     </Button>
+
                     {showAlert && (
-        <Alert color="success">{alertMessage}</Alert>
-      )}
+                      <Alert color="success">{alertMessage}</Alert>
+                    )}
                   </Form>
                 </div>
                 <div className="forgot">
@@ -247,24 +229,12 @@ function RegisterPage() {
         <div className="footer register-footer text-center">
           <h6>
             © {new Date().getFullYear()}, made with{" "}
-            <i className="fa fa-heart heart" /> InternFlow
+            <i className="fa fa-heart heart" /> by SolutionsMakers
           </h6>
         </div>
       </div>
     </>
   );
 }
-
-// Alert.propTypes = {
-//   className: PropTypes.string,
-//   closeClassName: PropTypes.string,
-//   color: PropTypes.string, // default: 'success'
-//   isOpen: PropTypes.bool,  // default: true
-//   toggle: PropTypes.func,
-//   tag: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
-//   // Controls the transition of the alert fading in and out
-//   // See Fade for more details
-//   transition: PropTypes.shape(Fade.propTypes),
-// }
 
 export default RegisterPage;

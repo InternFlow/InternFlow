@@ -32,7 +32,7 @@ async function getUser(req, res, next) {
 }
 
 //router.patch('/users/:id',checkRole("admin"), getUser, async (req, res) => {
-  router.patch('/editprofile/:id', requireAuth, getUser, async (req, res) => {
+  router.patch('/editprofile/:id', getUser, async (req, res) => {
     res.user = await User.findById(req.params.id);
     if (req.body.name != null) {
       res.user.name = req.body.name;
@@ -50,7 +50,7 @@ async function getUser(req, res, next) {
       res.user.educations = req.body.educations;
     }
     if (req.body.experiences != null) {
-      res.user.experiences = req.body.experiences; 
+      res.user.experiences = req.body.experiences;
     }
     if (req.body.skills != null) {
       res.user.skills = req.body.skills;
@@ -62,9 +62,8 @@ async function getUser(req, res, next) {
       res.user.local = req.body.local;
     }
     try {
-      
-      const updatedUser = await res.user.save();
-      await updatedUser.hashPassword(updatedUser.password);
+
+      const updatedUser = await re.user.save();
       res.json(updatedUser);
     } catch (err) {
       res.status(400).json({ message: err.message });
@@ -73,13 +72,13 @@ async function getUser(req, res, next) {
 
 
 
-router.get('/getUser/:id', requireAuth, async (req, res) => {
+router.get('/getUser/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
     // Récupération du user par son id
     const candidate = await User.findById(id);
-    
+
     // Vérification de la présence du candidat
     if (!candidate) {
       return res.status(404).json({ message: 'Le candidat est introuvable.' });

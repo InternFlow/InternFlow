@@ -19,12 +19,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
-
+import LinkedInLogin from "views/examples/LinkedInLogin";
+import RegisterCompanyPage from "views/examples/RegisterCompanyPage.js";
 // styles
 import "bootstrap/scss/bootstrap.scss";
 import "assets/scss/paper-kit.scss?v=1.3.0";
 import "assets/demo/demo.css?v=1.3.0";
 // pages
+import RegisterTrainerPage from "views/examples/RegisterTrainerPage";
 import Index from "views/Index.js";
 import NucleoIcons from "views/NucleoIcons.js";
 import LandingPage from "views/examples/LandingPage.js";
@@ -75,7 +77,10 @@ root.render(
         render={(props) => <NewPassEmail {...props} />}
       />
 
-
+<Route
+        path="/linkedIn"
+        render={(props) => <LinkedInLogin {...props} />}
+      />
 
       <Route
         path="/profile-formateur-page"
@@ -97,7 +102,25 @@ root.render(
         path="/Edit-company-page"
         render={(props) => <Editcompany {...props} />}
       />
-      <Redirect to="/index" />
+
+
+<Route
+        path="/sign-up-Company"
+        render={(props) => <RegisterCompanyPage {...props} />}
+      />
+
+
+<Route
+        path="/sign-up-Trainer"
+        render={(props) => <RegisterTrainerPage {...props} />}
+      />
+
+
+    <Redirect to="/index" />
+
+
+
+
     </Switch>
   </BrowserRouter>
 );
