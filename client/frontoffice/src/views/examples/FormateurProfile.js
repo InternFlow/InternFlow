@@ -1,20 +1,17 @@
 
-import React from "react";
-
+import React ,{useState} from "react";
 // reactstrap components
 import {
-  Button,
-  Label,
-  FormGroup,
-  Input,
-  NavItem,
-  NavLink,
-  Nav,
-  TabContent,
-  TabPane,
+  Card, 
+  CardHeader,
   Container,
   Row,
-  Col
+  Col,
+  CardBody,
+  CardGroup,
+  CardTitle,
+  ListGroup,
+  ListGroupItem
 } from "reactstrap";
 
 // core components
@@ -22,46 +19,36 @@ import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 import { useHistory } from "react-router-dom";
+import { BsLine } from "react-icons/bs";
+import Accordion from 'components/Accordion';
 
-function FormateurProfile() {
+function FormateurProfilePage() {
+  const id = localStorage.getItem("id");
+
+  
   const history = useHistory();
 
   const token = localStorage.getItem("token");
-
-console.log(token)
-
-  const handleLogOut = async (event) => {
-    try {
-      const res = await fetch('http://127.0.0.1:5000/logout', {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-        ,credentials: 'include'
-      });
-
-      if (res.status === 200) {
-        window.alert("logout")
-        localStorage.clear();
-        history.push('/');
-      }
+  const role = localStorage.getItem("role");
+  const [Open, setOpen] = React.useState(1);
 
 
-    } catch (error) {
-      console.log(error);
-    }
-  }
+console.log(role)
 
+  
+const [userd, setUserData] = useState({
+name: "",
+lastName: "",
+email: "",
+occupation: "",
+pfpPath: "https://1fid.com/wp-content/uploads/2022/06/no-profile-picture-4-1024x1024.jpg",
 
+skills: [],
+local: [],
+description: ""
+}
 
-
-  const [activeTab, setActiveTab] = React.useState("1");
-
-  const toggle = (tab) => {
-    if (activeTab !== tab) {
-      setActiveTab(tab);
-    }
-  };
+);
 
   document.documentElement.classList.remove("nav-open");
   React.useEffect(() => {
@@ -71,150 +58,112 @@ console.log(token)
     };
   });
 
+
   if (!token) {
 
     history.push('/sign-in');
 
   }
+  const goedit = async (event) => {
+
+    //history.push('/Edit-condidat-page');
+
+    history.push(`/Edit-condidat-page`);
+
+
+}
+
+
+
+
+React.useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    fetch('http://localhost:5000/profile', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+      ,credentials: 'include'
+    })
+      .then(response => response.json())
+      .then(data => {
+        const userData = data.user;
+        setUserData(userData);
+      })
+      .catch(error => console.error(error));
+  }
+}, []);
 
 
   return (
     <>
       <ExamplesNavbar />
       <ProfilePageHeader />
-      <div className="section profile-content">
+      <div className="section profile-content" >
         <Container>
           <div className="owner">
             <div className="avatar">
               <img
                 alt="..."
                 className="img-circle img-no-padding img-responsive"
-                src={require("assets/img/faces/joe-gardner-2.jpg")}
+                src={userd.pfpPath}
               />
             </div>
-            <div className="name">
-              <h4 className="title">
-                Jane Faker <br />
-              </h4>
-              <h6 className="description">Music Producer formateuur</h6>
-            </div>
-          </div>
-          <Row>
-            <Col className="ml-auto mr-auto text-center" md="6">
-              <p>
-                An artist of considerable range, Jane Faker — the name taken by
-                Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs
-                and records all of his own music, giving it a warm, intimate
-                feel with a solid groove structure.
-              </p>
-              <br />
-              <Button className="btn-round" color="default" outline>
-                <i className="fa fa-cog" /> Settings
-              </Button>
-              <Button className="btn-round" color="default" outline onClick={ handleLogOut }>
-                <i className="fa fa-cog" /> LogOut
-              </Button>
+          <Row >
+            <Col md="4" >
+              <Card className="text-center text-md-left">
+                <CardHeader>
+                <CardTitle  tag="h5" style={{fontWeight:"bold", fontSize: 22}}>{userd.name}</CardTitle>
+                  {userd.occupation}
+                </CardHeader>
+                <CardBody>
+                <ListGroup flush>
+                <ListGroupItem className="justify-content-between">
+              Locations :
+                  <ul className="description">{userd.local.map((local, index)=>{
+                    return( 
+                        <>
+                        <li>{local}</li>
+                        </>
+                    )})}</ul>
+     
+              </ListGroupItem>
+            <ListGroupItem className="justify-content-between">
+            Contact :
+                    <h6 className="description">{userd.email} </h6>
+  
+             </ListGroupItem>
+       
+</ListGroup>
+                  
+                
+                    
+                    
+                </CardBody>
+              </Card >
+            </Col>
+            <Col md="8">
+             
+              <Card className="text-center text-md-left" >
+              <CardHeader>About:</CardHeader>
+              <CardBody style={{padding: "18p"}}>
+                <h5 className="text-uppercase">Bio:</h5>
+              <p>{userd.description}</p>
+ 
+   
+
+              </CardBody>
+                </Card>
+            
             </Col>
           </Row>
-          <br />
-          <div className="nav-tabs-navigation">
-            <div className="nav-tabs-wrapper">
-              <Nav role="tablist" tabs>
-                <NavItem>
-                  <NavLink
-                    className={activeTab === "1" ? "active" : ""}
-                    onClick={() => {
-                      toggle("1");
-                    }}
-                  >
-                    Follows
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    className={activeTab === "2" ? "active" : ""}
-                    onClick={() => {
-                      toggle("2");
-                    }}
-                  >
-                    Following
-                  </NavLink>
-                </NavItem>
-              </Nav>
-            </div>
-          </div>
-          {/* Tab panes */}
-          <TabContent className="following" activeTab={activeTab}>
-            <TabPane tabId="1" id="follows">
-              <Row>
-                <Col className="ml-auto mr-auto" md="6">
-                  <ul className="list-unstyled follows">
-                    <li>
-                      <Row>
-                        <Col className="ml-auto mr-auto" lg="2" md="4" xs="4">
-                          <img
-                            alt="..."
-                            className="img-circle img-no-padding img-responsive"
-                            src={require("assets/img/faces/clem-onojeghuo-2.jpg")}
-                          />
-                        </Col>
-                        <Col className="ml-auto mr-auto" lg="7" md="4" xs="4">
-                          <h6>
-                            Flume <br />
-                            <small>Musical Producer</small>
-                          </h6>
-                        </Col>
-                        <Col className="ml-auto mr-auto" lg="3" md="4" xs="4">
-                          <FormGroup check>
-                            <Label check>
-                              <Input
-                                defaultChecked
-                                defaultValue=""
-                                type="checkbox"
-                              />
-                              <span className="form-check-sign" />
-                            </Label>
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                    </li>
-                    <hr />
-                    <li>
-                      <Row>
-                        <Col className="mx-auto" lg="2" md="4" xs="4">
-                          <img
-                            alt="..."
-                            className="img-circle img-no-padding img-responsive"
-                            src={require("assets/img/faces/ayo-ogunseinde-2.jpg")}
-                          />
-                        </Col>
-                        <Col lg="7" md="4" xs="4">
-                          <h6>
-                            Banks <br />
-                            <small>Singer</small>
-                          </h6>
-                        </Col>
-                        <Col lg="3" md="4" xs="4">
-                          <FormGroup check>
-                            <Label check>
-                              <Input defaultValue="" type="checkbox" />
-                              <span className="form-check-sign" />
-                            </Label>
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                    </li>
-                  </ul>
-                </Col>
-              </Row>
-            </TabPane>
-            <TabPane className="text-center" tabId="2" id="following">
-              <h3 className="text-muted">Not following anyone yet :(</h3>
-              <Button className="btn-round" color="warning">
-                Find artists
-              </Button>
-            </TabPane>
-          </TabContent>
+
+
+
+
+           </div>
         </Container>
       </div>
       <DemoFooter />
@@ -223,4 +172,4 @@ console.log(token)
 }
 
 
-export default FormateurProfile;
+export default FormateurProfilePage;
