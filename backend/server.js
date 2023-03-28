@@ -32,6 +32,9 @@ const linkedInRoute = require('./routes/LinkedInUserRoute');
 const googleFacebookRoutes = require('./routes/GoogleFacebookRoute');
 const githubRoutes = require('./Routes/GithubRoute');
 const ProfileUserRoutes = require('./Routes/ProfileUserRoutes');
+const OfferRoutes = require('./Routes/OfferRoute');
+const TrainingRoutes = require('./Routes/TrainingRoute');
+const InterviewRoutes = require('./Routes/InterviewRoute');
 
 const config = require('./config');
 
@@ -72,6 +75,10 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/upload', uploadRoutes);
     app.use('/Admin', adminRoutes);
     app.use('/Condidat',ProfileUserRoutes);
+    app.use('/Offer',OfferRoutes);
+    app.use('/Training',TrainingRoutes);
+    app.use('/Interview',InterviewRoutes);
+
 
 
 

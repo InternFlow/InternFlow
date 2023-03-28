@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const Offer = require('./Offer');
+const Training = require('./Training');
 
+
+const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   lastName: { type: String },
@@ -32,7 +36,19 @@ const userSchema = new mongoose.Schema({
   linkedinId: {type:String},
 
   confirmationToken: { type: String },
-  confirmExpiration: { type: Date }
+  confirmExpiration: { type: Date },
+  OfferId: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Offer'
+  }],
+  Trainer_TrainingId: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Training'
+  }],
+  Intern_TrainingId: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Training'
+  }]
 });
 
 
