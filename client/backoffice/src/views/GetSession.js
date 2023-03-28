@@ -32,13 +32,12 @@ const history = useHistory();
     async function getToken(){
         const queryParams = new URLSearchParams(window.location.search);
         const token = queryParams.get("token");
-   //     console.log(token);
         localStorage.setItem("token", token);
         document.cookie = `jwt=${token}; max-age=86400*100; path=/`;
     }
 
     async function getUserDetails(){
-
+    
         const token = localStorage.getItem('token');
         if (token) {
           fetch('http://localhost:5000/profile', {
@@ -46,9 +45,9 @@ const history = useHistory();
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
-            },
+            }, 
             credentials: 'include'
-
+            
           })
             .then(response => response.json())
             .then(data => {
@@ -64,12 +63,14 @@ const history = useHistory();
     React.useEffect(()=>{
         getToken();
         getUserDetails();
-        window.location.replace('http://localhost:3001/admin/dashboard');
-
-       // history.push("/admin/dashboard")
+        document.location.href = "http://localhost:3001/admin/dashboard";
     },[])
 
-
+  return (
+    <>
+    
+    </>
+  );
 }
 
 export default GetSession;

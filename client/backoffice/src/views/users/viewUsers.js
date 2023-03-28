@@ -66,7 +66,7 @@ function ViewUsers() {
     }
 
     const editUser =  (id)=>{
-      history.push(`/Admin/editUser?id=${id}`);
+      history.push(`/Admin/editUser/?id=${id}`);
     }
 
     const editProfileCondidat =  async(id)=>{
@@ -152,7 +152,7 @@ try{
                        onClick={()=> editProfileCondidat(user._id)}
                       >Edit Profile</Button>
                      </td>
-
+                     
                  </tr>
                   ))}
                   </tbody>

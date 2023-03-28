@@ -19,7 +19,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
 // reactstrap components
-import { Button, Card, Form, Input, Container, Row, Col } from "reactstrap";
+import { Button, Card, Form, Input, Container, Row, Col, Alert } from "reactstrap";
 import { useForm } from "react-hook-form";
 
 // core components
@@ -39,6 +39,9 @@ function RegisterTrainerPage() {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('formateur');
   const [errors, setErrors] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
   const history = useHistory();
 
 
@@ -46,6 +49,50 @@ function RegisterTrainerPage() {
     event.preventDefault();
     // validate the form fields
     let errors = {};
+
+    if (name.trim()=== '') {
+      errors.name = 'name is required';
+      setAlertMessage(' Please Fill in with your name! ');
+      setShowAlert(true); 
+    }
+    else if (name.length<5 || name.length>16){
+      errors.name = 'name is invalid';
+      setAlertMessage(' Name must be between 5 and 16 characters ');
+      setShowAlert(true); 
+    }
+
+    if (email.trim() === '') {
+      errors.email = 'Email is required';
+      setAlertMessage(' Please Fill in with your email! ');
+      setShowAlert(true); 
+
+    } 
+    
+    else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = 'Email is invalid';
+      setAlertMessage(' your email is lacking ! ');
+      setShowAlert(true); 
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    if (password.trim() === '') {
+      errors.password = 'Password is required';
+      setAlertMessage(' Please Fill in with your password! ');
+      setShowAlert(true); 
+    }
+    // else if (!passwordRegex.test(password)) {
+    //   setErrors({ password: 'password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, and one digit' });
+    //   setAlertMessage('Please enter a valid password!');
+    //   setShowAlert(true);
+    //   return;
+    // }
+
+
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      return;
+    }
+
    /* if (name.trim() === '') {
       errors.name = 'name is required';
     }
@@ -77,11 +124,28 @@ console.log(name);
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password, role })
 
+    })
+    .then(()=>{
+      setAlertMessage("Registration successful!");
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+        history.push("/sign-in");
+      }, 2000);
+
+      //window.alert("SignUp Successfull")
+      //  toast.success('SignUp Successful'); // success message
+      // <Alert color="success">SignUp Successful</Alert>
+    
+    }).catch((error)=> 
+    {
+      setAlertMessage('Registration Failed! ');
+        setShowAlert(true);
     });
-    // registration successful
-    window.alert("SignUp Successfull");
-    // registration successful
-    history.push('/sign-in');
+    // // registration successful
+    // window.alert("SignUp Successfull");
+    // // registration successful
+    // history.push('/sign-in');
 
   }
   return (
@@ -90,7 +154,7 @@ console.log(name);
       <div
         className="page-header"
         style={{
-          backgroundImage: "url(" + require("assets/img/login-image.jpg") + ")",
+          backgroundImage: "url(" + require("assets/img/Trainer.jpg") + ")",
         }}
       >
         <div className="filter" />
@@ -166,6 +230,10 @@ console.log(name);
                     <Button block className="btn-round" onClick={handleSubmit} color="danger" type="submit">
                       Register
                     </Button>
+
+                    {showAlert && (
+                      <Alert color="success">{alertMessage}</Alert>
+                    )}
                   </Form>
                 </div>
                 <div className="forgot">
@@ -185,7 +253,7 @@ console.log(name);
         <div className="footer register-footer text-center">
           <h6>
             © {new Date().getFullYear()}, made with{" "}
-            <i className="fa fa-heart heart" /> by Creative Tim
+            <i className="fa fa-heart heart" /> by SolutionsMakers
           </h6>
         </div>
       </div>

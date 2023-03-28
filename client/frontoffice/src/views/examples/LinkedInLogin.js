@@ -91,7 +91,7 @@ console.log(params);
         <div
           className="page-header"
           style={{
-            backgroundImage: "url(" + require("assets/img/login-image.jpg") + ")",
+            backgroundImage: "url(" + require("assets/img/linkedin_login.jpg") + ")",
           }}
         >
           <div className="filter" />

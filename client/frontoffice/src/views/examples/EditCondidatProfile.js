@@ -1,10 +1,13 @@
 import { API } from "../../config";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
+import Accordion from 'components/Accordion';
+import {BsPencilSquare, BsXSquare } from 'react-icons/bs';
+import { PlusCircleFill } from 'react-bootstrap-icons'
+import moment from "moment";
 // reactstrap components
 import {
   Button,
@@ -20,97 +23,89 @@ import {
   Container,
   Col, CardText, ListGroup,
   ListGroupItem,
-
+  Modal, ModalHeader, ModalBody, ModalFooter
 } from "reactstrap";
-function EditCondidatProfile({ user = { name: "", lastName: "", email: "", role: "condidat" } }) {
-  const [newSkill, setNewSkill] = useState("");
-  const [skills, setSkills] = useState([]);
+function EditCondidatProfile() {
+  const [userd, setUserData] = useState({
+    name: "",
+    lastName: "",
+    email: "",
+    occupation: "",
+    pfpPath: "https://1fid.com/wp-content/uploads/2022/06/no-profile-picture-4-1024x1024.jpg",
+    educations: [
+      {
+        schoolName: "",
+        degree: "",
+        description: ""
+      }
+    ],
+    experiences: [
+      {
+        jobTitle: "",
+        company: "",
+        description: ""
+      }
+    ],
+    skills: [],
+    local: [],
+    description: ""
+  }
+    
+  );
+  
 
-  const handleAddSkill = (event) => {
-    event.preventDefault();
-    setSkills([...skills, newSkill]);
-    setNewSkill("");
-  };
+const [isDetailsModal, setIsDetailsModal] = useState(false);
+const [isBioModal, setIsBioModal] = useState(false);
+const [isWorkExperienceModal, setIsWorkExperienceModal] = useState(false)
+const [workExperienceIndex, setWorkExperienceIndex] = useState(-1)
+const [updatedUserd, setUpdatedUserData]  = useState({
+  name: "",
+  lastName: "",
+  email: "",
+  occupation: "",
+  pfpPath: "https://1fid.com/wp-content/uploads/2022/06/no-profile-picture-4-1024x1024.jpg",
+  educations: [
+    {
+      schoolName: "",
+      degree: "",
+      description: ""
+    }
+  ],
+  experiences: [
+    {
+      jobTitle: "",
+      company: "",
+      description: ""
+    }
+  ],
+  skills: [],
+  local: [],
+  description: ""
+});
+const [isEducationModal, setIsEducationModal] = useState(false)
+const [educationIndex, setEducationIndex] = useState(-1)
 
-  const [name, setName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState(user.role);
-  const [educations, setEducations] = useState([]);
-  const [experiences, setExperiences] = useState([]);
-  const [schoolName, setSchoolName] = useState('');
-  const [degree, setDegree] = useState('');
-  const [fieldOfStudy, setFieldOfStudy] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
-  const [company, setCompany] = useState('');
-  const [description, setDescription] = useState('');
 
-  const addEducation = () => {
-    const newEducation = {
-      schoolName: schoolName,
-      degree: degree,
-      fieldOfStudy: fieldOfStudy,
-    };
-    setEducations([...educations, newEducation]);
-    setSchoolName("");
-    setDegree("");
-    setFieldOfStudy("");
-  };
-
-  const addExperience = () => {
-    const newExperience = {
-      jobTitle: jobTitle,
-      company: company,
-      description: description,
-    };
-    setExperiences([...experiences, newExperience]);
-    setJobTitle("");
-    setCompany("");
-    setDescription("");
-  };
-  const addSkill = (e) => {
-    e.preventDefault();
-    setSkills([...skills, e.currentTarget.skill.value]);
-    e.currentTarget.skill.value = "";
-  };
-  const location = useLocation();
-
-  const searchParams = new URLSearchParams(location.search);
-  const id = localStorage.getItem("id");
-  console.log(id);
-
+ 
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const body = {
-        name,
-        lastName,
-        email,
-        role,
-        educations,
-        experiences,
-        skills,
-      };
-
-
+ 
 
       const requestOptions = {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(userd)
         ,credentials: 'include'
       };
-console.log(requestOptions);
-console.log(`${API}/Condidat/editprofile/${id}`);
 
-      const response = await fetch(`${API}/Condidat/editprofile/${id}`, requestOptions);
-      const data = await response.json();
+      const response = await fetch(`${API}/Condidat/editprofile`, requestOptions);
+      setUserData(await response.json().user);
       //   onUpdate(data.user);
       history.push("/profile-page");
     } catch (error) {
@@ -119,307 +114,666 @@ console.log(`${API}/Condidat/editprofile/${id}`);
 
   };
 
-  const handleEducationsChange = (index, e) => {
-    const newEducations = [...educations];
-    educations[index] = {
-      ...newEducations[index],
-      [e.target.name]: e.target.value,
-    };
-    setEducations(newEducations);
-  };
+const detailsModal= ()=>{
+  setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
+  setIsDetailsModal(true);
+}
 
-  const handleExperiencesChange = (index, e) => {
-    const newExperiences = [...experiences];
-    newExperiences[index] = {
-      ...newExperiences[index],
-      [e.target.name]: e.target.value,
+const bioModal = () =>{
+  setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
+  setIsBioModal(true);
+}
+
+const submitDetails= async  () =>{
+  try{
+  await saveUser(updatedUserd);
+  setIsDetailsModal(false);}
+  catch (error){
+    console.log(error)
+  }
+}
+
+const cancelBio= () =>{
+  setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
+  setIsBioModal(false);
+}
+
+const submitBio= async () =>{
+  await saveUser(updatedUserd);
+  setIsBioModal(false);
+}
+
+
+
+const cancelDetails= () =>{
+  setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
+  setIsDetailsModal(false);
+}
+
+
+
+
+const handleChange = (event) => {
+  const { name, value } = event.target;
+  setUpdatedUserData((prevUserData) => {
+    // Create a copy of the previous state to modify
+    const newUserData = { ...prevUserData };
+    
+    // Handle changes to scalar attributes
+    if (name !== "educations" && name !== "experiences" && name !== "skills" && name !== "local") {
+      newUserData[name] = value;
+    }
+    // Handle changes to educations or experiences list
+    else if (name === "educations" || name === "experiences") {
+      const index = event.target.getAttribute("data-index");
+      const field = event.target.getAttribute("data-field");
+      newUserData[name][index][field] = value;
+    }
+    // Handle changes to skills or local list
+    else {
+      const index = event.target.getAttribute("data-index");
+      
+        newUserData[name][index] = value;
+      
+    }
+    
+    // Return the modified state
+    return newUserData;
+  });
+};
+
+const addEducation = ()=>{
+  setUpdatedUserData((prevState)=>{
+    const newUserData = { ...prevState };
+    newUserData.educations.push({schoolName: "",
+    degree: "",
+    description: ""});
+    setEducationIndex(newUserData.educations.length -1);
+    return newUserData;
+  });
+  setIsEducationModal(true);
+
+}
+
+ const addWorkExperience= () =>{
+  setUpdatedUserData((prevState)=>{
+    const newUserData = { ...prevState };
+    newUserData.experiences.push({jobTitle: "",
+    company: "",
+    description: ""});
+    setWorkExperienceIndex(newUserData.experiences.length -1);
+    return newUserData;
+  });
+  setIsWorkExperienceModal(true);
+  
+ }
+
+  async function saveUser (user) {
+    const id = localStorage.getItem("id");
+try 
+ { const requestOptions = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user)
+      ,credentials: 'include'
     };
-    setExperiences(newExperiences);
-  };
+
+    await fetch(`${API}/Condidat/editmyprofile`, requestOptions);
+    getProfile();
+  }catch (error){
+  console.log(error);
+}
+
+}
+
+
+ async function getProfile(){
+    
+  const token = localStorage.getItem('token');
+  if (token) {
+    fetch('http://localhost:5000/profile', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+      ,credentials: 'include'
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.user);
+        const updatedUser = { ...userd , ...data.user};
+        setUserData(updatedUser);
+        setUpdatedUserData(JSON.parse(JSON.stringify(updatedUser)));
+      })
+      .catch(error => console.error(error));
+  }
+}
+
+React.useEffect(()=>{
+  getProfile();
+  
+}, []);
+
 
   return (
     <>
-    <ExamplesNavbar />
-    <ProfilePageHeader />
-    <div className="section profile-content">
-      <Container>
-      <Row>
-          <Col md="8">
-            <Card>
-              <CardHeader>
-                <CardTitle tag="h4">Modifier le profil</CardTitle>
-              </CardHeader>
-              <CardBody>
-                <Form onSubmit={handleSubmit}>
-                  <Row>
-                    <Col className="pr-md-1" md="5">
-                      <FormGroup>
-                        <label>Nom</label>
-                        <Input
-                          placeholder="Nom"
-                          type="text"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="px-md-1" md="3">
-                      <FormGroup>
-                        <label>Prénom</label>
-                        <Input
-                          placeholder="Prénom"
-                          type="text"
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-md-1" md="4">
-                      <FormGroup>
-                        <label htmlFor="exampleInputEmail1">
-                          Adresse Email
-                        </label>
-                        <Input
-                          placeholder="Email"
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
+      <ExamplesNavbar />
+      <ProfilePageHeader />
+      <div className="section profile-content" >
+        <Container>
+          <div className="owner">
+            <div className="avatar">
+              <img
+                alt="..."
+                className="img-circle img-no-padding img-responsive"
+                src={userd.pfpPath}
+              />
+            </div>
+          <Row >
+            <Col md="4" >
+              <Card className="text-center text-md-left">
+                <CardHeader>
+                <CardTitle tag="h5" style={{fontWeight:"bold", fontSize: 22}}>{userd.name} {userd.lastName} 
+                 <BsPencilSquare
+        fontSize={30}
+        className="pencil-icon"
+        color="primary"
+        style={{ cursor: "pointer", position: "absolute", right: "15px" }}
+        onClick={detailsModal}
+        /> 
+                
+                </CardTitle>
+                 <div style={{fontSize: 18}}> {userd.occupation}</div>
+                </CardHeader>
+                <CardBody>
+                <ListGroup flush>
+              <ListGroupItem className="justify-content-between">
+              Skills :
+                  <h6 className="description">{userd.skills.join(', ')}</h6>
+     
+              </ListGroupItem>
+            <ListGroupItem className="justify-content-between">
+            Contact :
+                    <h6 className="description">{userd.email} </h6>
+  
+        </ListGroupItem>
+          <ListGroupItem className="justify-content-between">
+              Residence : 
+              <h6 className="description">{userd.local[0]} </h6>
 
+  </ListGroupItem> 
+</ListGroup>
+                  
+                
+                    
+                    
+                </CardBody>
+              </Card >
+            </Col>
+            <Col md="8">
+             
+              <Card className="text-center text-md-left" >
+              <CardHeader>About:</CardHeader>
+              <CardBody style={{padding: "18p"}}>
+                <div><h5 className="text-uppercase" style={{fontSize:14}}>Bio: <BsPencilSquare
+        fontSize={30}
+        className="pencil-icon"
+        color="primary"
+        style={{ cursor: "pointer", position: "absolute", right: "15" }}
+        onClick={bioModal}
+        /></h5> 
+                 </div>
+              <p>{userd.description}</p>
+ 
+   
+       
+        <Accordion title={"Work experience"} >
+          <div style={{padding: "20px"}}>
+            
+          <button
+                        type="button"
+                    onClick={addWorkExperience}
+                     style={{
+                      padding: "0 10px",
+                      background: "none",
+                      border: "none",
+                      outline: "none",
+                      fontWeight: "bolder",
+                      
+                    }}
+                       >
+                      <PlusCircleFill style={{color:"#7D7D7D", fontSize: "35"}}></PlusCircleFill> 
+                        </button>
+          </div>
+          {userd.experiences.map((experience, index) => (
+            <Row key={index} style={{padding: "18px"}}>
+              <Col className="text-center text-md-left" >
+               <Row> <h6 className="text-uppercase">{experience.jobTitle}</h6> 
+               <BsPencilSquare
+        fontSize={20}
+        className="pencil-icon"
+        color="primary"
+        style={{ cursor: "pointer", position: "absolute", right: "50px" }}
+        onClick={()=>{
+          
+          setWorkExperienceIndex(index);
+          setIsWorkExperienceModal(true);
+        }}
+        /> 
+               <div  style={{
+                      
+                      background: "none",
+                      border: "none",
+                      outline: "none",
+                      cursor: "pointer", 
+                      
+                    }}>
+                <BsXSquare
+               
+               style={{
+                fontSize: "17",
+                position: "absolute", 
+                      right: "15px",
+                      top: "2px"
+              }}
 
+                        type="button"
+                    onClick={() =>{
+                    setUpdatedUserData((prevUserData) => {
+                    const newUserData = { ...prevUserData };
+                    newUserData.experiences.splice(index, 1);
+                    return newUserData;
+                       });
+                       submitDetails();
+                      }
+                     }
+                     
+                       />
+                     </div>   
+               
+               
+               </Row>
+                <p style={{fontWeight: 500}}>Worked at: {experience.company}</p>
+                <p>{experience.description}</p>
+              </Col>
+            </Row>
+            ))}
+          </Accordion>
+     
+         <Accordion title={"Education"} >
+         <div style={{padding: "20px"}}>
+          <button
+                        type="button"
+                    onClick={addEducation}
+                     style={{
+                      padding: "0 10px",
+                      background: "none",
+                      border: "none",
+                      outline: "none",
+                      fontWeight: "bolder",
+                      
+                    }}
+                       >
+                      <PlusCircleFill style={{color:"#7D7D7D", fontSize: "35"}}></PlusCircleFill> 
+                        </button>
+          </div>
+          {userd.educations.map((education, index) => (
+            <Row key={index} style={{padding: "18px"}}>
+              <Col className="text-center text-md-left" >
+                <Row><h6 className="text-uppercase">{education.degree}</h6>
+                
+                <BsPencilSquare
+        fontSize={20}
+        className="pencil-icon"
+        color="primary"
+        style={{ cursor: "pointer", position: "absolute", right: "50px" }}
+        onClick={()=>{
+          
+          setEducationIndex(index);
+          setIsEducationModal(true);
+        }}
+        /> 
+               <div  style={{
+                      
+                      background: "none",
+                      border: "none",
+                      outline: "none",
+                      cursor: "pointer", 
+                      
+                    }}>
+                <BsXSquare
+               
+               style={{
+                fontSize: "17",
+                position: "absolute", 
+                      right: "15px",
+                      top: "2px"
+              }}
 
-                  <Row>
-                    <Col md="12">
-                      <FormGroup>
-                        <label>Formation</label>
-                        {educations.map((education, index) => (
-                          <div key={index}>
-                            <Input
-                              name="schoolName"
-                              placeholder="Ecole/Université"
-                              type="text"
-                              value={education.schoolName}
-                              onChange={(e) => handleEducationsChange(index, e)}
-                            />
-                            <Input
-                              name="degree"
-                              placeholder="Diplôme"
-                              type="text"
-                              value={education.degree}
-                              onChange={(e) => handleEducationsChange(index, e)}
-                            />
-                            <Input
-                              name="fieldOfStudy"
-                              placeholder="Domaine d'étude"
-                              type="text"
-                              value={education.fieldOfStudy}
-                              onChange={(e) => handleEducationsChange(index, e)}
-                            />
-                          </div>
-                        ))}
-                        <div>
-                          <Input
-                            name="schoolName"
-                            placeholder="Ecole/Université"
-                            type="text"
-                            value={schoolName}
-                            onChange={(e) => setSchoolName(e.target.value)}
-                          />
-                          <Input
-                            name="degree"
-                            placeholder="Diplôme"
-                            type="text"
-                            value={degree}
-                            onChange={(e) => setDegree(e.target.value)}
-                          />
-                          <Input
-                            name="fieldOfStudy"
-                            placeholder="Domaine d'étude"
-                            type="text"
-                            value={fieldOfStudy}
-                            onChange={(e) => setFieldOfStudy(e.target.value)}
-                          />
-                          <Button
-                            className="btn-fill"
-                            color="primary"
-                            type="button"
-                            onClick={addEducation}
-                          >
-                            Ajouter une formation
-                          </Button>
-                        </div>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="12">
+                        type="button"
+                    onClick={() =>{
+                      setUpdatedUserData((prevUserData) => {
+                    const newUserData = { ...prevUserData };
+                    newUserData.educations.splice(index, 1);
+                    return newUserData;
+                       });
+                       submitDetails();
+                      } 
+                     }
+                     
+                       />
+                     </div>   
+               
+                
+                </Row>
+                <p style={{fontWeight: 500}}>Studied at: {education.schoolName}</p>
+                <p>{education.description}</p>
+              </Col>
+            </Row>
+            ))}
+          </Accordion>
+      
 
-                      <FormGroup>
-                        <label>Expérience professionnelle</label>
-                        {experiences.map((experience, index) => (
-                          <div key={index}>
-                            <Input
-                              name="company"
-                              placeholder="Entreprise"
-                              type="text"
-                              value={experience.company}
-                              onChange={(e) => handleExperiencesChange(index, e)}
-                            />
-                            <Input
-                              name="jobtitle"
-                              placeholder="Poste"
-                              type="text"
-                              value={experience.jobTitle}
-                              onChange={(e) => handleExperiencesChange(index, e)}
-                            />
-                            <Input
-                              name="description"
-                              placeholder="description"
-                              type="text"
-                              value={experience.description}
-                              onChange={(e) => handleExperiencesChange(index, e)}
-                            />
-                          </div>
-                        ))}
-                        <div>
-                          <Input
-                            name="company"
-                            placeholder="Entreprise"
-                            type="text"
-                            value={company}
-                            onChange={(e) => setCompany(e.target.value)}
-                          />
-                          <Input
-                            name="jobtitle"
-                            placeholder="Poste"
-                            type="text"
-                            value={jobTitle}
-                            onChange={(e) => setJobTitle(e.target.value)}
-                          />
-
-                          <Input
-                            name="description"
-                            placeholder="description"
-                            type="text"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                          />
-                          <Button
-                            className="btn-fill"
-                            color="primary"
-                            type="button"
-                            onClick={addExperience}
-                          >
-                            Ajouter une expérience professionnelle
-                          </Button>
-                        </div>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-
-
-                  <Row>
-                    <Col md="12">
-                      <h1>Compétences</h1>
-                      <ListGroup>
-                        {skills.map((skill, index) => (
-                          <ListGroupItem key={index}>{skill}</ListGroupItem>
-                        ))}
-                      </ListGroup>
-                        <FormGroup>
-                          <Input
-                            type="text"
-                            name="skill"
-                            placeholder="Ajouter une compétence"
-                            value={newSkill}
-                            onChange={(event) => setNewSkill(event.target.value)}
-                          />
-                                                  <Button color="primary" onClick={handleAddSkill}>Ajouter</Button>
-
-                        </FormGroup>
-                    </Col>
-                  </Row>
-
-
-
-
-                  <Button className="btn-fill" color="primary" type="submit">
-                    Enregistrer
-                  </Button>
-                </Form>
               </CardBody>
-            </Card>
-          </Col>
-          <Col md="4">
-            <Card className="card-user">
-              <CardBody>
-                <CardText />
-                <div className="author">
+                </Card>
+            
+            </Col>
+          </Row>
 
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
 
-                    <h5 className="title">{name} {lastName}</h5>
-                  </a>
-                  <p className="description">{email}</p>
-                </div>
-                <div className="card-description">
-                  {educations.length > 0 && (
-                    <div>
-                      <h5>Formations</h5>
-                      <ul>
-                        {educations.map((education, index) => (
-                          <li key={index}>
-                            <p>{education.degree}</p>
-                            <p>{education.schoolName}</p>
-                            <p>{education.fieldOfStudy}</p>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {experiences.length > 0 && (
-                    <div>
-                      <h5>Expériences</h5>
-                      <ul>
-                        {experiences.map((experience, index) => (
-                          <li key={index}>
-                            <p>{experience.position}</p>
-                            <p>{experience.company}</p>
-                            <p>{experience.description}</p>
 
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
 
-                  {skills.length > 0 && (
-                    <div>
-                      <h5>Expériences</h5>
-                      <ul>
-                        {experiences.map((sk, index) => (
-                          <li key={index}>
-                            <p>sk</p>
+          
 
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+            <Modal isOpen={isDetailsModal} toggle={()=>{setIsDetailsModal(!isDetailsModal)}}>
+              <ModalHeader  className="text-center text-md-left ">
+                Edit account details
+              </ModalHeader>
+              <ModalBody className="d-flex flex-row"> 
+              <ListGroup flush>
+                <ListGroupItem>
+                Full name:
+                <Row style={{marginBottom: "20px",}}>
+                  
+                  <Col>
+                     <Input name="name" 
+                     placeholder="Name" 
+                     value={updatedUserd.name}
+                     onChange={handleChange}
+                     ></Input>
+                  </Col> 
+                  <Col>
+                      <Input name="lastName" 
+                      placeholder="Last name" 
+                      value={updatedUserd.lastName}
+                      onChange={handleChange}
+                      ></Input>
+                  </Col>
+                </Row>
+                </ListGroupItem>
+                <ListGroupItem>
+                <Row>
+                  <Col>
+                Occupation:
+                <Input name="occupation" 
+                      placeholder="Occupation" 
+                      value={updatedUserd.occupation}
+                      onChange={handleChange}
+                      ></Input>
+                      </Col>
+                </Row>
+                </ListGroupItem>
+                <ListGroupItem>
+                  Skills:
+                <Row style={{marginBottom: "20px",}} noGutters>
+                   {updatedUserd.skills.map((skill, index)=>{
+                    return( 
+                      <Col  key={`skill-${index}`} style={{ marginBottom: "20px" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                      <Input name="skills" 
+                       data-index={index}
+                      value={skill}
+                      onChange={handleChange}
+                      style={{
+                        paddingRight: "30px",
+                        width: `${skill.length * 9 + 20}px`,
+                        // you can adjust the 8 and 20 values to fit your design
+                      }}
+                      />
+                      <button
+                        type="button"
+                    onClick={() =>
+                    setUpdatedUserData((prevUpdatedUserData) => {
+                    const newUserData = { ...prevUpdatedUserData };
+                    newUserData.skills.splice(index, 1);
+                    return newUserData;
+                       })
+                     }
+                     style={{
+                      padding: "0 10px",
+                      background: "none",
+                      border: "none",
+                      outline: "none",
+                      fontWeight: "bolder"
+                    }}
+                       >
+                        X
+                        </button>
+                        </div>
+                    </Col>
+                    );
+                   })}
+                   </Row>
+                    <Row >
+                    <button
+                        type="button"
+                    onClick={() =>
+                    setUpdatedUserData((prevUpdatedUserData) => {
+                    const newUserData = { ...prevUpdatedUserData };
+                    newUserData.skills.push("");
+                    return newUserData;
+                       })
+                     }
+                     style={{
+                      padding: "0 10px",
+                      background: "none",
+                      border: "none",
+                      outline: "none",
+                      fontWeight: "bolder",
+                      
+                    }}
+                       >
+                      <PlusCircleFill style={{color:"#7D7D7D", fontSize: "35"}}></PlusCircleFill> 
+                        </button>
+                    </Row>
+                
+                </ListGroupItem>
+                <ListGroupItem>
+                <Row>
+                <Col>
+                Email:
+                <Input name="email" 
+                      placeholder="E-mail" 
+                      value={updatedUserd.email}
+                      onChange={handleChange}
+                      type="email"
+                      ></Input>
+                    </Col>
+                </Row>
+                </ListGroupItem>
+                <ListGroupItem>
+                <Row>
+                <Col>
+                  Address
+                <Input name="local" 
+                      placeholder="Address" 
+                      value={updatedUserd.local[0]}
+                      onChange={handleChange}
+                      data-index="0"
+                      ></Input>
+                      </Col>
+                </Row>
 
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </div>
-    <DemoFooter />
-  </>
+                </ListGroupItem>
+                </ListGroup>
+              </ModalBody>
+              <ModalFooter>
+              <Button color="primary" onClick={()=>{submitDetails();}}>Save changes</Button>{' '}
+            <Button color="secondary" onClick={()=>{cancelDetails();}}>Cancel</Button>
+              </ModalFooter>
+            </Modal>
+
+
+            <Modal isOpen={isBioModal} toggle={()=>{setIsBioModal(!isBioModal)}}>
+              <ModalHeader  className="text-center text-md-left ">
+                Edit BIO
+              </ModalHeader>
+              <ModalBody>
+                <Row>
+              <Input name="description" 
+                      placeholder="Say something about yourself," 
+                      value={updatedUserd.description}
+                      onChange={handleChange}
+                      type= "textarea"
+                      style={{
+                        height: 'auto',
+                        minHeight: '120px', 
+                      }}
+                      ></Input>
+                  </Row>
+              </ModalBody>
+              <ModalFooter>
+              <Button color="primary" onClick={()=>{submitBio();}}>Save changes</Button>{' '}
+            <Button color="secondary" onClick={()=>{cancelBio();}}>Cancel</Button>
+            </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={isWorkExperienceModal} toggle={()=>{setIsWorkExperienceModal(!isWorkExperienceModal)}}>
+              <ModalHeader  className="text-center text-md-left ">
+                Work experience:
+              </ModalHeader>
+              {isWorkExperienceModal && (<ModalBody>
+                <ListGroup flush>
+                  <ListGroupItem>
+                    <Row>
+                      <Col>
+                      Job title:
+                      <Input name="experiences" 
+                      data-index={workExperienceIndex}
+                      data-field="jobTitle"
+                      placeholder="Job title" 
+                      value={updatedUserd.experiences[workExperienceIndex].jobTitle}
+                      onChange={handleChange}
+                      type= "text"
+                      />
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+                  <ListGroupItem>
+                    <Row>
+                      <Col>
+                      Work place:
+                      <Input name="experiences" 
+                      data-index={workExperienceIndex}
+                      data-field="company"
+                      placeholder="Work place" 
+                      value={updatedUserd.experiences[workExperienceIndex].company}
+                      onChange={handleChange}
+                      type= "text"
+                      />
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+                  <ListGroupItem>
+                    <Row>
+                      <Col>
+                      Work description:
+                      <Input name="experiences" 
+                      data-index={workExperienceIndex}
+                      data-field="description"
+                      value={updatedUserd.experiences[workExperienceIndex].description}
+                      onChange={handleChange}
+                      type= "textarea"
+                      />
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+                </ListGroup>
+              </ModalBody>)}
+              <ModalFooter>
+              <Button color="primary" onClick={()=>{submitDetails(); setIsWorkExperienceModal(false);}}>Save changes</Button>{' '}
+            <Button color="secondary" onClick={()=>{cancelDetails(); setIsWorkExperienceModal(false);}}>Cancel</Button>
+            </ModalFooter>
+            </Modal>
+
+            <Modal isOpen={isEducationModal} toggle={()=>{setIsEducationModal(!isEducationModal)}}>
+              <ModalHeader  className="text-center text-md-left ">
+                Work experience:
+              </ModalHeader>
+              {updatedUserd.educations[educationIndex] && (<ModalBody>
+                <ListGroup flush>
+                  <ListGroupItem>
+                    <Row>
+                      <Col>
+                      Degree:
+                      <Input name="educations" 
+                      data-index={educationIndex}
+                      data-field="degree"
+                      placeholder="Degree" 
+                      value={updatedUserd.educations[educationIndex].degree}
+                      onChange={handleChange}
+                      type= "text"
+                      />
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+                  <ListGroupItem>
+                    <Row>
+                      <Col>
+                      School:
+                      <Input name="educations" 
+                      data-index={educationIndex}
+                      data-field="schoolName"
+                      placeholder="School" 
+                      value={updatedUserd.educations[educationIndex].schoolName}
+                      onChange={handleChange}
+                      type= "text"
+                      />
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+                  <ListGroupItem>
+                    <Row>
+                      <Col>
+                       Description:
+                      <Input name="educations" 
+                      data-index={educationIndex}
+                      data-field="description"
+                      placeholder="Description" 
+                      value={updatedUserd.educations[educationIndex].description}
+                      onChange={handleChange}
+                      type= "textarea"
+                      />
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+                </ListGroup>
+              </ModalBody>)}
+              <ModalFooter>
+              <Button color="primary" onClick={()=>{submitDetails(); setIsEducationModal(false);}}>Save changes</Button>{' '}
+            <Button color="secondary" onClick={()=>{cancelDetails(); setIsEducationModal(false);}}>Cancel</Button>
+            </ModalFooter>
+            </Modal>
+
+           </div>
+        </Container>
+      </div>
+      <DemoFooter />
+    </>
+    
   );
 }
 export default EditCondidatProfile;

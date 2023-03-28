@@ -1,395 +1,439 @@
-/*!
-
-=========================================================
-* Paper Kit React - v1.3.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-kit-react
-
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/paper-kit-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React, { useState, useEffect , useRef} from 'react';
-import {BsPencilSquare, BsXSquare } from 'react-icons/bs';
 import { API } from "../../config";
-
-// reactstrap components
-import {
-  Button,
-  Label,
-  FormGroup,
-  Input,
-  NavItem,
-  NavLink,
-  Nav,
-  TabContent,
-  TabPane,
-  Container,
-  Row,
-  Col,
-  
-} from "reactstrap";
-
-
-// core components
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-
-const  company ={
+import Accordion from 'components/Accordion';
+import {BsPencilSquare, BsXSquare } from 'react-icons/bs';
+import { PlusCircleFill } from 'react-bootstrap-icons'
+import moment from "moment";
+// reactstrap components
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  CardTitle,
+  FormGroup,
+  Form,
+  Input,
+  Row,
+  Container,
+  Col, CardText, ListGroup,
+  ListGroupItem,
+  Modal, ModalHeader, ModalBody, ModalFooter
+} from "reactstrap";
+function EditCompanyProfile() {
+  const [userd, setUserData] = useState({
     name: "",
-    local: [],
     email: "",
-    imageUrl: "",
-    description: "",
-    services: [""]
-}
-
-
-
-function ProfilePage() {
-  const [activeTab, setActiveTab] = React.useState("1");
-  const [userData, setUserData] = useState(null);
-  const [isNameEditMode, setIsNameEditMode] = useState(false);
-  const [isNameEditButton, setIsNameEditButton] = useState(false);
-  const [isBioEditMode, setIsBioEditMode] = useState(false);
-  const [isBioEditButton, setIsBioEditButton] = useState(false);
-  const [isPfpEditButton, setIsPfpEditButton] = useState(false);
-  const [name, setName] = useState();
-  const inputRef = useRef(null);
-  const [bio, setBio] = useState();
-  const [isLocationsEditMode, setIsLocationsEditMode] = useState(false);
-  const [isLocationsEditButton, setIsLocationsEditButton] = useState(false);
-  const [locations, setLocations] = useState([]);
-  const [tempLocations, setTempLocations] = useState([]);
-  const [email, setEmail] = useState();
-  const [tempBio, setTempBio] = useState();
-
-  const handlePencilClick = () => {
-    console.log("pencil clicked");
-    inputRef.current.click(); 
-  };
+    occupation: "",
+    pfpPath: "https://1fid.com/wp-content/uploads/2022/06/no-profile-picture-4-1024x1024.jpg",
+    local: [],
+    description: ""
+  }
+    
+  );
   
-  const handlePfpUpload = (event) => {
-    console.log("pfp upload clicked");
-    const file = event.target.files[0]; // get the selected file
-    // TODO: handle file upload
-  };
-  
+
+const [isDetailsModal, setIsDetailsModal] = useState(false);
+const [isBioModal, setIsBioModal] = useState(false);
+const [updatedUserd, setUpdatedUserData]  = useState({
+  name: "",
+  lastName: "",
+  email: "",
+  occupation: "",
+  pfpPath: "https://1fid.com/wp-content/uploads/2022/06/no-profile-picture-4-1024x1024.jpg",
  
-  const saveName = () => {
-    setIsNameEditMode(false);
-    saveUser();
-  };
-
-
-  const saveBio = () => {
-    // call the method to save the bio changes
-    // then exit edit mode
-    setIsBioEditMode(false);
-    saveUser();
-  };
-
-  const handleBioChange = (e) => {
-    setBio(e.target.value);
-  };
-  
-  
-  const cancelBioChanges = () => {
-    // reset the bio value and exit edit mode
-    setBio(tempBio);
-    setIsBioEditMode(false);
-  };
-  
-  
-
-  const toggle = (tab) => {
-    if (activeTab !== tab) {
-      setActiveTab(tab);
-    }
-  };
+  local: [],
+  description: ""
+});
 
 
  
+  const history = useHistory();
 
-  
-  const handleLocationDelete = (index) => {
-    setLocations(prevLocations => {
-      const newLocations = [...prevLocations];
-      newLocations.splice(index, 1);
-      return newLocations;
-    });
-  };
-  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const saveUser=async  ()=> {
-    const id = localStorage.getItem("id");
-try 
-   { const requestOptions = {
+    try {
+ 
+
+      const requestOptions = {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({name: name, description: bio, email:email, local: locations})
+        body: JSON.stringify(userd)
         ,credentials: 'include'
       };
 
-      await fetch(`${API}/Condidat/editprofile/${id}`, requestOptions);
-      getProfile();
-}catch (error){
-    console.log(error);
-}
+      const response = await fetch(`${API}/Condidat/editprofile`, requestOptions);
+      setUserData(await response.json().user);
+      //   onUpdate(data.user);
+      history.push("/profile-page");
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
 
-  }
-
-  const handleSaveLocation = () =>{
-    setIsLocationsEditMode(false);
-    saveUser();
-
-  }
-
-  async function getProfile(){
-    
-        const token = localStorage.getItem('token');
-        if (token) {
-          fetch('http://localhost:5000/profile', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-            ,credentials: 'include'
-          })
-            .then(response => response.json())
-            .then(data => {
-              setName(data.user.name);
-              setEmail(data.user.email);
-              setLocations(data.user.local);
-              setBio(data.user.description);
-              console.log(userData.experiences);
-              setUserData(userData);
-            })
-            .catch(error => console.error(error));
-        }
-      }
-
-  useEffect(()=>{getProfile();}, []);
-  
-    console.log(JSON.stringify(userData))
-
-    const handleNameChange = (event) => {
-        setName(event.target.value);
-      }
-// function to handle changes to an input value
-const handleLocationChange = (index, value) => {
-    const newLocations = [...locations];
-    newLocations[index] = value;
-    setLocations(newLocations);
   };
 
-   
-  document.documentElement.classList.remove("nav-open");
-  React.useEffect(() => {
-    document.body.classList.add("landing-page");
-    return function cleanup() {
-      document.body.classList.remove("landing-page");
-    };
+const detailsModal= ()=>{
+  setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
+  setIsDetailsModal(true);
+}
+
+const bioModal = () =>{
+  setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
+  setIsBioModal(true);
+}
+
+const submitDetails= async  () =>{
+  try{
+  await saveUser(updatedUserd);
+  setIsDetailsModal(false);}
+  catch (error){
+    console.log(error)
+  }
+}
+
+const cancelBio= () =>{
+  setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
+  setIsBioModal(false);
+}
+
+const submitBio= async () =>{
+  await saveUser(updatedUserd);
+  setIsBioModal(false);
+}
+
+
+
+const cancelDetails= () =>{
+  setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
+  setIsDetailsModal(false);
+}
+
+
+
+
+const handleChange = (event) => {
+  const { name, value } = event.target;
+  setUpdatedUserData((prevUserData) => {
+    // Create a copy of the previous state to modify
+    const newUserData = { ...prevUserData };
+    
+    // Handle changes to scalar attributes
+    if (name !== "educations" && name !== "experiences" && name !== "skills" && name !== "local") {
+      newUserData[name] = value;
+    }
+    // Handle changes to educations or experiences list
+    else if (name === "educations" || name === "experiences") {
+      const index = event.target.getAttribute("data-index");
+      const field = event.target.getAttribute("data-field");
+      newUserData[name][index][field] = value;
+    }
+    // Handle changes to skills or local list
+    else {
+      const index = event.target.getAttribute("data-index");
+      
+        newUserData[name][index] = value;
+      
+    }
+    
+    // Return the modified state
+    return newUserData;
   });
+};
+
+
+
+
+  async function saveUser (user) {
+    const id = localStorage.getItem("id");
+try 
+ { const requestOptions = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user)
+      ,credentials: 'include'
+    };
+
+    await fetch(`${API}/Condidat/editmyprofile`, requestOptions);
+    getProfile();
+  }catch (error){
+  console.log(error);
+}
+
+}
+
+
+ async function getProfile(){
+    
+  const token = localStorage.getItem('token');
+  if (token) {
+    fetch('http://localhost:5000/profile', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+      ,credentials: 'include'
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.user);
+        const updatedUser = { ...userd , ...data.user};
+        setUserData(updatedUser);
+        setUpdatedUserData(JSON.parse(JSON.stringify(updatedUser)));
+      })
+      .catch(error => console.error(error));
+  }
+}
+
+React.useEffect(()=>{
+  getProfile();
+  
+}, []);
+
+
   return (
     <>
-    
-  <ExamplesNavbar />
-  <ProfilePageHeader />
-  <div className="section profile-content">
-    <Container>
-      <div className="owner">
-      <div
-  className="avatar"
-  onMouseEnter={() => setIsPfpEditButton(true)}
-  onMouseLeave={() => setIsPfpEditButton(false)}
->
-  <div style={{ position: "relative" }}>
-    <img
-      alt="..."
-      className="img-circle img-no-padding img-responsive"
-      src={company.imageUrl}
-    />
-    {isPfpEditButton && (
-     <div > <label for="file-input"> <BsPencilSquare
+      <ExamplesNavbar />
+      <ProfilePageHeader />
+      <div className="section profile-content" >
+        <Container>
+          <div className="owner">
+            <div className="avatar">
+              <img
+                alt="..."
+                className="img-circle img-no-padding img-responsive"
+                src={userd.pfpPath}
+              />
+            </div>
+          <Row >
+            <Col md="4" >
+              <Card className="text-center text-md-left">
+                <CardHeader>
+                <CardTitle tag="h5" style={{fontWeight:"bold", fontSize: 22}}>{userd.name} {userd.lastName} 
+                 <BsPencilSquare
         fontSize={30}
         className="pencil-icon"
         color="primary"
-        style={{ cursor: "pointer", position: "absolute", bottom: "30", right: "15" }}
-        click={handlePencilClick}
-      /> </label>
-      <input
-            id='file-input'
-            type="file"
-            accept="image/*"
-            ref={inputRef}
-            style={{ display: "none" }}
-            onChange={handlePfpUpload}
-          /></div>
-    )}
-  </div>
-</div>
+        style={{ cursor: "pointer", position: "absolute", right: "15px" }}
+        onClick={detailsModal}
+        /> 
+                
+                </CardTitle>
+                 <div style={{fontSize: 18}}> {userd.occupation}</div>
+                </CardHeader>
+                <CardBody>
+                <ListGroup flush>
+                <ListGroupItem className="justify-content-between">
+              Locations :
+                  <ul className="description">{userd.local.map((local, index)=>{
+                    return( 
+                        <>
+                        <li>{local}</li>
+                        </>
+                    )})}</ul>
+     
+              </ListGroupItem>
+            <ListGroupItem className="justify-content-between">
+            Contact :
+                    <h6 className="description">{userd.email} </h6>
+  
+        </ListGroupItem>
+          
+</ListGroup>
+                  
+                
+                    
+                    
+                </CardBody>
+              </Card >
+            </Col>
+            <Col md="8">
+             
+              <Card className="text-center text-md-left" >
+              <CardHeader>About:</CardHeader>
+              <CardBody style={{padding: "18p"}}>
+                <div><h5 className="text-uppercase" style={{fontSize:14}}>Bio: <BsPencilSquare
+        fontSize={30}
+        className="pencil-icon"
+        color="primary"
+        style={{ cursor: "pointer", position: "absolute", right: "15" }}
+        onClick={bioModal}
+        /></h5> 
+                 </div>
+              <p>{userd.description}</p>
 
 
-        <div className="name">
-      {isNameEditMode ? (
-        <>
-          <FormGroup>
-            <Row>
-                <Col></Col><Col></Col>
-                <Col><Input placeholder="Default" type="text" value={name} onChange={handleNameChange} /></Col>
-                <Col></Col><Col></Col>
-                </Row>  <Row style={{marginTop:"10px"}}> <Col>
-                <Button
-                  className="btn-round mr-1"
-                  color="success"
-                  outline
-                  type="button"
-                  onClick={saveName}
-                >Save</Button>
-                <Button
-                  className="btn-round mr-1"
-                  color="warning"
-                  outline
-                  type="button"
-                  onClick={()=> setIsNameEditMode(false)}
-                >Cancel</Button>
-                </Col>
-            </Row>
-            </FormGroup>
-        </>
-      ) : (
-        <>
-          <h4 className="title"  onMouseEnter={()=> setIsNameEditButton(true)} onMouseLeave={()=> setIsNameEditButton(false)}>
-            {name}    {isNameEditButton ? (
-            <BsPencilSquare class="bi bi-pencil-square" color='primary' 
-            style={{ cursor: "pointer" , marginLeft:"20px"}} onClick={()=> setIsNameEditMode(true)}>
-            </BsPencilSquare>
-          )
-            :(<></>)}<br />
-          </h4>
-        </>
-      )}
-    </div>
+              </CardBody>
+                </Card>
+            
+            </Col>
+          </Row>
+
+
+
+
+          
+
+            <Modal isOpen={isDetailsModal} toggle={()=>{setIsDetailsModal(!isDetailsModal)}}>
+              <ModalHeader  className="text-center text-md-left ">
+                Edit account details
+              </ModalHeader>
+              <ModalBody > 
+              <ListGroup flush>
+                <ListGroupItem>
+                Company name :
+                <Row style={{marginBottom: "20px",}}>
+                  
+                  <Col>
+                     <Input name="name" 
+                     placeholder="Name" 
+                     value={updatedUserd.name}
+                     onChange={handleChange}
+                     ></Input>
+                  </Col> 
+                </Row>
+                </ListGroupItem>
+                <ListGroupItem>
+                <Row>
+                  <Col>
+                  Field of work :
+                <Input name="occupation" 
+                      placeholder="Field of work" 
+                      value={updatedUserd.occupation}
+                      onChange={handleChange}
+                      ></Input>
+                      </Col>
+                </Row>
+                </ListGroupItem>
+                <ListGroupItem>
+                  Locations :
+                <Row style={{marginBottom: "20px",}} noGutters>
+                   {updatedUserd.local.map((local, index)=>{
+                    return( 
+                      <Col  key={`skill-${index}`} style={{ marginBottom: "20px" }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                      <Input name="local" 
+                       data-index={index}
+                      value={local}
+                      onChange={handleChange}
+                      style={{
+                        paddingRight: "30px",
+                        width: `${local.length * 9 + 20}px`,
+                        // you can adjust the 8 and 20 values to fit your design
+                      }}
+                      />
+                      <button
+                        type="button"
+                    onClick={() =>
+                    setUpdatedUserData((prevUpdatedUserData) => {
+                    const newUserData = { ...prevUpdatedUserData };
+                    newUserData.local.splice(index, 1);
+                    return newUserData;
+                       })
+                     }
+                     style={{
+                      padding: "0 10px",
+                      background: "none",
+                      border: "none",
+                      outline: "none",
+                      fontWeight: "bolder"
+                    }}
+                       >
+                        X
+                        </button>
+                        </div>
+                    </Col>
+                    );
+                   })}
+                   </Row>
+                    <Row >
+                    <button
+                        type="button"
+                    onClick={() =>
+                    setUpdatedUserData((prevUpdatedUserData) => {
+                    const newUserData = { ...prevUpdatedUserData };
+                    newUserData.local.push("");
+                    return newUserData;
+                       })
+                     }
+                     style={{
+                      padding: "0 10px",
+                      background: "none",
+                      border: "none",
+                      outline: "none",
+                      fontWeight: "bolder",
+                      
+                    }}
+                       >
+                      <PlusCircleFill style={{color:"#7D7D7D", fontSize: "35"}}></PlusCircleFill> 
+                        </button>
+                    </Row>
+                
+                </ListGroupItem>
+                <ListGroupItem>
+                <Row>
+                <Col >
+                Email:
+                <Input name="email" 
+                      placeholder="E-mail" 
+                      value={updatedUserd.email}
+                      onChange={handleChange}
+                      type="email"
+                      ></Input>
+                    </Col>
+                </Row>
+                </ListGroupItem>
+              
+                </ListGroup>
+              </ModalBody>
+              <ModalFooter>
+              <Button color="primary" onClick={()=>{submitDetails();}}>Save changes</Button>{' '}
+            <Button color="secondary" onClick={()=>{cancelDetails();}}>Cancel</Button>
+              </ModalFooter>
+            </Modal>
+
+
+            <Modal isOpen={isBioModal} toggle={()=>{setIsBioModal(!isBioModal)}}>
+              <ModalHeader  className="text-center text-md-left ">
+                Edit BIO
+              </ModalHeader>
+              <ModalBody>
+                <Row>
+              <Input name="description" 
+                      placeholder="Say something about yourself," 
+                      value={updatedUserd.description}
+                      onChange={handleChange}
+                      type= "textarea"
+                      style={{
+                        height: 'auto',
+                        minHeight: '120px', 
+                      }}
+                      ></Input>
+                  </Row>
+              </ModalBody>
+              <ModalFooter>
+              <Button color="primary" onClick={()=>{submitBio();}}>Save changes</Button>{' '}
+            <Button color="secondary" onClick={()=>{cancelBio();}}>Cancel</Button>
+            </ModalFooter>
+            </Modal>
+
+          
+           </div>
+        </Container>
       </div>
-      <Row>
-        <Col className="ml-auto mr-auto text-center" md="6">
-        {isBioEditMode ? (
-  <>
-    <FormGroup>
-      <Row>
-        <Col><Input type="textarea" value={bio} onChange={handleBioChange} /></Col> 
-      </Row><Row style={{marginTop:'8px'}}>
-        <Col md="6" ><Button color="success" onClick={saveBio}>Save</Button></Col> 
-        <Col md="6"><Button color="warning" onClick={cancelBioChanges}>Cancel</Button></Col> 
-      </Row>
-    </FormGroup>
-  </>
-) : (
-  <>
-    <div onMouseEnter={()=> setIsBioEditButton(true)} onMouseLeave={()=> setIsBioEditButton(false)}>
-        <h4 style={{fontWeight:"bold"}}>About</h4>
-    <p >
-      {bio} </p>{isBioEditButton ? (
-      <BsPencilSquare class="bi bi-pencil-square" color='primary' 
-      style={{ cursor: "pointer", marginBottom:"8px", fontSize:18}} onClick={()=> setIsBioEditMode(true)}>
-      </BsPencilSquare>
-
-    )
-      :(<></>)}
-    </div>
-  </>
-)}
-
-
-<Row style={{marginTop:"10px"}}>
-    <Col className="ml-auto mr-auto text-center" md="6">
-      <h4 style={{fontWeight:"bold", marginBottom:"10px"}}>Locations</h4>
-      <div>
-      {!isLocationsEditMode ? (
-      <div  onMouseEnter={()=> setIsLocationsEditButton(true)} onMouseLeave={()=> setIsLocationsEditButton(false)}>
-        {locations.map((location, index) => (
-          <h6 key={index}>
-            {location}
-          </h6>
-        ))}
-
-    {(isLocationsEditButton || locations.length === 0) &&  (
-              <>
-                <BsPencilSquare className="bi bi-pencil-square" color="primary" style={{ cursor: "pointer", marginLeft:"20px" }}
-                 onClick={() => {setIsLocationsEditMode(true); setTempLocations(locations)}} />
-
-              </>
-            )} 
-         </div>) : (
-          <div>
-            <FormGroup>
-              <Row>
-                
-                <Col >{locations.map((location, index) => (
-          <div key={index}>
-            <Row>
-            <Input style={{marginTop:"10px"}} 
-            placeholder="Location" 
-            type="text" 
-            value={location}
-            onChange={(e) => handleLocationChange(index, e.target.value)}
-            />
-             <BsXSquare className="bi bi-x-square" 
-             color="primary" 
-             style={{ cursor: "pointer", marginLeft:"10px" }} 
-             onClick={() => handleLocationDelete(index)} />
-             </Row>
-          </div>
-        ))}</Col>
-                
-              </Row>
-              <Row>
-              <Button className="btn-round " color="success" outline type="button" onClick={()=> setLocations(prevState =>[...prevState,""])} ></Button>
-              </Row>
-              <Row style={{marginTop:"10px"}}> 
-               <Col>
-                  <Button className="btn-round " color="success" outline type="button" onClick={() => handleSaveLocation()} >
-                    Save</Button></Col><Col>
-                  <Button className="btn-round " color="warning" outline type="button" onClick={() => {setIsLocationsEditMode(false);setLocations(tempLocations)}} >
-                    Cancel</Button></Col>
-                
-              </Row>
-            </FormGroup>
-          </div>
-        )}
-      </div>
-    </Col>
-  </Row>
-
-
-          <br />
-          <Button className="btn-round" color="default" outline>
-            <i className="fa fa-cog" /> Settings
-          </Button>
-        </Col>
-      </Row>
-      <br />
-      
-      {/* Tab panes */}
-      
-    </Container>
-  </div>
-  <DemoFooter />
-</>
-
+      <DemoFooter />
+    </>
+    
   );
 }
-
-export default ProfilePage;
+export default EditCompanyProfile;

@@ -113,7 +113,7 @@ function ResgisterNavbar() {
             target="_blank"
             title="Coded by Creative Tim"
           >
-            Paper Kit React
+            InternFlow
           </NavbarBrand>
           <button
             aria-expanded={navbarCollapse}

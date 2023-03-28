@@ -26,11 +26,10 @@ import "assets/demo/demo.css";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 import AdminLayout from "layouts/Admin.js";
-import SignUp from "views/SignUp";
+import SignIn from "views/SignIn";
 import GetSession from "views/GetSession";
 import Dashboard from "layouts/Admin";
 import ResetPassword from "views/resetPassword";
-import SignIn from "views/SignIn";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 
@@ -43,9 +42,9 @@ async function getUserDetails(){
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      },
+      }, 
       credentials: 'include'
-
+      
     })
       .then(response => response.json())
       .then(data => {
@@ -61,7 +60,7 @@ async function getUserDetails(){
 
 root.render(
   <BrowserRouter>
-    <Switch>
+    <Switch> 
     <Route path="/signin" render={(props) => <SignIn {...props} />} />
 
       <Route path="/admin/get-sesstion" render={(props) => <GetSession {...props} />} />

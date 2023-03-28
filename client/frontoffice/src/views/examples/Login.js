@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 // reactstrap components
-import { Button, Card, Form, Input, Container, Row, Col } from "reactstrap";
+import { Button, Card, Form, Input, Container, Row, Col, Alert } from "reactstrap";
 
 // core components
 import ResgisterNavBar from "components/Navbars/RegisterNavbar";
@@ -14,6 +14,9 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmerr, setConfirmerr] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
 
   const history = useHistory();
 
@@ -89,9 +92,8 @@ function Login() {
           history.push("/profile-company-page");
         } else if (user.role === "admin") {
           console.log("aaaaaaaaaaaa")
+          document.location.href = "http://localhost:3001/admin/get-sesstion?token=" + token;
 
-          document.getElementById("admin-redirect").setAttribute("href","http://localhost:3001/admin/get-sesstion?token=" + token);
-          document.getElementById("admin-redirect").click();
         }
       } else if (res.status === 400) {
         const data = await res.json();
@@ -111,7 +113,7 @@ console.log(error);
       <div
         className="page-header"
         style={{
-          backgroundImage: "url(" + require("assets/img/login-image.jpg") + ")",
+          backgroundImage: "url(" + require("assets/img/login1.jpg") + ")",
         }}
       >
         <div className="filter" />
@@ -189,6 +191,9 @@ console.log(error);
                   >
                     Login
                   </Button>
+                  {showAlert && (
+                    <Alert color="success">{alertMessage}</Alert>
+                  )}
                 </Form>
 
                 {confirmerr && <span>{confirmerr}</span>}
@@ -206,7 +211,6 @@ console.log(error);
                     Forgot password?
                   </Button>
 
-                  <a    href=""  id="admin-redirect"  style={{ display: "none" }} ></a>
                 </div>
               </Card>
             </Col>

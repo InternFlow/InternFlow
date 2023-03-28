@@ -27,8 +27,8 @@ import UpgradeToPro from "views/Upgrade.js";
 import SignUp from "views/SignUp";
 import ViewUsers from "views/users/viewUsers";
 import CreateUsers from "views/users/createUsers";
+import EditUser from "views/users/editUser";
 import EditProfileUser from "views/users/EditProfileUser";
-import EditUser from "views/users/editUser.js";
 
 var routes = [
   {
