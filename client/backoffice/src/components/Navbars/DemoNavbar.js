@@ -41,21 +41,35 @@ import {
 import routes from "routes.js";
 
 import { API } from "config";
+const handleLogOut = async (event) => {
+  try {
+    const res = await fetch('http://127.0.0.1:5000/logout', {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+console.log(res.staus);
+    if (res.status === 200) {
 
-function handleLogout() {
-  axios
-    .get(`${API}/logout`)
-    .then((res) => {
-      console.log(res);
-      // Supprimer le token et le rôle de l'utilisateur du stockage local
       localStorage.removeItem("token");
       localStorage.removeItem("role");
-      // Rediriger l'utilisateur vers la page de connexion
-      window.location.href = "/login";
-    })
-    .catch((err) => console.log(err));
-}
 
+      // Vérifier que le localStorage est bien vidé
+      if (!localStorage.getItem("token") && !localStorage.getItem("role")) {
+        localStorage.clear();
+
+        window.alert("logout");
+        localStorage.clear();
+        window.location.replace('http://localhost:3000/index');
+      } else {
+        console.log("Erreur: le localStorage n'a pas été vidé");
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 function Header(props) {
@@ -158,7 +172,7 @@ function Header(props) {
               </DropdownMenu>
             </Dropdown>
             <NavItem>
-              <Link to="#pablo" onClick={handleLogout} className="nav-link btn-rotate">
+              <Link to="#pablo" onClick={handleLogOut} className="nav-link btn-rotate">
               <li>
                         <i className="nc-icon nc-button-power" />
                         <p>logout</p>

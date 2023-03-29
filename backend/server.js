@@ -19,6 +19,7 @@ const categoryRoutes = require('./routes/CategoryRoute');
 const skillsRoutes = require('./routes/SkillsRoute');
 const uploadRoutes = require('./routes/UploadRoute');
 const adminRoutes =require('./routes/AdminRoute');
+const offerRoutes = require('./Routes/OfferRoute');
 
 
 dotenv.config();
@@ -32,9 +33,6 @@ const linkedInRoute = require('./routes/LinkedInUserRoute');
 const googleFacebookRoutes = require('./routes/GoogleFacebookRoute');
 const githubRoutes = require('./Routes/GithubRoute');
 const ProfileUserRoutes = require('./Routes/ProfileUserRoutes');
-const OfferRoutes = require('./Routes/OfferRoute');
-const TrainingRoutes = require('./Routes/TrainingRoute');
-const InterviewRoutes = require('./Routes/InterviewRoute');
 
 const config = require('./config');
 
@@ -75,10 +73,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/upload', uploadRoutes);
     app.use('/Admin', adminRoutes);
     app.use('/Condidat',ProfileUserRoutes);
-    app.use('/Offer',OfferRoutes);
-    app.use('/Training',TrainingRoutes);
-    app.use('/Interview',InterviewRoutes);
-
+    app.use('/Offer', offerRoutes);
 
 
 
@@ -180,29 +175,8 @@ passport.use(new LinkedInStrategy({
     done(null, profile);
   }));
 
-//-------------------- Github -------------------------------//
-// passport.use(new GitHubStrategy({
-//   clientID: config.GITHUB_CLIENT_ID,
-//   clientSecret: config.GITHUB_CLIENT_SECRET,
-//   callbackURL: "http://localhost:5000/github"
-// }, function(accessToken, refreshToken, profile, cb) {
-//   return cb(null, profile);
-// }));
 
-// passport.use(new GitHubStrategy({
-//   clientID: config.GITHUB_CLIENT_ID,
-//   clientSecret: config.GITHUB_CLIENT_SECRET_KEY,
-//   callbackURL: config.GITHUB_CALLBACK_URL,
-//   profileFields: ['id', 'email'],
-//   passReqToCallback: true // pass the req object to the callback function
-// }, function(req, accessToken, refreshToken, profile, done) {
-// // store the user information in the session
-// req.session.user = {
-//   id: profile.id,
-//   email: profile.emails[0].value
-// };
-// done(null, profile);
-// }));
+
 passport.use(new GitHubStrategy({
   clientID: config.GITHUB_CLIENT_ID,
   clientSecret: config.GITHUB_CLIENT_SECRET_KEY,

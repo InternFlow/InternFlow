@@ -40,6 +40,7 @@ import Login from "views/examples/Login.js";
 import NewPass from "views/examples/NewPass";
 import NewPassEmail from "views/examples/NewPassEmail";
 import Editcompany from "views/examples/EditCompanyProfile";
+import AllOffers from "views/examples/offers/AllOffers";
 // others
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -113,6 +114,11 @@ root.render(
 <Route
         path="/sign-up-Trainer"
         render={(props) => <RegisterTrainerPage {...props} />}
+      />
+
+<Route
+        path="/internship-offers"
+        render={(props) => <AllOffers {...props} />}
       />
 
 

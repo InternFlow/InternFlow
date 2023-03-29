@@ -25,10 +25,12 @@ import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
 import SignUp from "views/SignUp";
-import ViewUsers from "views/users/ViewUsers";
-import CreateUsers from "views/users/CreateUsers";
-import EditUser from "views/users/EditUser";
+import ViewUsers from "views/users/viewUsers";
+import CreateUsers from "views/users/createUsers";
+import EditUser from "views/users/editUser";
 import EditProfileUser from "views/users/EditProfileUser";
+import CreateOffer from "views/offers/createOffer";
+import ViewOffers from "views/offers/viewOffer";
 
 var routes = [
   {
@@ -52,13 +54,13 @@ var routes = [
     component: Notifications,
     layout: "/admin"
   },
-  {
-    path: "/user-page",
-    name: "User Profile",
-    icon: "nc-icon nc-single-02",
-    component: UserPage,
-    layout: "/admin"
-  },
+  // {
+  //   path: "/user-page",
+  //   name: "User Profile",
+  //   icon: "nc-icon nc-single-02",
+  //   component: UserPage,
+  //   layout: "/admin"
+  // },
   // {
   //   path: "/tables",
   //   name: "Table List",
@@ -78,6 +80,20 @@ var routes = [
     name: "Display Users",
     icon: "nc-icon nc-laptop",
     component: ViewUsers,
+    layout: "/admin"
+  },
+  {
+    path: "/createOffer",
+    name: "Add A new Offer",
+    icon: "nc-icon nc-simple-add",
+    component: CreateOffer,
+    layout: "/admin"
+  },
+  {
+    path: "/viewOffer",
+    name: "Display Offers",
+    icon: "nc-icon nc-laptop",
+    component: ViewOffers,
     layout: "/admin"
   },
   {
