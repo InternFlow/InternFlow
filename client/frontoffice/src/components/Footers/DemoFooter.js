@@ -34,7 +34,7 @@ function DemoFooter() {
                   href="https://www.creative-tim.com?ref=pkr-footer"
                   target="_blank"
                 >
-                  InternFlow
+                  Creative Tim
                 </a>
               </li>
               <li>
@@ -58,7 +58,7 @@ function DemoFooter() {
           <div className="credits ml-auto">
             <span className="copyright">
               © {new Date().getFullYear()}, made with{" "}
-              <i className="fa fa-heart heart" /> by Solutions Makers
+              <i className="fa fa-heart heart" /> by Creative Tim
             </span>
           </div>
         </Row>

@@ -22,6 +22,7 @@ const adminRoutes =require('./routes/AdminRoute');
 const offerRoutes = require('./Routes/OfferRoute');
 
 
+
 dotenv.config();
 
 const app = express();
@@ -121,43 +122,6 @@ passport.serializeUser((user, done) => {
   }
   ));
 
-/*
-
-
-passport.use(new LinkedInStrategy({
-    clientID: config.LINKEDIN_CLIENT_ID,
-    clientSecret: config.LINKEDIN_CLIENT_SECRET,
-    callbackURL: config.CALLBACK_URL,
-    scope: ['r_emailaddress', 'r_liteprofile'],
-  }, async (token, tokenSecret, profile, done) => {
-    try {
-      // Vérifier si l'utilisateur existe déjà dans la base de données
-      let user = await User.findOne({ email: profile.emails[0].value });
-      if (user) {
-        // Si l'utilisateur existe déjà, ajouter le LinkedIn ID à son profil
-        user.linkedinId = profile.id;
-        await user.save();
-        return done(null, user);
-      } else {
-        // Si l'utilisateur n'existe pas, créer un nouveau compte
-        const newUser = new User({
-          linkedinId: profile.id,
-          name: profile.displayName,
-          email: profile.emails[0].value,
-          password: profile.id,
-        });
-        await newUser.save();
-        return done(null, newUser);
-      }
-    } catch (error) {
-      return done(error);
-    }
-  }));
-
-
-
-*/
-
 
     passport.use(new FacebookStrategy({
       clientID: config.FACEBOOK_CLIENT_ID,
@@ -175,7 +139,7 @@ passport.use(new LinkedInStrategy({
     done(null, profile);
   }));
 
-
+//-------------------- Github -------------------------------//
 
 passport.use(new GitHubStrategy({
   clientID: config.GITHUB_CLIENT_ID,

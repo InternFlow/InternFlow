@@ -31,6 +31,7 @@ import EditUser from "views/users/editUser";
 import EditProfileUser from "views/users/EditProfileUser";
 import CreateOffer from "views/offers/createOffer";
 import ViewOffers from "views/offers/viewOffer";
+import EditOffer from "views/offers/editOffer";
 
 var routes = [
   {
@@ -94,6 +95,11 @@ var routes = [
     name: "Display Offers",
     icon: "nc-icon nc-laptop",
     component: ViewOffers,
+    layout: "/admin"
+  },
+  {
+    path: "/editOffer",
+    component: EditOffer,
     layout: "/admin"
   },
   {
