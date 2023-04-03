@@ -104,10 +104,10 @@ function ExamplesNavbar() {
         <div className="navbar-translate">
           <NavbarBrand
             data-placement="bottom"
-            to="/index"
+            onClick={()=>{history.push("/index")}}
             target="_blank"
-            title="Coded by Creative Tim"
             tag={Link}
+            style={{cursor: "pointer"}}
           >
             InternFlow
           </NavbarBrand>
