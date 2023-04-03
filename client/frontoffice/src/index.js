@@ -40,6 +40,7 @@ import Login from "views/examples/Login.js";
 import NewPass from "views/examples/NewPass";
 import NewPassEmail from "views/examples/NewPassEmail";
 import Editcompany from "views/examples/EditCompanyProfile";
+import CourseList from "./components/TrainerComponents/CourseList"
 // others
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -48,6 +49,10 @@ root.render(
   <BrowserRouter>
     <Switch>
       <Route path="/index" render={(props) => <Index {...props} />} />
+      <Route
+        path="/test"
+        render={(props) => <CourseList {...props} />}
+      />
       <Route
         path="/nucleo-icons"
         render={(props) => <NucleoIcons {...props} />}

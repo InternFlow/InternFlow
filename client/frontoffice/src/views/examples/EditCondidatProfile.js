@@ -182,31 +182,49 @@ const handleChange = (event) => {
   });
 };
 
-const addEducation = ()=>{
-  setUpdatedUserData((prevState)=>{
-    const newUserData = { ...prevState };
-    newUserData.educations.push({schoolName: "",
-    degree: "",
-    description: ""});
-    setEducationIndex(newUserData.educations.length -1);
-    return newUserData;
-  });
-  setIsEducationModal(true);
 
-}
+// Function to add an education to the user's profile
+const addEducation = () => {
+  try {
+    // Update the user data with a new education object
+    setUpdatedUserData(prevState => {
+      const newUserData = { ...prevState };
+      newUserData.educations.push({
+        schoolName: "",
+        degree: "",
+        description: ""
+      });
+      // Set the index of the newly added education
+      setEducationIndex(newUserData.educations.length - 1);
+      return newUserData;
+    });
+    // Open the education modal
+    setIsEducationModal(true);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
- const addWorkExperience= () =>{
-  setUpdatedUserData((prevState)=>{
-    const newUserData = { ...prevState };
-    newUserData.experiences.push({jobTitle: "",
-    company: "",
-    description: ""});
-    setWorkExperienceIndex(newUserData.experiences.length -1);
-    return newUserData;
-  });
-  setIsWorkExperienceModal(true);
-  
- }
+  const addWorkExperience = () => {
+    try {
+      // Update the user's data by pushing a new work experience object to the experiences array
+      setUpdatedUserData(prevState => {
+        const newUserData = { ...prevState };
+        newUserData.experiences.push({
+          jobTitle: "",
+          company: "",
+          description: ""
+        });
+        // Set the index of the new work experience to the last item in the array
+        setWorkExperienceIndex(newUserData.experiences.length - 1);
+        return newUserData;
+      });
+      // Open the modal to allow the user to fill out the new work experience
+      setIsWorkExperienceModal(true);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function saveUser (user) {
     const id = localStorage.getItem("id");
