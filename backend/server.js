@@ -19,8 +19,6 @@ const categoryRoutes = require('./routes/CategoryRoute');
 const skillsRoutes = require('./routes/SkillsRoute');
 const uploadRoutes = require('./routes/UploadRoute');
 const adminRoutes =require('./routes/AdminRoute');
-const offerRoutes = require('./Routes/OfferRoute');
-
 
 
 dotenv.config();
@@ -34,6 +32,9 @@ const linkedInRoute = require('./routes/LinkedInUserRoute');
 const googleFacebookRoutes = require('./routes/GoogleFacebookRoute');
 const githubRoutes = require('./Routes/GithubRoute');
 const ProfileUserRoutes = require('./Routes/ProfileUserRoutes');
+const OfferRoutes = require('./Routes/OfferRoute');
+const TrainingRoutes = require('./Routes/TrainingRoute');
+const InterviewRoutes = require('./Routes/InterviewRoute');
 
 const config = require('./config');
 
@@ -74,7 +75,10 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/upload', uploadRoutes);
     app.use('/Admin', adminRoutes);
     app.use('/Condidat',ProfileUserRoutes);
-    app.use('/Offer', offerRoutes);
+    app.use('/Offer',OfferRoutes);
+    app.use('/Training',TrainingRoutes);
+    app.use('/Interview',InterviewRoutes);
+
 
 
 
@@ -122,6 +126,43 @@ passport.serializeUser((user, done) => {
   }
   ));
 
+/*
+
+
+passport.use(new LinkedInStrategy({
+    clientID: config.LINKEDIN_CLIENT_ID,
+    clientSecret: config.LINKEDIN_CLIENT_SECRET,
+    callbackURL: config.CALLBACK_URL,
+    scope: ['r_emailaddress', 'r_liteprofile'],
+  }, async (token, tokenSecret, profile, done) => {
+    try {
+      // Vérifier si l'utilisateur existe déjà dans la base de données
+      let user = await User.findOne({ email: profile.emails[0].value });
+      if (user) {
+        // Si l'utilisateur existe déjà, ajouter le LinkedIn ID à son profil
+        user.linkedinId = profile.id;
+        await user.save();
+        return done(null, user);
+      } else {
+        // Si l'utilisateur n'existe pas, créer un nouveau compte
+        const newUser = new User({
+          linkedinId: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          password: profile.id,
+        });
+        await newUser.save();
+        return done(null, newUser);
+      }
+    } catch (error) {
+      return done(error);
+    }
+  }));
+
+
+
+*/
+
 
     passport.use(new FacebookStrategy({
       clientID: config.FACEBOOK_CLIENT_ID,
@@ -140,7 +181,28 @@ passport.serializeUser((user, done) => {
   }));
 
 //-------------------- Github -------------------------------//
+// passport.use(new GitHubStrategy({
+//   clientID: config.GITHUB_CLIENT_ID,
+//   clientSecret: config.GITHUB_CLIENT_SECRET,
+//   callbackURL: "http://localhost:5000/github"
+// }, function(accessToken, refreshToken, profile, cb) {
+//   return cb(null, profile);
+// }));
 
+// passport.use(new GitHubStrategy({
+//   clientID: config.GITHUB_CLIENT_ID,
+//   clientSecret: config.GITHUB_CLIENT_SECRET_KEY,
+//   callbackURL: config.GITHUB_CALLBACK_URL,
+//   profileFields: ['id', 'email'],
+//   passReqToCallback: true // pass the req object to the callback function
+// }, function(req, accessToken, refreshToken, profile, done) {
+// // store the user information in the session
+// req.session.user = {
+//   id: profile.id,
+//   email: profile.emails[0].value
+// };
+// done(null, profile);
+// }));
 passport.use(new GitHubStrategy({
   clientID: config.GITHUB_CLIENT_ID,
   clientSecret: config.GITHUB_CLIENT_SECRET_KEY,

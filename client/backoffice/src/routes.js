@@ -55,20 +55,13 @@ var routes = [
     component: Notifications,
     layout: "/admin"
   },
-  // {
-  //   path: "/user-page",
-  //   name: "User Profile",
-  //   icon: "nc-icon nc-single-02",
-  //   component: UserPage,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/tables",
-  //   name: "Table List",
-  //   icon: "nc-icon nc-tile-56",
-  //   component: TableList,
-  //   layout: "/admin"
-  // },
+  {
+    path: "/user-page",
+    name: "User Profile",
+    icon: "nc-icon nc-single-02",
+    component: UserPage,
+    layout: "/admin"
+  },
   {
     path: "/createUser",
     name: "Add A new User",

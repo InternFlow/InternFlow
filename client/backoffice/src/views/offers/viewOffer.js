@@ -53,15 +53,10 @@ function ViewOffers() {
 
 
 
+    const [pageNumber, setPageNumber] = useState(0);
+    const offersPerPage = 5;
+    const pagesVisited = pageNumber * offersPerPage;
 
-
-    const [activePage, setActivePage] = useState(1);
-    const itemsPerPage = 5;
-    const totalItems = 20;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-    // const [pageNumber, setPageNumber] = useState(0);
-    // const offersPerPage = 5;
-    // const pagesVisited = pageNumber * offersPerPage;
     const history = useHistory();
 
 
@@ -128,6 +123,11 @@ function ViewOffers() {
     }
 
 
+    const offersWithImageUrl = offers.map(offer => ({
+      ...offer,
+      imageUrl: `http://localhost:5000/${offer.image}`,
+    }));
+    
 
     //------------------ Search ------------------------------------//
     // const handleSearch = async() => {
@@ -154,19 +154,19 @@ function ViewOffers() {
         setActivePage(pageNumber);
       }
     
-      const paginationItems = [];
-      for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
-        paginationItems.push(
-          <PaginationItem
-            key={pageNumber}
-            active={pageNumber === activePage}
-          >
-            <PaginationLink onClick={() => handlePageChange(pageNumber)}>
-              {pageNumber}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
+    //   const paginationItems = [];
+    //   for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+    //     paginationItems.push(
+    //       <PaginationItem
+    //         key={pageNumber}
+    //         active={pageNumber === activePage}
+    //       >
+    //         <PaginationLink onClick={() => handlePageChange(pageNumber)}>
+    //           {pageNumber}
+    //         </PaginationLink>
+    //       </PaginationItem>
+    //     );
+    //   }
 
       //------------------------------ PDF ------------------------------------------//
       const generatePDF = () => {
@@ -191,9 +191,13 @@ function ViewOffers() {
 
     // Sauvegarder le document PDF
     doc.save("offers.pdf");
-      }
+    }
       
    
+      const pageCount = Math.ceil(offers.length / offersPerPage);
+      const changePage = ({ selected }) => {
+        setPageNumber(selected);
+    };
 
   return (
     <>
@@ -247,6 +251,7 @@ function ViewOffers() {
                 <Table responsive>
                   <thead className="text-primary">
                     <tr>
+                      <th>Image</th>
                       <th>Title</th>
                       <th>Category</th>
                       <th>Description</th>
@@ -263,9 +268,14 @@ function ViewOffers() {
                   <tbody>
                   {offers
                   // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                //   .slice(pagesVisited, pagesVisited + offersPerPage)
+                 .slice(pagesVisited, pagesVisited + offersPerPage)
                   .map((offer) => (
                      <tr key={offer._id} >
+                     {/* <td><img src={"../../assets/uploads/offers/"+offer.image} alt="offer image"/></td> */}
+                     <td>
+                      <img src={ "../../assets/uploads/offers/" +offer.image } alt="offer img"/>
+                      </td>
+
                      <td>{offer.title}</td>
                      <td>{offer.type_offre}</td>
                      <td>{offer.description}</td>
@@ -293,23 +303,25 @@ function ViewOffers() {
                   ))}
                   </tbody>
                 </Table>
-
+                <br></br>
+                <ReactPaginate
+                  previousLabel={'Previous'}
+                  nextLabel={'Next'}
+                  pageCount={pageCount}
+                  onPageChange={changePage}
+                  containerClassName={'pagination'}
+                  previousLinkClassName={'previous_page'}
+                  nextLinkClassName={'next_page'}
+                  disabledClassName={'disabled'}
+                  activeClassName={'active'}
+                />
                 <br></br>
                 <Button 
                   variant="success"
                   onClick={generatePDF}>Export to PDF</Button>
 
                
-                <br></br>
-                  <Pagination>
-                    <PaginationItem disabled={activePage === 1}>
-                     <PaginationLink onClick={() => handlePageChange(activePage - 1)} previous />
-                    </PaginationItem>
-                        {paginationItems}
-                    <PaginationItem disabled={activePage === totalPages}>
-                        <PaginationLink onClick={() => handlePageChange(activePage + 1)} next />
-                    </PaginationItem>
-                </Pagination>
+                
               </CardBody>
             </Card>
           </Col>

@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+
+const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   lastName: { type: String },
@@ -11,6 +13,8 @@ const userSchema = new mongoose.Schema({
   
   pfpPath: { type: String , default: "https://1fid.com/wp-content/uploads/2022/06/no-profile-picture-4-1024x1024.jpg" },
   bannerPath: { type: String },
+  photo: { type: String },
+
   educations: [{
     schoolName: { type: String },
     degree: { type: String},
@@ -31,8 +35,23 @@ const userSchema = new mongoose.Schema({
   description: { type: String},
   linkedinId: {type:String},
 
+
   confirmationToken: { type: String },
-  confirmExpiration: { type: Date }
+  confirmExpiration: { type: Date },
+  offers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Offer' }]
+
+  // OfferId: [{
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'Offer'
+  // }],
+  // Trainer_TrainingId: [{
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'Training'
+  // }],
+  // Intern_TrainingId: [{
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'Training'
+  // }]
 });
 
 

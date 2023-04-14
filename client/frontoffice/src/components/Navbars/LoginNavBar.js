@@ -82,9 +82,9 @@ function LoginNavbar() {
         <div className="navbar-translate">
           <NavbarBrand
             data-placement="bottom"
-            href="/index"
+            onClick={()=>{history.push("/index")}}
             target="_blank"
-            title="Coded by Creative Tim"
+            style={{cursor: "pointer"}}
           >
             InternFlow
           </NavbarBrand>

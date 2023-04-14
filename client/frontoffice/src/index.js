@@ -40,6 +40,9 @@ import Login from "views/examples/Login.js";
 import NewPass from "views/examples/NewPass";
 import NewPassEmail from "views/examples/NewPassEmail";
 import Editcompany from "views/examples/EditCompanyProfile";
+import CourseList from "./components/TrainerComponents/CourseList"
+import OfferList from "views/examples/OfferList";
+import OfferDetails from "views/examples/OfferDetails";
 // others
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -48,6 +51,10 @@ root.render(
   <BrowserRouter>
     <Switch>
       <Route path="/index" render={(props) => <Index {...props} />} />
+      <Route
+        path="/test"
+        render={(props) => <CourseList {...props} />}
+      />
       <Route
         path="/nucleo-icons"
         render={(props) => <NucleoIcons {...props} />}
@@ -114,6 +121,19 @@ root.render(
         path="/sign-up-Trainer"
         render={(props) => <RegisterTrainerPage {...props} />}
       />
+
+<Route
+        path="/offers"
+        render={(props) => <OfferList {...props} />}
+      />
+
+      
+<Route
+        path="/DetailsOffers/:id"
+        render={(props) => <OfferDetails {...props} />}
+      />
+
+      
 
 
     <Redirect to="/index" />

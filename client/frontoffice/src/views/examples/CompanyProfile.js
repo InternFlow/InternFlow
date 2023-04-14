@@ -11,7 +11,8 @@ import {
   CardGroup,
   CardTitle,
   ListGroup,
-  ListGroupItem
+  ListGroupItem,
+  Button
 } from "reactstrap";
 
 // core components
@@ -160,7 +161,11 @@ React.useEffect(() => {
             </Col>
           </Row>
 
-
+          <Button
+            variant= "primary"
+            type="submit"
+            onClick={()=> goedit()}
+          >Edit profile</Button>
 
 
            </div>

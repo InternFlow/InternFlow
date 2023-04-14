@@ -1,7 +1,8 @@
 
 
+import { event } from "jquery";
 import { API } from "../../config";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
@@ -19,15 +20,21 @@ import {
   Row,
   Col
 } from "reactstrap";
+import Swal from "sweetalert2";
 
-function EditOffer({ offer = { title: "", type_offre: "", description: "", availability: "", duration: "", location:"", languages: "" } }) {
-    const [title, setTitle] = useState(offer.title);
-    const [type_Offer, setTypeOffer] = useState(offer.type_offre);
-    const [description, setDescription] = useState(offer.description);
-    const [availability, setAvailability] = useState(offer.availability);
-    const [duration, setDuration] = useState(offer.duration);
-    const [location, setLocation] = useState(offer.location);
-    const [languages, setLanguages] = useState(offer.languages);
+//function EditOffer({ offer = { title: "", type_offre: "", description: "", availability: "", duration: "", location:"", languages: "" } }) {
+function EditOffer({ offer}) {
+      // const { title, type_Offer, description, availability, duration, location } = req.body;
+
+
+
+  const [title, setTitle] = useState(offer?.title);
+  const [type_Offer, setTypeOffer] = useState(offer?.type_offre);
+  const [description, setDescription] = useState(offer?.description);
+  const [availability, setAvailability] = useState(offer?.availability);
+  const [duration, setDuration] = useState(offer?.duration);
+  const [location, setLocation] = useState(offer?.location);
+  const [languages, setLanguages] = useState(offer?.languages)
 
 
     const location1 = useLocation();
@@ -43,6 +50,7 @@ function EditOffer({ offer = { title: "", type_offre: "", description: "", avail
     formData.append("duration", duration);
     formData.append("location", location);
     formData.append("languages", languages);
+
 
 
 
@@ -62,6 +70,9 @@ function EditOffer({ offer = { title: "", type_offre: "", description: "", avail
         languages: languages,
 
     };
+
+
+
     const requestOptions = {
         method: "PUT",
         headers: {
@@ -73,10 +84,21 @@ function EditOffer({ offer = { title: "", type_offre: "", description: "", avail
     const response = await fetch(`${API}/Offer/EditOffer/${id}`, requestOptions);
       const data = await response.json();
       //   onUpdate(data.user);
-console.log(data)
+      console.log(data)
+
+      Swal.fire(
+        'Successful Edit!',
+        'Offer Edit successfully!',
+        'success'
+        )
       history.push("/admin/dashboard");
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Offer not edited...',
+        text: 'Something went wrong!',
+      })
     }
   };
 
@@ -97,6 +119,7 @@ console.log(data)
 
                   <Row>
                   <Col  md="6">
+                    
                       <FormGroup>
                         <label>Title</label>
                         <Input
@@ -186,12 +209,30 @@ console.log(data)
                     <Col md="6">
                       <FormGroup>
                         <label>Languages</label>
-                        <select id="languages" value={languages} onChange={(event) => setLanguages(event.target.value)}>
+
+                        {/* <select id="languages" value={languages} onChange={(event) => setLanguages(event.target.value)}>
                             <option value="arabic">Arabic</option>
                             <option value="french">French</option>
                             <option value="english">English</option>
                             <option value="german">German</option>
-                        </select>
+                        </select> */}
+
+                        <Input
+                        id="languages"
+                        type="select"
+                        name="select offer"
+                        value={languages}
+                        onChange={(event)=> setLanguages(event.target.value)}
+                        >
+                          <option value="arabic">Arabic</option>
+                            <option value="french">French</option>
+                            <option value="english">English</option>
+                            <option value="german">German</option>
+                            <option value="italian">Italian</option>
+                            <option value="chinese">Chinese</option>
+
+
+                        </Input>
                         {/* <Input
                           placeholder="Role"
                           type="text"
@@ -221,5 +262,8 @@ console.log(data)
     </>
   );
 }
+
+
+
 
 export default EditOffer;

@@ -58,7 +58,14 @@ function Index() {
       <IndexHeader />
 
       <div className="main">
-        <SectionNavbars />
+        {/* <SectionNavbars /> */}
+
+        <center>
+          <strong>
+          <h3>Our Offers</h3>
+
+          </strong>
+        </center>
 
         <DemoFooter />
       </div>
