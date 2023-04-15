@@ -18,7 +18,7 @@ import {
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 import { API } from "config";
@@ -26,7 +26,11 @@ import OfferHeader from "components/Headers/OfferHeader";
 
 function OfferList() {
   const id = localStorage.getItem("id");
+  // const { id } = useParams(); // Récupère l'id de l'offre depuis l'URL
+
   const [offers, setOffers] = useState([]);
+
+
 
   async function getOffers(){
     fetch(`${API}/Offer/getOffers`, {
@@ -38,6 +42,7 @@ function OfferList() {
 
   useEffect(()=>{getOffers()},[]);
 
+  console.log(offers.id);
 
 
   
@@ -69,25 +74,16 @@ function OfferList() {
           <div className="owner">
            
           <Row >
-            {/* <Col md="3" >
-              <Card className="text-center text-md-left">
-                <CardHeader>
-                <CardTitle tag="h5" style={{ fontWeight: "bold", fontSize: 22 }}>
-                    Filter
-                </CardTitle>
-                </CardHeader>
-                <CardBody></CardBody>
-              </Card >
-            </Col> */}
+          
             <Col md="9">
               <Row>
               {offers.map((offer) => (
                 <Col md="4" key={offer.id}>
-                <Card className="mb-4">
+                <Card className="mb-4"  key={offer.id}>
                   <CardBody>
                     <CardTitle tag="h5">{offer.title}</CardTitle>
                     <p>{offer.description}</p>
-                    <Button color="primary" onClick={() => history.push(`/DetailsOffers/${offer.id}`)}>
+                    <Button color="primary" onClick={() => history.push(`/DetailsOffers/${offer._id}`)}>
                       View Details
                     </Button>
                   </CardBody>
