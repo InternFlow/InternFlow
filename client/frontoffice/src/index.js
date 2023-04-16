@@ -34,14 +34,20 @@ import ProfilePage from "views/examples/ProfilePage.js";
 import FormateurProfile from "views/examples/FormateurProfile.js";
 import CompanyProfile from "views/examples/CompanyProfile.js";
 import Editcondidat from "views/examples/EditCondidatProfile";
+import OffreCompany from "views/examples/OfferCompany";
+import QuestionsQuiz from "views/examples/QuestionsQuiz";
+import CondidatQuestions from "views/examples/CondidatQuestions";
+
+
 
 import RegisterPage from "views/examples/RegisterPage.js";
 import Login from "views/examples/Login.js";
 import NewPass from "views/examples/NewPass";
 import NewPassEmail from "views/examples/NewPassEmail";
 import Editcompany from "views/examples/EditCompanyProfile";
-import CourseList from "./components/TrainerComponents/CourseList"
-// others
+import Condidatquizzes from "views/examples/Condidatquizzes";
+
+import ApplicationCondidate from "views/examples/Applicationcondidate";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -49,10 +55,6 @@ root.render(
   <BrowserRouter>
     <Switch>
       <Route path="/index" render={(props) => <Index {...props} />} />
-      <Route
-        path="/test"
-        render={(props) => <CourseList {...props} />}
-      />
       <Route
         path="/nucleo-icons"
         render={(props) => <NucleoIcons {...props} />}
@@ -69,6 +71,21 @@ root.render(
         path="/sign-up"
         render={(props) => <RegisterPage {...props} />}
       />
+<Route
+        path="/offres"
+        render={(props) => <QuestionsQuiz {...props} />}
+      />
+    
+    <Route
+        path="/offer/condidat/questions"
+        render={(props) => <CondidatQuestions {...props} />}
+      />
+
+<Route
+        path="/quizzes/offres/condidat"
+        render={(props) => <Condidatquizzes {...props} />}
+      />
+
        <Route
         path="/sign-in"
         render={(props) => <Login {...props} />}
@@ -119,6 +136,18 @@ root.render(
         path="/sign-up-Trainer"
         render={(props) => <RegisterTrainerPage {...props} />}
       />
+
+<Route
+        path="/stagescompany"
+        render={(props) => <OffreCompany {...props} />}
+      />
+
+<Route
+        path="/stagescompanyapplication"
+        render={(props) => <ApplicationCondidate {...props} />}
+      />
+
+
 
 
     <Redirect to="/index" />

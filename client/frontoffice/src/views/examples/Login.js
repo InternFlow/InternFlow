@@ -38,31 +38,21 @@ function Login() {
     let errors = {};
 
     if (!password) {
-      errors.password = 'Password is required';
-      setAlertMessage(' Please Fill in with your password! ');
-      setShowAlert(true); 
-    } 
-    else {
+      errors.password = "donner le password";
+    } else {
       // Vérifier que le mot de passe contient au moins 8 caractères et au moins un chiffre et une lettre
       if (!/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/.test(password)) {
         errors.password =
           "Password should contain at least 8 characters with at least one letter and one number";
-          setAlertMessage(' Please Fill in with a valid password! ');
-          setShowAlert(true); 
       }
     }
 
     if (!email) {
-      errors.email = 'Email is required';
-      setAlertMessage(' Please Fill in with your email! ');
-      setShowAlert(true); 
-
+      errors.email = "donner un email";
     } else {
       // Vérifier que l'adresse email est valide
       if (!/\S+@\S+\.\S+/.test(email)) {
         errors.email = "Invalid email address";
-        setAlertMessage(' your email is lacking ! ');
-        setShowAlert(true); 
       }
     }
 
@@ -78,7 +68,9 @@ function Login() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          
         },
+        
         body: JSON.stringify({
           email,
           password,
@@ -102,9 +94,8 @@ function Login() {
           history.push("/profile-company-page");
         } else if (user.role === "admin") {
           console.log("aaaaaaaaaaaa")
+          document.location.href = "http://localhost:3001/admin/get-sesstion?token=" + token;
 
-          document.getElementById("admin-redirect").setAttribute("href","http://localhost:3001/admin/get-sesstion?token=" + token);
-          document.getElementById("admin-redirect").click();
         }
       } else if (res.status === 400) {
         const data = await res.json();
@@ -222,7 +213,6 @@ console.log(error);
                     Forgot password?
                   </Button>
 
-                  <a    href=""  id="admin-redirect"  style={{ display: "none" }} ></a>
                 </div>
               </Card>
             </Col>

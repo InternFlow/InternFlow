@@ -109,9 +109,9 @@ function ResgisterNavbar() {
         <div className="navbar-translate">
           <NavbarBrand
             data-placement="bottom"
-            onClick={()=>{history.push("/index")}}
+            href="/index"
             target="_blank"
-            style={{cursor: "pointer"}}
+            title="Coded by Creative Tim"
           >
             InternFlow
           </NavbarBrand>

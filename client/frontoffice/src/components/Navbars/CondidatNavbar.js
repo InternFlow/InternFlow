@@ -21,7 +21,9 @@ import { Link } from "react-router-dom";
 // nodejs library that concatenates strings
 import classnames from "classnames";
 import { useHistory } from "react-router-dom";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBell } from '@fortawesome/free-solid-svg-icons'
+import { Badge } from 'reactstrap';
 // reactstrap components
 import {
   Collapse,
@@ -29,13 +31,17 @@ import {
   Navbar,
   NavItem,
   NavLink,
-  Nav,
+  Nav,Modal, ModalHeader, ModalBody,
   Container,
   Button
 } from "reactstrap";
-
-function ExamplesNavbar() {
+import { useState } from 'react';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+function CondidatNavbar() {
+  
+    
   const history = useHistory();
+  const token = localStorage.getItem("token");
 
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [navbarCollapse, setNavbarCollapse] = React.useState(false);
@@ -45,7 +51,73 @@ function ExamplesNavbar() {
     document.documentElement.classList.toggle("nav-open");
   };
 
+  if (!token) {
+
+    history.push('/sign-in');
+
+  }  
+  const [modal, setModal] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [numNotifications, setNumNotifications] = useState(0);
+
+  const toggle = async () => {
+    setModal(!modal);
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch('http://localhost:5000/applicationquiz/notifications', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: 'include',
+        });
+
+        if (response.status === 200) {
+          const data = await response.json();
+          console.log(data);
+          setNotifications(data);
+        } else {
+          throw new Error(`Error fetching notifications. Status: ${response.status}`);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    
+  };
+
   React.useEffect(() => {
+    const fetchNotifications = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch('http://localhost:5000/applicationquiz/notifications', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                credentials: 'include',
+            });
+
+            if (response.status === 200) {
+                const data = await response.json();
+                console.log(data);
+                setNumNotifications(data.length);
+            } else {
+                throw new Error(`Error fetching notifications. Status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    fetchNotifications();
+}, []);
+
+
+  React.useEffect(() => {
+
     const updateNavbarColor = () => {
       if (
         document.documentElement.scrollTop > 299 ||
@@ -186,6 +258,47 @@ function ExamplesNavbar() {
                 <p className="d-lg-none">GitHub</p>
               </NavLink>
             </NavItem>
+
+
+
+
+            <NavItem>
+            <NavLink  onClick={toggle}>
+        <i className="fa fa-bell" />
+        <Badge pill color="danger">
+             {numNotifications}
+
+        </Badge>
+        <span className="d-md-none ml-1">Notifications</span>
+      </NavLink>
+      </NavItem>
+      <Modal isOpen={modal} toggle={toggle}>
+      <ModalHeader toggle={toggle}>
+        <FontAwesomeIcon icon={faTimes} className="mr-2" />
+        Notifications
+      </ModalHeader>
+      <ModalBody>
+        {notifications.length ? (
+          <ul className="list-group">
+            {notifications.map((notification) => (
+              <li key={notification.id} className="list-group-item">
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="notification-message">{notification.message}</div>
+                  {notification.link ? (
+            <Link to={`/quizzes/offres/condidat?ido=${notification.offreid}`} className="btn btn-primary ml-3">passer quizzes</Link>
+          ) : null}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Aucune notification</p>
+        )}
+      </ModalBody>
+    </Modal>
+
+
+
             <NavItem>
             <Button
                 className="btn-round"
@@ -203,4 +316,4 @@ function ExamplesNavbar() {
   );
 }
 
-export default ExamplesNavbar;
+export default CondidatNavbar;

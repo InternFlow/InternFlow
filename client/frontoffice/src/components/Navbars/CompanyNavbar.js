@@ -34,7 +34,7 @@ import {
   Button
 } from "reactstrap";
 
-function ExamplesNavbar() {
+function CondidatNavbar() {
   const history = useHistory();
 
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
@@ -92,7 +92,33 @@ function ExamplesNavbar() {
   }
 
 
+  const handlegoTomesStages = async (event) => {
+    try {
 
+        
+
+        history.push('/stagescompany');
+      
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handlegoTomesStagesapplication = async (event) => {
+    try {
+
+        
+
+        history.push('/stagescompanyapplication');
+      
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <Navbar
@@ -130,16 +156,17 @@ function ExamplesNavbar() {
         >
           <Nav navbar>
             <NavItem>
-              <NavLink to="/index" tag={Link}>
-                <i className="nc-icon nc-layout-11" /> Components
+              <NavLink onClick={handlegoTomesStagesapplication}
+                target="_blank">
+                <i className="nc-icon nc-layout-11" /> Mes Applications
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink
-                href="https://demos.creative-tim.com/paper-kit-react/#/documentation?ref=pkr-examples-navbar"
+                 onClick={handlegoTomesStages}
                 target="_blank"
               >
-                <i className="nc-icon nc-book-bookmark" /> Documentation
+                <i className="nc-icon nc-book-bookmark" /> Mes Stages 
               </NavLink>
             </NavItem>
             <NavItem>
@@ -203,4 +230,4 @@ function ExamplesNavbar() {
   );
 }
 
-export default ExamplesNavbar;
+export default CondidatNavbar;
