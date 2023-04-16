@@ -23,6 +23,7 @@ import { Button, Card, Form, Input, Container, Row, Col, Alert } from "reactstra
 import { useForm } from "react-hook-form";
 // core components
 import LoginNavbar from "components/Navbars/LoginNavBar";
+import { API } from "config";
 
 function RegisterPage() {
 
@@ -93,7 +94,7 @@ function RegisterPage() {
 
     // submit the form data
     // ...
-    const response = fetch('http://localhost:5000/register', {
+    const response = fetch(`${API}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password, role })

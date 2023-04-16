@@ -130,8 +130,8 @@ function ExamplesNavbar() {
         >
           <Nav navbar>
             <NavItem>
-              <NavLink to="/index" tag={Link}>
-                <i className="nc-icon nc-layout-11" /> Components
+              <NavLink to="/offers" tag={Link}>
+                <i className="nc-icon nc-laptop" /> Offers
               </NavLink>
             </NavItem>
             <NavItem>
@@ -142,7 +142,7 @@ function ExamplesNavbar() {
                 <i className="nc-icon nc-book-bookmark" /> Documentation
               </NavLink>
             </NavItem>
-            <NavItem>
+            {/* <NavItem>
               <NavLink
                 data-placement="bottom"
                 href="https://twitter.com/CreativeTim?ref=creativetim"
@@ -185,7 +185,7 @@ function ExamplesNavbar() {
                 <i className="fa fa-github" />
                 <p className="d-lg-none">GitHub</p>
               </NavLink>
-            </NavItem>
+            </NavItem> */}
             <NavItem>
             <Button
                 className="btn-round"

@@ -12,7 +12,8 @@ import {
   CardTitle,
   ListGroup,
   ListGroupItem,
-  Button
+  Button,
+  CardImg
 } from "reactstrap";
 
 // core components
@@ -23,6 +24,10 @@ import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 import { API } from "config";
 import OfferHeader from "components/Headers/OfferHeader";
+
+
+// Importez votre image statique ici
+import offerImage from "../uploads/offers/1681389235310-offers.jpg";
 
 function OfferList() {
   const id = localStorage.getItem("id");
@@ -80,6 +85,8 @@ function OfferList() {
               {offers.map((offer) => (
                 <Col md="4" key={offer.id}>
                 <Card className="mb-4"  key={offer.id}>
+                <CardImg top width="100%" src={offerImage} alt="Offer Image" />
+
                   <CardBody>
                     <CardTitle tag="h5">{offer.title}</CardTitle>
                     <p>{offer.description}</p>

@@ -16,7 +16,7 @@ const offerSchema = new mongoose.Schema({
 
     company: { type: mongoose.Types.ObjectId, ref: 'User' },
     experience: { type: String },
-    education: { type: mongoose.Schema.Types.ObjectId, ref: 'Education' },
+    // education: { type: mongoose.Schema.Types.ObjectId, ref: 'Education' },
     image: { type: String  },
 
 });

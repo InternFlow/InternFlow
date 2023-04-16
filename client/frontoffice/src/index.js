@@ -43,6 +43,8 @@ import Editcompany from "views/examples/EditCompanyProfile";
 import CourseList from "./components/TrainerComponents/CourseList"
 import OfferList from "views/examples/OfferList";
 import OfferDetails from "views/examples/OfferDetails";
+import AddOffer from "views/examples/AddOffer";
+import EditOffer from "views/examples/EditOffer";
 // others
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -131,6 +133,14 @@ root.render(
 <Route
         path="/DetailsOffers/:id"
         render={(props) => <OfferDetails {...props} />}
+      />
+<Route
+        path="/AddOfferCompany"
+        render={(props) => <AddOffer {...props} />}
+      />
+<Route
+        path="/EditOfferCompany"
+        render={(props) => <EditOffer {...props} />}
       />
 
       

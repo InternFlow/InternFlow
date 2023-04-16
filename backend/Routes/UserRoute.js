@@ -5,6 +5,7 @@ const { requireAuth } = require("../middlewares/requireAuth");
 const { checkRole } = require("../middlewares/checkRole");
 const twilio = require("twilio");
 const path = require("path");
+const multer = require('multer');
 
 const config = require("../config");
 const Offer = require("../Models/Offer");
@@ -316,6 +317,141 @@ router.put("/assign-offer/:companyId/:offerId", requireAuth, async (req, res) =>
     res.status(500).send('Erreur de serveur');
   }
 });
+
+//--------------------------------- Upload Img -------------------------------------------------//
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/offers');
+  },
+  filename: (req, file, cb) => {
+    cb(null, 
+      Date.now() + '-' + file.originalname
+    );
+  }
+});
+const upload = multer({ storage });
+
+
+router.post('/uploadImg', upload.single('image'), (req, res) => {
+  const fileName = req.file.filename;
+  res.send(`Image uploaded: ${fileName}`);
+});
+
+
+//----------------------- Assign Offers to Company2 -------------------------------------------------//
+// Fonction pour associer une offre à une société
+async function assignOfferToCompany(companyId, offerId) {
+  // Récupérer la société avec l'identifiant donné
+  const company = await User.findById(companyId.trim());
+
+  // Ajouter l'identifiant de la nouvelle offre à la liste des offres de la société
+  company.offers.push(offerId);
+
+  // Sauvegarder les modifications dans la base de données
+  await company.save();
+}
+
+// Route pour ajouter une offre à une société
+router.post('/Ajoutercompanies/:id/offers' ,async (req, res) => {
+  try {
+  console.log('aaaaaaa');
+    // const { companyId } = req.params;
+    const companyId = req.params.id;
+
+    console.log(companyId);
+
+    // Créer une nouvelle offre à partir des données envoyées dans la requête
+    const newOffer = new Offer({
+      title: req.body.title,
+      type_offre: req.body.type_offre,
+      description: req.body.description,
+      availability: req.body.availability,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+
+      duration: req.body.duration,
+      location: req.body.location,
+      nb_places_available: req.body.nb_places_available,
+      languages: req.body.languages,
+      skills: req.body.skills,
+      // image: req.file,
+
+
+      company: companyId
+    });
+
+    // Sauvegarder la nouvelle offre dans la base de données
+    const savedOffer = await newOffer.save();
+
+    // Appeler la fonction pour associer l'offre à la société
+    await assignOfferToCompany(companyId, savedOffer._id);
+
+    res.status(201).json(savedOffer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
+
+//------------------------- Consulter Offre de Company -----------------------------------------------//
+router.get('/Affichercompanies/:companyId/offers', async (req, res) => {
+  const companyId = req.params.companyId;
+
+  try {
+    const offers = await Offer.find({ company: companyId });
+    res.status(200).send(offers);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching offers for company');
+  }
+});
+
+
+//-------------------------------- Moodifier Offre de Company ----------------------------------------------//
+// Route pour modifier une offre d'une société
+router.put('/Modifiercompanies/:companyId/offers/:offerId', async (req, res) => {
+  try {
+    const { companyId, offerId } = req.params;
+
+    // Récupérer l'offre à modifier
+    const offer = await Offer.findById(offerId);
+
+    if (!offer) {
+      return res.status(404).send('Offre non trouvée');
+    }
+
+    // Vérifier que l'offre appartient à la société spécifiée
+    if (offer.company.toString() !== companyId.toString()) {
+      return res.status(403).send('Accès refusé');
+    }
+
+    // Mettre à jour les propriétés de l'offre
+    offer.title = req.body.title;
+    offer.type_offre = req.body.type_offre;
+    offer.description = req.body.description;
+    offer.availability = req.body.availability;
+    offer.startDate = req.body.startDate;
+    offer.endDate = req.body.endDate;
+    offer.duration = req.body.duration;
+    offer.location = req.body.location;
+    offer.nb_places_available = req.body.nb_places_available;
+    offer.languages = req.body.languages;
+    offer.skills = req.body.skills;
+
+    // Sauvegarder les modifications dans la base de données
+    const savedOffer = await offer.save();
+
+    res.status(200).json(savedOffer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
+
 
 
 

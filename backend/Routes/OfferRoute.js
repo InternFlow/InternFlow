@@ -246,7 +246,9 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/offers');
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
+    cb(null, 
+      Date.now() + '-' + file.originalname
+    );
   }
 });
 const upload = multer({ storage });
@@ -313,6 +315,58 @@ router.post('/addOfferImg', upload.single('image'), async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
+  }
+});
+
+
+//----------------------- Assign Offers to Company2 -------------------------------------------------//
+// Fonction pour associer une offre à une société
+async function assignOfferToCompany(companyId, offerId) {
+  // Récupérer la société avec l'identifiant donné
+  const company = await User.findById(companyId.trim());
+
+  // Ajouter l'identifiant de la nouvelle offre à la liste des offres de la société
+  company.offers.push(offerId);
+
+  // Sauvegarder les modifications dans la base de données
+  await company.save();
+}
+
+// Route pour ajouter une offre à une société
+router.post('/companies/:companyId/offers',upload.single('image') ,async (req, res) => {
+  try {
+    const { companyId } = req.params;
+
+    // Créer une nouvelle offre à partir des données envoyées dans la requête
+    const newOffer = new Offer({
+      title: req.body.title,
+      type_offre: req.body.type_offre,
+      description: req.body.description,
+      availability: req.body.availability,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+
+      duration: req.body.duration,
+      location: req.body.location,
+      nb_places_available: req.body.nb_places_available,
+      languages: req.body.languages,
+      skills: req.body.skills,
+      image: req.file.path,
+
+
+      company: companyId
+    });
+
+    // Sauvegarder la nouvelle offre dans la base de données
+    const savedOffer = await newOffer.save();
+
+    // Appeler la fonction pour associer l'offre à la société
+    await assignOfferToCompany(companyId, savedOffer._id);
+
+    res.status(201).json(savedOffer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur serveur');
   }
 });
 
