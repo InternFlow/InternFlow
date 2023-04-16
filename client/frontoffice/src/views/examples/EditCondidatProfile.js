@@ -1,7 +1,7 @@
 import { API } from "../../config";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
+import CondidatNavbar from "components/Navbars/CondidatNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 import Accordion from 'components/Accordion';
@@ -260,7 +260,7 @@ React.useEffect(()=>{
 
   return (
     <>
-      <ExamplesNavbar />
+      <CondidatNavbar />
       <ProfilePageHeader />
       <div className="section profile-content" >
         <Container>

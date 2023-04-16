@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 
 // core components
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
+import CondidatNavbar from "components/Navbars/CondidatNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 import { useHistory } from "react-router-dom";
@@ -112,7 +112,7 @@ React.useEffect(() => {
 
   return (
     <>
-      <ExamplesNavbar />
+      <CondidatNavbar />
       <ProfilePageHeader />
       <div className="section profile-content" >
         <Container>
