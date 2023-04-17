@@ -3,6 +3,11 @@ const Offer = require('../Models/Offer');
 const { requireAuth } = require("../middlewares/requireAuth");
 const User = require("../models/User");
 const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const config = require('../config');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+
 
 // const User = require('../Models/User');
 
@@ -258,6 +263,60 @@ router.post('/uploadImg', upload.single('image'), (req, res) => {
   const fileName = req.file.filename;
   res.send(`Image uploaded: ${fileName}`);
 });
+
+
+//--------------------------- Cloudinary --------------------------------------------------//
+
+
+// configuration de cloudinary
+cloudinary.config({
+  cloud_name: 'djjimxala',
+  api_key: '835443316573354',
+  api_secret: '-kCoGza7xNvaAIHDDjGUvr3GRDA'
+});
+
+// configuration de multer et du stockage de Cloudinary
+const storageC = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'Offer',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif']
+  }
+});
+
+const uploadC = multer({ storage: storageC });
+
+// route pour télécharger l'image
+router.post('/offer/image', uploadC.single('image'), async(req, res) => {
+  // récupérer l'url de l'image téléchargée sur Cloudinary
+  // const image = req.file.path;
+  // res.send(image);
+  try {
+    if (!req.file) {
+      return res.status(400).send('No file uploaded');
+    }
+
+    const { title, type_offre, description, availability, duration, location } = req.body;
+    const offer = new Offer({
+      title,
+      type_offre,
+      description,
+      availability,
+      duration,
+      location,
+      image: req.file.path,
+    });
+    await offer.save();
+    res.status(201).send(offer);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+
+});
+
+
+
 
 
 //-------------------------------- Add Offer  with Image ----------------------------------------------//

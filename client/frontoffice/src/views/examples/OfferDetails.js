@@ -96,7 +96,9 @@ return(
                     <br></br>
 
                     <CardText className="h6">Type of Offer: {offer.type_offre} </CardText>                    
-                    <CardText className="h6">Description: {offer.description} </CardText>
+                    <CardText className="h6">Description: 
+                    <br></br>
+                    {offer.description} </CardText>
                     <CardText className="h6"> Availability: {offer.availability} </CardText>                    
                     <CardText className="h6">Duration: {offer.duration} </CardText>                    
                     <CardText className="h6">Location: {offer.location} </CardText>                    

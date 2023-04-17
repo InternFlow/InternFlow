@@ -6,6 +6,9 @@ const { checkRole } = require("../middlewares/checkRole");
 const twilio = require("twilio");
 const path = require("path");
 const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
 
 const config = require("../config");
 const Offer = require("../Models/Offer");
@@ -452,6 +455,107 @@ router.put('/Modifiercompanies/:companyId/offers/:offerId', async (req, res) => 
 });
 
 
+// Fonction pour retirer une offre d'une société
+async function removeOfferFromCompany(companyId, offerId) {
+  // Récupérer la société avec l'identifiant donné
+  const company = await User.findById(companyId.trim());
+
+  // Retirer l'identifiant de l'offre de la liste des offres de la société
+  company.offers.pull(offerId);
+
+  // Sauvegarder les modifications dans la base de données
+  await company.save();
+}
+
+// Route pour supprimer une offre d'une société
+router.delete('/Deletecompanies/:companyId/offers/:offerId', async (req, res) => {
+  try {
+    const { companyId, offerId } = req.params;
+
+    // Vérifier si la société existe
+    const company = await User.findById(companyId);
+    if (!company) {
+      return res.status(404).send('Société non trouvée');
+    }
+
+    // Vérifier si l'offre existe dans la liste des offres de la société
+    if (!company.offers.includes(offerId)) {
+      return res.status(404).send('Offre non trouvée');
+    }
+
+    // Retirer l'offre de la liste des offres de la société
+    await removeOfferFromCompany(companyId, offerId);
+
+    res.status(200).send('Offre retirée avec succès');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
+
+
+
+//----------------------------- Cloudinary --------------------------------------------------------------//
+// configuration de cloudinary
+cloudinary.config({
+  cloud_name: 'djjimxala',
+  api_key: '835443316573354',
+  api_secret: '-kCoGza7xNvaAIHDDjGUvr3GRDA'
+});
+
+// configuration de multer et du stockage de Cloudinary
+const storageC = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'Offer',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif']
+  }
+});
+
+const uploadC = multer({ storage: storageC });
+
+router.post('/Ajoutercompanies2/:id/offers',uploadC.single('image') ,async (req, res) => {
+  try {
+  console.log('aaaaaaa');
+    // const { companyId } = req.params;
+    const companyId = req.params.id;
+
+    console.log(companyId);
+
+    // Créer une nouvelle offre à partir des données envoyées dans la requête
+    const newOffer = new Offer({
+      title: req.body.title,
+      type_offre: req.body.type_offre,
+      description: req.body.description,
+      availability: req.body.availability,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+
+      duration: req.body.duration,
+      location: req.body.location,
+      nb_places_available: req.body.nb_places_available,
+      languages: req.body.languages,
+      skills: req.body.skills,
+      image: req.file.path,
+      // image: req.file,
+
+
+      company: companyId
+    });
+
+    // Sauvegarder la nouvelle offre dans la base de données
+    const savedOffer = await newOffer.save();
+
+    // Appeler la fonction pour associer l'offre à la société
+    await assignOfferToCompany(companyId, savedOffer._id);
+
+    res.status(201).json(savedOffer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur serveur');
+  }
+});
 
 
 

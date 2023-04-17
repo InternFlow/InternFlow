@@ -192,6 +192,7 @@ function AddOffer() {
                         value={formData.type_offre}
                         onChange= {(e)=> setFormData({ ...formData, type_offre: e.target.value})}
                         >
+                          <option value="">Select your Category of Offer</option>
                           <option value="summer">Summer</option>
                             <option value="worker">Worker</option>
                             <option value="pre-hiring">Pre-Hiring</option>
@@ -328,6 +329,7 @@ function AddOffer() {
                         value={formData.languages}
                         onChange= {(e)=> setFormData({ ...formData, languages: e.target.value})}
                         >
+                          <option value="">Select your Language</option>
                           <option value="arabic">Arabic</option>
                             <option value="french">French</option>
                             <option value="english">English</option>
@@ -397,6 +399,7 @@ function AddOffer() {
   })}
 </Row>
 <Row>
+  <label><strong>Skills</strong></label>
   <button
     type="button"
     onClick={() =>
