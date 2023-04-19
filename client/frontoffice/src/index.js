@@ -38,6 +38,7 @@ import OffreCompany from "views/examples/OfferCompany";
 import QuestionsQuiz from "views/examples/QuestionsQuiz";
 import CondidatQuestions from "views/examples/CondidatQuestions";
 
+import InterviewCompany from "views/examples/InterviewCompany";
 
 
 import RegisterPage from "views/examples/RegisterPage.js";
@@ -149,6 +150,10 @@ root.render(
 
 
 
+<Route
+        path="/InterviewCompany"
+        render={(props) => <InterviewCompany {...props} />}
+      />
 
     <Redirect to="/index" />
 

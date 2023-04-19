@@ -67,6 +67,16 @@ function ApplicationCondidate() {
   };
 
 
+
+  const handlePlanInterview = (offerId, candidate) => {
+    history.push(`/InterviewCompany?offerId=${offerId}&candidateId=${candidate.user._id}`);
+  };
+
+
+
+
+
+
   const handleSave = async () => {
 
     
@@ -248,6 +258,8 @@ console.log(selectedCandidate2);
     };
   }, []);
 
+
+
   React.useEffect(() => {
     if (!token) {
       history.push("/sign-in");
@@ -334,7 +346,7 @@ console.log(selectedCandidate2);
                                 </Button>
                               )}
                                  {candidate.status === 'approved' && candidate.statusQuiz === 'approved' && (
-                                <Button color="primary" >
+                                <Button color="primary" onClick={() => handlePlanInterview(offerId, candidate)} >
                                   plannifier un entretien
                                 </Button>
                               )}

@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const notificationSchema = new mongoose.Schema({
+  message: { type: String, required: true },
+  link: { type: String },
+  offreid:{ type: String }
+});
+
+
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   lastName: { type: String },
@@ -32,7 +39,9 @@ const userSchema = new mongoose.Schema({
   linkedinId: {type:String},
 
   confirmationToken: { type: String },
-  confirmExpiration: { type: Date }
+  confirmExpiration: { type: Date },
+  notifications: [notificationSchema]
+
 });
 
 

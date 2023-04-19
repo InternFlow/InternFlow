@@ -32,8 +32,12 @@ const linkedInRoute = require('./routes/LinkedInUserRoute');
 const googleFacebookRoutes = require('./routes/GoogleFacebookRoute');
 const githubRoutes = require('./Routes/GithubRoute');
 const ProfileUserRoutes = require('./Routes/ProfileUserRoutes');
+const QuizRoute = require('./Routes/QuizRoute');
+const applicationcondidatRoute = require('./Routes/ApplicationconditaRoute');
+const applicationInterviewRoute = require('./Routes/InterviewRoute');
 
 const config = require('./config');
+const { application } = require('express');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -72,6 +76,9 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/upload', uploadRoutes);
     app.use('/Admin', adminRoutes);
     app.use('/Condidat',ProfileUserRoutes);
+    app.use('/Quiz',QuizRoute);
+    app.use('/applicationquiz',applicationcondidatRoute);
+    app.use('/userinterview',applicationInterviewRoute);
 
 
 
