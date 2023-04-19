@@ -6,6 +6,7 @@ import { Button,  Modal, ModalHeader,FormGroup,Label,
 import { useForm } from "react-hook-form";
 import "./style.css"; // Ajout du fichier CSS pour la bordure bleue
 import axios from 'axios';
+import Swal from "sweetalert2";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import { faCheckCircle,faCompany, faTimesCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -122,6 +123,14 @@ function RegisterPage() {
           setShowAlert(false);
           history.push("/profile-page");
         }, 2000);
+        
+      Swal.fire(
+        'Success!',
+        'Apply deleted successfully!',
+        'success'
+      )
+                history.push("/profile-page");
+
       } catch (error) {
         setShowAlert(true);
       }

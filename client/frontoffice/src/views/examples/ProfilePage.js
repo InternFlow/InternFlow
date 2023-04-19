@@ -46,14 +46,18 @@ educations: [
   {
     schoolName: "",
     degree: "",
-    description: ""
+    description: "",
+    startDate:"",
+    endDate:""
   }
 ],
 experiences: [
   {
     jobTitle: "",
     company: "",
-    description: ""
+    description: "",
+    startDate:"",
+    endDate:""
   }
 ],
 skills: [],
@@ -175,7 +179,7 @@ React.useEffect(() => {
             <Row key={index} style={{padding: "18px"}}>
               <Col className="text-center text-md-left" >
                 <h6 className="text-uppercase">{experience.jobTitle}</h6>
-                <p style={{fontWeight: 500}}>Worked at: {experience.company}</p>
+                <p style={{fontWeight: 500}}>Worked at: {experience.company} from : {new Date(experience.startDate).toLocaleDateString()} to: {new Date(experience.endDate).toLocaleDateString()}</p>
                 <p>{experience.description}</p>
               </Col>
             </Row>
@@ -187,7 +191,7 @@ React.useEffect(() => {
             <Row key={index} style={{padding: "18px"}}>
               <Col className="text-center text-md-left" >
                 <h6 className="text-uppercase">{education.degree}</h6>
-                <p style={{fontWeight: 500}}>Studied at: {education.schoolName}</p>
+                <p style={{fontWeight: 500}}>Studied at: {education.schoolName} from : {new Date(education.startDate).toLocaleDateString()} to: {new Date(education.endDate).toLocaleDateString()}</p>
                 <p>{education.description}</p>
               </Col>
             </Row>

@@ -211,11 +211,26 @@ console.log("step 1 apply");
     const { lettre, offer, intern, description ,oui} = req.body;
 const date=new Date();
       if(oui==="spec"){
+console.log(req.file==null);
+if (req.file==null){
 
+  const resume = await Resume.create({ description:description ,experiences:experiences,
+    skills:skills,educations:educations})
+    const candidacy = await Candidacy.create({ dateApply:date,lettre,offer:offer,intern:intern,resume:resume._id,status:"On hold",resumeType:"spec"}); 
+    console.log(candidacy);
+
+}else {
       const resume = await Resume.create({ description:description ,experiences:experiences,
         skills:skills,educations:educations,filePath:req.file.filename})
         const candidacy = await Candidacy.create({ dateApply:date,lettre,offer:offer,intern:intern,resume:resume._id,status:"On hold",resumeType:"spec"}); 
         console.log(candidacy);
+
+      }
+
+
+
+
+
         const user2 = await User.updateOne({ _id: intern,role:"condidat" },  { $push: { OfferIdI: offer } });
 
         const user = await User.updateOne({ _id: intern, role:"company"}, { $push: { OfferIdC: offer } });

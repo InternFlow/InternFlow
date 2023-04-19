@@ -68,14 +68,18 @@ const [updatedUserd, setUpdatedUserData]  = useState({
     {
       schoolName: "",
       degree: "",
-      description: ""
+      description: "",
+      startDate:"",
+      endDate:""
     }
   ],
   experiences: [
     {
       jobTitle: "",
       company: "",
-      description: ""
+      description: "",
+      startDate:"",
+      endDate:""
     }
   ],
   skills: [],
@@ -187,6 +191,7 @@ const addEducation = ()=>{
     const newUserData = { ...prevState };
     newUserData.educations.push({schoolName: "",
     degree: "",
+    startDate:"",
     description: ""});
     setEducationIndex(newUserData.educations.length -1);
     return newUserData;
@@ -194,7 +199,7 @@ const addEducation = ()=>{
   setIsEducationModal(true);
 
 }
-
+console.log(educationIndex);
  const addWorkExperience= () =>{
   setUpdatedUserData((prevState)=>{
     const newUserData = { ...prevState };
@@ -396,7 +401,7 @@ React.useEffect(()=>{
                
                
                </Row>
-                <p style={{fontWeight: 500}}>Worked at: {experience.company}</p>
+                <p style={{fontWeight: 500}}>Worked at: {experience.company} from : {new Date(experience.startDate).toLocaleDateString()} to: {new Date(experience.endDate).toLocaleDateString()}</p>
                 <p>{experience.description}</p>
               </Col>
             </Row>
@@ -469,7 +474,7 @@ React.useEffect(()=>{
                
                 
                 </Row>
-                <p style={{fontWeight: 500}}>Studied at: {education.schoolName}</p>
+                <p style={{fontWeight: 500}}>Studied at: {education.schoolName} from : {new Date(education.startDate).toLocaleDateString()} to: {new Date(education.endDate).toLocaleDateString()}</p>
                 <p>{education.description}</p>
               </Col>
             </Row>
@@ -690,6 +695,30 @@ React.useEffect(()=>{
                   <ListGroupItem>
                     <Row>
                       <Col>
+                      Periode:
+                      <Input name="experiences" 
+                      data-index={workExperienceIndex}
+                      data-field="startDate"
+                      placeholder="Start date" 
+                      value={updatedUserd.experiences[workExperienceIndex].startDate}
+                      onChange={handleChange}
+                      type= "Date"
+                      />
+                      <Input name="experiences" 
+                      data-index={workExperienceIndex}
+                      data-field="endDate"
+                      placeholder="End date" 
+                      value={updatedUserd.experiences[workExperienceIndex].endDate}
+                      onChange={handleChange}
+                      type= "Date"
+                      />
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+
+                  <ListGroupItem>
+                    <Row>
+                      <Col>
                       Work description:
                       <Input name="experiences" 
                       data-index={workExperienceIndex}
@@ -745,6 +774,31 @@ React.useEffect(()=>{
                       </Col>
                     </Row>
                   </ListGroupItem>
+                   <ListGroupItem>
+                    <Row>
+                      <Col>
+                      Periode:
+                      <Input name="educations" 
+                      data-index={educationIndex}
+                      data-field="startDate"
+                      placeholder="Start date" 
+                      value={updatedUserd.educations[educationIndex].startDate}
+                      onChange={handleChange}
+                      type= "Date"
+                      />
+                      <Input name="educations" 
+                      data-index={educationIndex}
+                      data-field="endDate"
+                      placeholder="End Date" 
+                      value={updatedUserd.educations[educationIndex].endDate}
+                      onChange={handleChange}
+                      type= "Date"
+                      />
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+ 
+
                   <ListGroupItem>
                     <Row>
                       <Col>
