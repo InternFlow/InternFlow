@@ -135,6 +135,11 @@ function OfferDetails() {
       setSelectedExperience(updatedExperiences);
     }
 
+    const redirectToApplies = () => {
+
+     history.push(`/ListCandidaciesOffer/${id}`);
+  
+    }
 
     const redirect = () => {
 
@@ -313,7 +318,7 @@ const handleCheckboxChange = (event) => {
         </Button>
       )}
                 { role=="company" && (
-        <Button color="primary" onClick={redirect}>
+        <Button color="primary" onClick={redirectToApplies}>
           Consult the applies
                   </Button>
       )}

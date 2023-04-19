@@ -20,6 +20,34 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+router.get('/showApplyOffer', async (req, res) => {
+  const idC = req.query.idC; 
+  console.log("idC");
+console.log(idC);
+
+  try {
+
+    const apply = await Candidacy.findById(idC);
+    console.log(apply);
+
+   // const comp = await User.findOne({ OfferIdC: { $in: idO } });
+    //const comp2 = await User.findById('64389921c49256540309366b');
+
+    
+
+    console.log("comapnyyy");
+
+//console.log(comp);
+
+console.log("comapnyyy");
+
+    res.json(apply);
+    console.log(res);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Error getting apply');
+  }
+});
 
 router.get('/getListCandidacyInter/:id', async (req, res) => {
   try {
@@ -31,12 +59,23 @@ router.get('/getListCandidacyInter/:id', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+router.get('/getListCandidaciesOffer/:id', async (req, res) => {
+  try {
+
+    const candidacies = await
+     Candidacy.find({ 'offer': req.params.id }).populate('offer');
+    res.json(candidacies);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 
 router.get('/showResume', async (req, res) => {
   const id = req.query.id;
   console.log("yalla");
  console.log(id);
- console.log("yalla");
   try {
 
     const candidacy = await Candidacy.findById(id);

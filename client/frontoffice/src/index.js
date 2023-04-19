@@ -49,6 +49,8 @@ import OfferDetails from "views/examples/OfferDetails";
 import ListCAndidiesIntern from "views/examples/ListCandidaciesIntern";
 import AddOffer from "views/examples/AddOffer";
 import EditOffer from "views/examples/EditOffer";
+import ListCAndidiesOffer from "views/examples/ListCandidaciesOffer";
+import ApplyPageOffer from "views/examples/ApplyPageOffer";
 
 // others
 
@@ -160,6 +162,15 @@ root.render(
 <Route
         path="/EditOfferCompany"
        render={(props) => <EditOffer {...props} />}
+      />
+       
+ <Route
+        path="/ListCandidaciesOffer/:id"
+        render={(props) => <ListCAndidiesOffer {...props} />}
+      />
+      <Route
+        path="/ApplyPageOffer/:idC"
+        render={(props) => <ApplyPageOffer {...props} />}
       />
       
     <Redirect to="/index" />

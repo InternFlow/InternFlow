@@ -12,8 +12,10 @@ import {
   CardTitle,
   ListGroup,
   ListGroupItem,
-  Button
+  Button,
+  CardImg
 } from "reactstrap";
+import offerImage from "../uploads/offers/1681389235310-offers.jpg";
 
 // core components
 import DemoFooter from "components/Footers/DemoFooter.js";
@@ -21,17 +23,20 @@ import { useHistory, useParams } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 import { API } from "config";
+import ExamplesNavbar from "components/Navbars/ExamplesNavbar";
+import OfferHeader from "components/Headers/OfferHeader";
 
-function ListCAndidiesIntern() {
-  const id = localStorage.getItem("id");
+function ListCAndidiesOffer() {
   // const { id } = useParams(); // Récupère l'id de l'offre depuis l'URL
+  const { id } = useParams();
 
+console.log(id);
   const [candidacies, setCandidacies] = useState([]);
 console.log(candidacies);
 
 
-  async function getListCandidacyInter(){
-    fetch(`${API}/Candidacy/getListCandidacyInter/${id}`, {
+  async function getListCandidaciesOffer(){
+    fetch(`${API}/Candidacy/getListCandidaciesOffer/${id}`, {
       credentials: 'include'
     })
     .then((response) => response.json())
@@ -40,7 +45,7 @@ console.log(candidacies);
 
   useEffect(()=>{
     console.log("wa");
-    getListCandidacyInter()},[]);
+    getListCandidaciesOffer()},[]);
 
 
 
@@ -71,6 +76,9 @@ console.log(candidacies);
 
   return (
     <>
+    <ExamplesNavbar/>
+      <OfferHeader />
+
       <div className="section profile-content" >
         <br></br>
         <Container>
@@ -79,18 +87,17 @@ console.log(candidacies);
           <Row >
           
             <Col md="9">
-            <Row>
-              {candidacies.map((candidacy) => (
+              <Row>
+             {candidacies.map((candidacy) => (
                 <Col md="4" key={candidacy._id}>
                 <Card className="mb-4"  key={candidacy._id}>
+                <CardImg top width="100%" src={offerImage} alt="Offer Image" />
+
                   <CardBody>
-
-                    <CardTitle tag="h5">{candidacy.offer.title}</CardTitle>
-                    <CardTitle tag="h5">{candidacy.status}</CardTitle>
-
-                    <p>{new Date(candidacy.dateApply).toLocaleDateString()}</p>
+                    <CardTitle tag="h5">{candidacy.description}</CardTitle>
+                    {new Date(candidacy.dateApply).toLocaleDateString()}
+                    <p>{candidacy.description}</p>
                     <Button color="primary" onClick={() => history.push(`/ApplyPageOffer/${candidacy._id}`)}>
-
                       View Details
                     </Button>
                   </CardBody>
@@ -99,8 +106,12 @@ console.log(candidacies);
               ))}  
               </Row>   
              
-</Col>         
-</Row>
+            
+            </Col>
+          </Row>
+
+         
+
            </div>
         </Container>
       </div>
@@ -110,4 +121,4 @@ console.log(candidacies);
 }
 
 
-export default ListCAndidiesIntern;
+export default ListCAndidiesOffer;
