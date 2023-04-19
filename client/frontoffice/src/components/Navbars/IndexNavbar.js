@@ -82,9 +82,9 @@ function IndexNavbar() {
         <div className="navbar-translate">
           <NavbarBrand
             data-placement="bottom"
-            onClick={()=>{history.push("/index")}}
+            href="/index"
             target="_blank"
-            style={{cursor: "pointer"}}
+            title="Coded by Creative Tim"
           >
             InternFlow
           </NavbarBrand>
@@ -156,14 +156,6 @@ function IndexNavbar() {
                 target="_blank"
               >
                 <i className="nc-icon nc-book-bookmark" /> Documentation
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                href="/offers"
-                target="_blank"
-              >
-                <i className="nc-icon nc-laptop" /> Offers
               </NavLink>
             </NavItem>
             <NavItem>

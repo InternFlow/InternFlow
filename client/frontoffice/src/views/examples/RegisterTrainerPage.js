@@ -55,11 +55,11 @@ function RegisterTrainerPage() {
       setAlertMessage(' Please Fill in with your name! ');
       setShowAlert(true); 
     }
-    // else if (name.length<5 || name.length>16){
-    //   errors.name = 'name is invalid';
-    //   setAlertMessage(' Name must be between 5 and 16 characters ');
-    //   setShowAlert(true); 
-    // }
+    else if (name.length<5 || name.length>16){
+      errors.name = 'name is invalid';
+      setAlertMessage(' Name must be between 5 and 16 characters ');
+      setShowAlert(true); 
+    }
 
     if (email.trim() === '') {
       errors.email = 'Email is required';
@@ -74,7 +74,7 @@ function RegisterTrainerPage() {
       setShowAlert(true); 
     }
 
-    // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
     if (password.trim() === '') {
       errors.password = 'Password is required';
       setAlertMessage(' Please Fill in with your password! ');

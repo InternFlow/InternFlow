@@ -4,11 +4,13 @@ import { useHistory, useParams } from "react-router-dom";
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import Accordion from 'components/Accordion';
-import {BsPencilSquare, BsXSquare } from 'react-icons/bs';
-import { PlusCircleFill } from 'react-bootstrap-icons'
+import Accordion from "components/Accordion";
+import { BsPencilSquare, BsXSquare } from "react-icons/bs";
+import { PlusCircleFill } from "react-bootstrap-icons";
 import moment from "moment";
 import Swal from "sweetalert2";
+import { CloudinaryContext, Image, Transformation } from "cloudinary-react";
+
 // reactstrap components
 import {
   Button,
@@ -22,7 +24,7 @@ import {
   Input,
   Row,
   Container,
-  Col
+  Col,
 } from "reactstrap";
 import axios from "axios";
 
@@ -32,12 +34,12 @@ function AddOffer() {
   const id = localStorage.getItem("id");
   // const [companyId, setCompanyId] = useState(id);
 
-
   const [updatedUserData, setUpdatedUserData] = useState({
-    skills: []
+    skills: [],
   });
-  
 
+
+  
   const [formData, setFormData] = useState({
     title: "",
     type_offre: "",
@@ -51,90 +53,142 @@ function AddOffer() {
     languages: "",
     // image: null,
     skills: [],
-
-
+    offre_file: "",
   });
 
+  const OffreData = new FormData();
+    OffreData.append("file", formData.offre_file);
+    OffreData.append("upload_preset", "ce5nvvl8");
+
+
+
+    //------------------------------ HandleFile ---------------------------------------//
+
+    const handleFile = async(e)=>{
+      const offre_file = e.target.files[0];
+      var formdata = new FormData();
   
+      formdata.append("file", offre_file);
+      formdata.append("cloud_name", "djjimxala");
+      formdata.append("upload_preset", "ce5nvvl8");
+
+    
+    
+  
+      let res = await fetch(
+        "https://api.cloudinary.com/v1_1/djjimxala/auto/upload",
+        {
+          method: "post",
+          mode: "cors",
+          body: formdata
+        }
+      );
+  
+      let json = await res.json();
+      console.log(JSON.stringify(json.secure_url));
+      const newFile = {
+        fileName: offre_file.name,
+        fileType: offre_file.type,
+        fileUrl: json
+      };
+      // setFormData({ ...formData, offre_file: offre_file });
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        offre_file: json.secure_url,
+      }));
+
+      
+  
+      console.log(formData.offre_file);
+  
+      // console.log(res.public_id);
+  
+      // console.log(formData);
+      
+    }
+
+    //-------------------------- HandleSubmit ----------------------------------------//
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const { title, type_offre, description, availability,startDate, endDate ,duration, location,nb_places_available, skills } = formData;
-
-    // // const data = new FormData();
-    // formData.append("title", title);
-    // formData.append("type_offre", type_offre);
-    // formData.append("description", description);
-    // formData.append("availability", availability);
-    // formData.append("startDate", startDate);
-    // formData.append("endDate", endDate);
-    // formData.append("duration", duration);
-    // formData.append("location", location);
-    // formData.append("nb_places_available", nb_places_available);
-    // // data.append("image", image);
-    // formData.append("skills", JSON.stringify(skills));
-
-
     console.log(id);
 
-    try {
-      // console.log(`http://localhost:5000/Ajoutercompanies/${id}/offers`);
-      // await axios.post("http://localhost:5000/Offer/addOfferImg", data);
-      //router.post('/companies/:id/offers' ,async (req, res) => {
-
-      // await axios.post(`http://localhost:5000/Ajoutercompanies/?id=${id}/offers`);
-
-      // const response = await fetch(`http://localhost:5000/Ajoutercompanies/${id}/offers`, {
-      //     method: "POST",
-      //     body: formData
-      //   });
-
-      await fetch(`http://localhost:5000/Ajoutercompanies/${id}/offers`, {
-        method: "POST",
+    const config = {
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "multipart/form-data",
       },
-      credentials: 'include',
-      // body: JSON.stringify({ name,email, password })
-      body: JSON.stringify(formData)
+    };
 
-      });
+    try {
 
-      console.log("Offer added successfully",formData);
+     
+      const response = await fetch(
+        `http://localhost:5000/AjoutercompaniesFil/${id}/offers`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          config,
+          body: JSON.stringify(formData, formData.offre_file.secure_url),
+
+        }
+      );
+
+      console.log("Offer added successfully", formData);
+
+        // const data = await response.json();
+        // console.log("Offer added successfully", data);
+
+        Swal.fire("Success!", "Offer added successfully!", "success");
+
+        history.push(`/profile-company-page`);
       
-
-      Swal.fire(
-        'Success!',
-        'Offer added successfully!',
-        'success'
-      )
-
-      history.push(`/profile-company-page`);
-
     } catch (error) {
       console.error(error);
       Swal.fire({
-               icon: 'error',
-               title: 'Offer not created...',
-               text: 'Something went wrong!',
-      })
+        icon: "error",
+        title: "Offer not created...",
+        text: "Something went wrong!",
+      });
     }
-  }
-
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
   };
 
+  // const handleFileChange = (e) => {
+  //   setFormData({ ...formData, offre_file: e.target.files[0] });
+  // };
+  const handleFileChange = (e) => {
+    const formData = new FormData();
+    formData.set("offre_file", e.target.files[0]);
+    setFormData(formData);
+  };
+
+  // console.log(formData.offre_file);
 
   const handleSkillChange = (event) => {
-    const { value, dataset: { index } } = event.target;
+    const {
+      value,
+      dataset: { index },
+    } = event.target;
     setUpdatedUserData((prevUpdatedUserData) => {
       const newUserData = { ...prevUpdatedUserData };
       newUserData.skills[index] = value;
       return newUserData;
     });
   };
+
+  const handleFileUpload = (result) => {
+    if (result && result.url) {
+      setFormData({ ...formData, offre_file: result.url });
+    }
+    else {
+      console.error("Error uploading file: invalid response");
+    }
+  };
+
+
   
 
 
@@ -142,7 +196,7 @@ function AddOffer() {
     <>
       <ExamplesNavbar />
       <ProfilePageHeader />
-      <div className="section profile-content" >
+      <div className="section profile-content">
         <Container>
           <div className="owner">
             <div className="avatar">
@@ -156,195 +210,227 @@ function AddOffer() {
             <h1>Add Offer</h1>
             <br></br>
 
-          <Row >
-           
-          <Col md="8" className="mx-auto text-center">
+            <Row>
+              <Col md="8" className="mx-auto text-center">
+                <Card className="card-user">
+                  <CardHeader>
+                    <CardTitle tag="h5" style={{ fontWeight: "bold" }}>
+                      Add a new Offer
+                    </CardTitle>
+                  </CardHeader>
+                  <CardBody>
+                    <Form onSubmit={handleSubmit}>
+                      <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>Title</label>
+                            <Input
+                              placeholder="Title"
+                              type="text"
+                              value={formData.title}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  title: e.target.value,
+                                })
+                              }
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>Type of Offer</label>
+                            <Input
+                              id="type_offre"
+                              type="select"
+                              name="select type"
+                              value={formData.type_offre}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  type_offre: e.target.value,
+                                })
+                              }
+                            >
+                              <option value="">
+                                Select your Category of Offer
+                              </option>
+                              <option value="summer">Summer</option>
+                              <option value="worker">Worker</option>
+                              <option value="pre-hiring">Pre-Hiring</option>
+                              <option value="PFE">PFE</option>
+                              <option value="recherche">Recherche</option>
+                            </Input>
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>Description</label>
+                            <Input
+                              placeholder="description"
+                              type="textarea"
+                              value={formData.description}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  description: e.target.value,
+                                })
+                              }
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
-            <Card className="card-user">
-              <CardHeader>
-                <CardTitle tag="h5" style={{fontWeight: "bold" }}>Add a new Offer</CardTitle>
-              </CardHeader>
-              <CardBody>
-                <Form onSubmit={handleSubmit}>
+                      <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>Availability</label>
+                            <Input
+                              placeholder="availability"
+                              type="text"
+                              value={formData.availability}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  availability: e.target.value,
+                                })
+                              }
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
+                      <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>StartDate</label>
+                            <Input
+                              type="date"
+                              name="date"
+                              id="exampleDate"
+                              placeholder="date placeholder"
+                              value={formData.startDate}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  startDate: e.target.value,
+                                })
+                              }
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
-                  <Row>
-                  <Col  md="6">
-                      <FormGroup>
-                        <label>Title</label>
-                        <Input
-                        placeholder="Title"
-                        type="text"
-                        value={formData.title}
-                        onChange= {(e)=> setFormData({ ...formData, title: e.target.value})}
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>Type of Offer</label>
-                        <Input
-                        id="type_offre"
-                        type="select"
-                        name="select type"
-                        value={formData.type_offre}
-                        onChange= {(e)=> setFormData({ ...formData, type_offre: e.target.value})}
-                        >
-                          <option value="">Select your Category of Offer</option>
-                          <option value="summer">Summer</option>
-                            <option value="worker">Worker</option>
-                            <option value="pre-hiring">Pre-Hiring</option>
-                            <option value="PFE">PFE</option>
-                            <option value="recherche">Recherche</option>
+                      <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>EndDate</label>
+                            <Input
+                              type="date"
+                              name="date"
+                              id="exampleDate"
+                              placeholder="date placeholder"
+                              value={formData.endDate}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  endDate: e.target.value,
+                                })
+                              }
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
+                      <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>Duration</label>
+                            <Input
+                              placeholder="duration"
+                              type="text"
+                              value={formData.duration}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  duration: e.target.value,
+                                })
+                              }
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>Location</label>
+                            <Input
+                              placeholder="location"
+                              type="text"
+                              value={formData.location}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  location: e.target.value,
+                                })
+                              }
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
-                        </Input>
-                       
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>Description</label>
-                        <Input
-                          placeholder="description"
-                          type="textarea"
-                          value={formData.description}
-                          onChange= {(e)=> setFormData({ ...formData, description: e.target.value})}
+                      <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>Nb of Places</label>
+                            <Input
+                              placeholder="nb_places_available"
+                              type="number"
+                              value={formData.nb_places_available}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  nb_places_available: e.target.value,
+                                })
+                              }
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
+                      <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>Languages</label>
+                            <Input
+                              id="languages"
+                              type="select"
+                              name="select offer"
+                              value={formData.languages}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  languages: e.target.value,
+                                })
+                              }
+                            >
+                              <option value="">Select your Language</option>
+                              <option value="arabic">Arabic</option>
+                              <option value="french">French</option>
+                              <option value="english">English</option>
+                              <option value="german">German</option>
+                              <option value="italian">Italian</option>
+                              <option value="chinese">Chinese</option>
+                            </Input>
+                          </FormGroup>
+                        </Col>
+                      </Row>
 
-                  <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>Availability</label>
-                        <Input
-                          placeholder="availability"
-                          type="text"
-                          value={formData.availability}
-                          onChange= {(e)=> setFormData({ ...formData, availability: e.target.value})}
-
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                  <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>StartDate</label>
-                        <Input 
-                        type="date" 
-                        name="date" 
-                        id="exampleDate" 
-                        placeholder="date placeholder" 
-                        value={formData.startDate}
-                        onChange= {(e)=> setFormData({ ...formData, startDate: e.target.value})}
-
-                        />
-
-                       
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                  <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>EndDate</label>
-                        <Input 
-                        type="date" 
-                        name="date" 
-                        id="exampleDate" 
-                        placeholder="date placeholder" 
-                        value={formData.endDate}
-                        onChange= {(e)=> setFormData({ ...formData, endDate: e.target.value})}
-
-                        />
-
-                       
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                  <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>Duration</label>
-                        <Input
-                          placeholder="duration"
-                          type="text"
-                          value={formData.duration}
-                          onChange= {(e)=> setFormData({ ...formData, duration: e.target.value})}
-
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>Location</label>
-                        <Input
-                          placeholder="location"
-                          type="text"
-                          value={formData.location}
-                          onChange= {(e)=> setFormData({ ...formData, location: e.target.value})}
-
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                  <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>Nb of Places</label>
-                        <Input
-                          placeholder="nb_places_available"
-                          type="number"
-                          value={formData.nb_places_available}
-                          onChange= {(e)=> setFormData({ ...formData, nb_places_available: e.target.value})}
-
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-               
-                  <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>Languages</label>
-                        <Input
-                        id="languages"
-                        type="select"
-                        name="select offer"
-                        value={formData.languages}
-                        onChange= {(e)=> setFormData({ ...formData, languages: e.target.value})}
-                        >
-                          <option value="">Select your Language</option>
-                          <option value="arabic">Arabic</option>
-                            <option value="french">French</option>
-                            <option value="english">English</option>
-                            <option value="german">German</option>
-                            <option value="italian">Italian</option>
-                            <option value="chinese">Chinese</option>
-
-
-                        </Input>
-                       
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                  {/* <Row>
+                      {/* <Row>
                   <Col md="6">
                       <FormGroup>
                         <label>Image</label>
@@ -354,107 +440,151 @@ function AddOffer() {
                     </Col>
                   </Row> */}
 
+                      {/** Skills */}
 
-                  {/** Skills */}
+                      <Row style={{ marginBottom: "20px" }}>
+                        {updatedUserData.skills.map((skill, index) => {
+                          return (
+                            <Col
+                              key={`skill-${index}`}
+                              style={{ marginBottom: "20px" }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <label>Skills:</label>
+                                <Input
+                                  name="skill"
+                                  data-index={index}
+                                  value={skill}
+                                  onChange={handleSkillChange}
+                                  style={{
+                                    paddingRight: "30px",
+                                    width: `${skill.length * 9 + 20}px`,
+                                    // you can adjust the 9 and 20 values to fit your design
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setUpdatedUserData(
+                                      (prevUpdatedUserData) => {
+                                        const newUserData = {
+                                          ...prevUpdatedUserData,
+                                        };
+                                        newUserData.skills.splice(index, 1);
+                                        return newUserData;
+                                      }
+                                    )
+                                  }
+                                  style={{
+                                    padding: "0 10px",
+                                    background: "none",
+                                    border: "none",
+                                    outline: "none",
+                                    fontWeight: "bolder",
+                                  }}
+                                >
+                                  X
+                                </button>
+                              </div>
+                            </Col>
+                          );
+                        })}
+                      </Row>
+                      <Row>
+                        <label>
+                          <strong>Skills</strong>
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setUpdatedUserData((prevUpdatedUserData) => {
+                              const newUserData = { ...prevUpdatedUserData };
+                              newUserData.skills.push("");
+                              return newUserData;
+                            })
+                          }
+                          style={{
+                            padding: "0 10px",
+                            background: "none",
+                            border: "none",
+                            outline: "none",
+                            fontWeight: "bolder",
+                          }}
+                        >
+                          <PlusCircleFill
+                            style={{ color: "#7D7D7D", fontSize: "35" }}
+                          ></PlusCircleFill>
+                        </button>
+                      </Row>
 
-                  <Row style={{marginBottom: "20px"}}>
-  {updatedUserData.skills.map((skill, index) => {
-    return (
-      <Col key={`skill-${index}`} style={{marginBottom: "20px"}}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <label>Skills:</label>
-          <Input
-            name="skill"
-            data-index={index}
-            value={skill}
-            onChange={handleSkillChange}
-            style={{
-              paddingRight: "30px",
-              width: `${skill.length * 9 + 20}px`,
-              // you can adjust the 9 and 20 values to fit your design
-            }}
-          />
-          <button
-            type="button"
-            onClick={() =>
-              setUpdatedUserData((prevUpdatedUserData) => {
-                const newUserData = { ...prevUpdatedUserData };
-                newUserData.skills.splice(index, 1);
-                return newUserData;
-              })
-            }
-            style={{
-              padding: "0 10px",
-              background: "none",
-              border: "none",
-              outline: "none",
-              fontWeight: "bolder"
-            }}
-          >
-            X
-          </button>
-        </div>
-      </Col>
-    );
-  })}
-</Row>
-<Row>
-  <label><strong>Skills</strong></label>
-  <button
-    type="button"
-    onClick={() =>
-      setUpdatedUserData((prevUpdatedUserData) => {
-        const newUserData = { ...prevUpdatedUserData };
-        newUserData.skills.push("");
-        return newUserData;
-      })
-    }
-    style={{
-      padding: "0 10px",
-      background: "none",
-      border: "none",
-      outline: "none",
-      fontWeight: "bolder",
-    }}
-  >
-    <PlusCircleFill style={{color:"#7D7D7D", fontSize: "35"}}></PlusCircleFill>
-  </button>
-</Row>
+                      {/** End Skills */}
 
+                      <br></br>
+                      <br></br>
 
-                  {/** End Skills */}
+                      {/** File Upload */}
+                      <Row>
+                    <Col md="6">
+                      <FormGroup>
+                        <label>Offer File</label>
+                        <input 
+                        type="file" 
+                        name="offre_file"
+                        className="form-control-file" 
+                        value={formData.offre_file.secure_url}
+                        onChange={handleFile}
+                         />
+                        </FormGroup>
 
-                  <Row>
-                    <div className="update ml-auto mr-auto">
-                      <Button
-                        className="btn-round"
-                        color="primary"
-                        type="submit"
-                      >
-                        Create Offer
-                      </Button>
-                      <span style={{ marginRight: '120px' }} />
-
-                      <Button 
-                        className="btn-round"
-                        color="danger" 
-                        onClick={() => history.goBack()}>
-                          Go back
-                      </Button>
-                    </div>
+                        {/* <Input
+                          placeholder="offre_file"
+                          type="file"
+                          value={formData.offre_file}
+                          onChange={(e) => setFormData({ ...formData, offre_file: e.target.files[0] })}
+                        /> 
+                        */}
+                    </Col>
                   </Row>
-                </Form>
-              </CardBody>
-            </Card>
-          </Col>
-          </Row>
-          
-           </div>
+
+                    
+
+
+
+                      <Row>
+                        <div className="update ml-auto mr-auto">
+                          <Button
+                            className="btn-round"
+                            color="primary"
+                            type="submit"
+                          >
+                            Create Offer
+                          </Button>
+                          <span style={{ marginRight: "120px" }} />
+
+                          <Button
+                            className="btn-round"
+                            color="danger"
+                            onClick={() => history.goBack()}
+                          >
+                            Go back
+                          </Button>
+                        </div>
+                      </Row>
+                    </Form>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+          </div>
         </Container>
       </div>
       <DemoFooter />
     </>
-    
   );
 }
 export default AddOffer;

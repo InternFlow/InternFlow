@@ -50,6 +50,8 @@ function ViewOffers() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [searchText, setSearchText] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+
 
 
 
@@ -150,23 +152,17 @@ function ViewOffers() {
     }
 
 //---------------------- Pagination ------------------------------------------//
-    const handlePageChange = (pageNumber) => {
-        setActivePage(pageNumber);
-      }
-    
-    //   const paginationItems = [];
-    //   for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
-    //     paginationItems.push(
-    //       <PaginationItem
-    //         key={pageNumber}
-    //         active={pageNumber === activePage}
-    //       >
-    //         <PaginationLink onClick={() => handlePageChange(pageNumber)}>
-    //           {pageNumber}
-    //         </PaginationLink>
-    //       </PaginationItem>
-    //     );
-    //   }
+const pageSize = 5;
+  const pageCount1 = Math.ceil(offers.length / pageSize);
+  const pages = Array.from({ length: pageCount1 }, (_, i) => i + 1);
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+  const paginatedOffers = offers.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
 
       //------------------------------ PDF ------------------------------------------//
       const generatePDF = () => {
@@ -205,15 +201,7 @@ function ViewOffers() {
 
       <div className="content">
 
-      {/* <div className="search-container">
-  <Input
-    type="text"
-    placeholder="Search..."
-    value={searchText}
-    onChange={(e) => setSearchText(e.target.value)}
-  />
-  <button onClick={handleSearch}>Search</button>
-</div> */}
+     
         <Row>
           <Col md="12">
 
@@ -266,13 +254,12 @@ function ViewOffers() {
                     </tr>
                   </thead>
                   <tbody>
-                  {offers
-                  // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                 .slice(pagesVisited, pagesVisited + offersPerPage)
-                  .map((offer) => (
-                     <tr key={offer._id} >
-                     {/* <td><img src={"../../assets/uploads/offers/"+offer.image} alt="offer image"/></td> */}
-                     <td>
+                  {/* {offers */}
+                  {/* // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) */}
+                {/* //  .slice(pagesVisited, pagesVisited + offersPerPage) */}
+                    {paginatedOffers.map((offer) => (                    
+                       <tr key={offer._id} >
+                      <td>
                       <img src={ "../../assets/uploads/offers/" +offer.image } alt="offer img"/>
                       </td>
 
@@ -296,15 +283,13 @@ function ViewOffers() {
                        variant="secondary"
                        onClick={()=> editOffer(offer._id)}
                       >Edit</Button>
-                     </td>
-
-                     
-                 </tr>
-                  ))}
-                  </tbody>
+                     </td>                     
+                     </tr>
+                    ))}                  
+                    </tbody>
                 </Table>
                 <br></br>
-                <ReactPaginate
+                {/* <ReactPaginate
                   previousLabel={'Previous'}
                   nextLabel={'Next'}
                   pageCount={pageCount}
@@ -314,7 +299,41 @@ function ViewOffers() {
                   nextLinkClassName={'next_page'}
                   disabledClassName={'disabled'}
                   activeClassName={'active'}
-                />
+                /> */}
+
+<Pagination
+                      className="pagination justify-content-end mb-0"
+                      listClassName="justify-content-end mb-0"
+                    >
+                      <PaginationItem disabled={currentPage === 1}>
+                        <PaginationLink
+                          onClick={() => handlePageClick(currentPage - 1)}
+                          tabIndex="-1"
+                        >
+                          <i className="fas fa-angle-left" />
+                          <span className="sr-only">Previous</span>
+                        </PaginationLink>
+                      </PaginationItem>
+                      {pages.map((page) => (
+                        <PaginationItem
+                          key={page}
+                          active={currentPage === page}
+                        >
+                          <PaginationLink onClick={() => handlePageClick(page)}>
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem disabled={currentPage === pageCount1}>
+                        <PaginationLink
+                          onClick={() => handlePageClick(currentPage + 1)}
+                          tabIndex="-1"
+                        >
+                          <i className="fas fa-angle-right" />
+                          <span className="sr-only">Next</span>
+                        </PaginationLink>
+                      </PaginationItem>
+                    </Pagination>
                 <br></br>
                 <Button 
                   variant="success"

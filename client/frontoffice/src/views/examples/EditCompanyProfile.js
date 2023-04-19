@@ -427,12 +427,6 @@ React.useEffect(()=>{
             </ModalFooter>
             </Modal>
 
-            <Button 
-                        className="btn-round"
-                        color="danger" 
-                        onClick={() => history.goBack()}>
-                          Go back
-                      </Button>
           
            </div>
         </Container>

@@ -3,9 +3,8 @@ const Offer = require('../Models/Offer');
 const { requireAuth } = require("../middlewares/requireAuth");
 const User = require("../models/User");
 const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const config = require('../config');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 
 
 
@@ -37,7 +36,10 @@ router.post('/addOffer', async(req,res)=>{
 
 //Display all Offers
 router.get('/getOffers', async(req,res)=>{
+  console.log("aaaaaaa");
+
     try {
+
        const offers = await Offer.find();
        res.status(200).json(offers);
 
@@ -75,6 +77,24 @@ router.put('/EditOffer/:id', async(req,res)=>{
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
+});
+router.put('/AffectOffer/:idU/:idO', async(req,res)=>{
+  try {
+    console.log
+    const idO=req.params.idO;
+    console.log(idO);
+    console.log(req.params.idU);
+
+    const user = await User.findByIdAndUpdate(req.params.idU, { $push: { OfferIdC: idO } }, { new: true });
+
+      if (user) {
+          res.status(200).json(user);
+      } else {
+          res.status(404).json({ message: 'Internship Offer not found' });
+      }
+  } catch (error) {
+      res.status(400).json({ message: error.message });
+  }
 });
 
 
@@ -245,23 +265,52 @@ router.get('/DisplayOffers/:companyName', async (req, res) => {
   }
 });
 
-//---------------------------------- Upload Image --------------------------------------------------//
+//---------------------------------- Upload Image/File --------------------------------------------------//
+//IMG
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/offers');
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + '-' + file.originalname);
+//   },
+// });
+// const upload = multer({ storage });
+
+//FILE
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/offers');
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/offers')
   },
-  filename: (req, file, cb) => {
-    cb(null, 
-      Date.now() + '-' + file.originalname
-    );
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
   }
 });
-const upload = multer({ storage });
+
+const upload = multer({ storage: storage });
 
 
 router.post('/uploadImg', upload.single('image'), (req, res) => {
   const fileName = req.file.filename;
   res.send(`Image uploaded: ${fileName}`);
+});
+
+router.post('/uploadFile', upload.single('file'), (req, res) => {
+  res.send('File uploaded successfully!');
+  // const offre_file = req.file.filename;
+  // res.send(`File uploaded: ${offre_file}`);
+});
+
+router.get('/OfferFile', (req, res) => {
+  const fileName = req.query.fileName;
+  const offre_file = path.join(__dirname, '..','uploads', fileName);
+console.log(offre_file);
+  res.download(offre_file, error => {
+    if (error) {
+      console.error('Error while downloading file:', error);
+      res.status(500).send('Error while downloading file');
+    }
+  });
 });
 
 
@@ -283,8 +332,11 @@ const storageC = new CloudinaryStorage({
     allowed_formats: ['jpg', 'jpeg', 'png', 'gif']
   }
 });
-
 const uploadC = multer({ storage: storageC });
+
+
+
+
 
 // route pour télécharger l'image
 router.post('/offer/image', uploadC.single('image'), async(req, res) => {
@@ -314,7 +366,6 @@ router.post('/offer/image', uploadC.single('image'), async(req, res) => {
   }
 
 });
-
 
 
 
@@ -377,8 +428,7 @@ router.post('/addOfferImg', upload.single('image'), async (req, res) => {
   }
 });
 
-
-//----------------------- Assign Offers to Company2 -------------------------------------------------//
+/----------------------- Assign Offers to Company2 -------------------------------------------------//
 // Fonction pour associer une offre à une société
 async function assignOfferToCompany(companyId, offerId) {
   // Récupérer la société avec l'identifiant donné
@@ -390,6 +440,9 @@ async function assignOfferToCompany(companyId, offerId) {
   // Sauvegarder les modifications dans la base de données
   await company.save();
 }
+
+
+
 
 // Route pour ajouter une offre à une société
 router.post('/companies/:companyId/offers',upload.single('image') ,async (req, res) => {
@@ -428,6 +481,7 @@ router.post('/companies/:companyId/offers',upload.single('image') ,async (req, r
     res.status(500).send('Erreur serveur');
   }
 });
+
 
 
 

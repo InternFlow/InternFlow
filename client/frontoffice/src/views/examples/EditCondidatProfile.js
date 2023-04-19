@@ -23,8 +23,7 @@ import {
   Container,
   Col, CardText, ListGroup,
   ListGroupItem,
-  Modal, ModalHeader, ModalBody, ModalFooter,
-  Alert
+  Modal, ModalHeader, ModalBody, ModalFooter
 } from "reactstrap";
 function EditCondidatProfile() {
   const [userd, setUserData] = useState({
@@ -84,16 +83,12 @@ const [updatedUserd, setUpdatedUserData]  = useState({
   description: ""
 });
 const [isEducationModal, setIsEducationModal] = useState(false)
-const [error, setError] = useState({name:'', lastName:'',occupation:'', local:'',email:'',bio:''})
 const [educationIndex, setEducationIndex] = useState(-1)
 
 
  
   const history = useHistory();
 
-  
-
-///////
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -118,173 +113,38 @@ const [educationIndex, setEducationIndex] = useState(-1)
     }
 
   };
-//////////
+
 const detailsModal= ()=>{
   setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
   setIsDetailsModal(true);
 }
-////////
+
 const bioModal = () =>{
   setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
   setIsBioModal(true);
 }
-////////
+
 const submitDetails= async  () =>{
   try{
-    if(detailsFormControl()){
   await saveUser(updatedUserd);
   setIsDetailsModal(false);}
-}
   catch (error){
     console.log(error)
   }
 }
 
-
-
-
-///////////
 const cancelBio= () =>{
   setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
   setIsBioModal(false);
 }
-////////
+
 const submitBio= async () =>{
-  if(bioFormControl())
-  {await saveUser(updatedUserd);
-  setIsBioModal(false);}
-}
-/////
-function bioFormControl() {
-  if(updatedUserd.description.length<25){
-    setError((prevErr) => {
-          const err = {...prevErr};
-          err.bio = 'Bio must be at least 25 characters';
-          return err;
-    }) ;
-    return false;
-  }else{
-      setError((prevErr) => {
-            const err = {...prevErr};
-            err.name = '';
-            return err;
-      }) 
-  }
-  return true;
-}
-
-///////////
-function detailsFormControl() {
-  let res=true;
-  //check email integrity
-  if(updatedUserd.email.trim()===''){
-    setError((prevErr) => {
-          const err = {...prevErr};
-          err.email = 'Email is required';
-          console.log();
-          return err;
-    }) ;
-    
-    res= false;
-  }
-  else if(!/\S+@\S+\.\S+/.test(updatedUserd.email))
-  {
-    setError((prevErr) => {
-      const err = {...prevErr};
-      err.email = 'Invalid Email';
-      console.log();
-      return err;
-}) ;
-
-res= false;
-  }
-  else{
-    setError((prevErr) => {
-      const err = {...prevErr};
-      err.email = '';
-      return err;
-}) ;
-  }
-
-//check for empty skills and remove them
-updatedUserd.skills.forEach((skill, index) =>{
-  if(skill ===''|| !skill)
-  {
-    setUpdatedUserData((prevUpdatedUserData) => {
-      const newUserData = { ...prevUpdatedUserData };
-      newUserData.skills.splice(index, 1);
-      return newUserData;
-         })
-  }
-})
-
-
-if(updatedUserd.name.trim()===''){
-  setError((prevErr) => {
-        const err = {...prevErr};
-        err.name = 'Name is required';
-        return err;
-  }) ;
-  res= false;
-}else{
-    setError((prevErr) => {
-          const err = {...prevErr};
-          err.name = '';
-          return err;
-    }) 
-}
-
-if(updatedUserd.lastName.trim()===''){
-  setError((prevErr) => {
-        const err = {...prevErr};
-        err.lastName = 'Last name is required';
-        return err;
-  }) ;
-  res= false;
-}else{
-    setError((prevErr) => {
-          const err = {...prevErr};
-          err.lastName = '';
-          return err;
-    }) 
-}
-
-if(updatedUserd.occupation.trim()===''){
-  setError((prevErr) => {
-        const err = {...prevErr};
-        err.occupation = 'Occupation is required';
-        return err;
-  }) ;
-  res= false;
-}else{
-    setError((prevErr) => {
-          const err = {...prevErr};
-          err.occupation = '';
-          return err;
-    }) 
-}
-
-if(updatedUserd.local[0].trim()===''){
-  setError((prevErr) => {
-        const err = {...prevErr};
-        err.local = 'Location is required';
-        return err;
-  }) ;
-  res= false;
-}else{
-    setError((prevErr) => {
-          const err = {...prevErr};
-          err.local = '';
-          return err;
-    }) 
-}
-
-console.log("Error object:",JSON.stringify(error));
-    return res;
+  await saveUser(updatedUserd);
+  setIsBioModal(false);
 }
 
 
-/////////////
+
 const cancelDetails= () =>{
   setUpdatedUserData(JSON.parse(JSON.stringify(userd)));
   setIsDetailsModal(false);
@@ -292,11 +152,9 @@ const cancelDetails= () =>{
 
 
 
-/////////
+
 const handleChange = (event) => {
   const { name, value } = event.target;
-  
-
   setUpdatedUserData((prevUserData) => {
     // Create a copy of the previous state to modify
     const newUserData = { ...prevUserData };
@@ -324,49 +182,31 @@ const handleChange = (event) => {
   });
 };
 
+const addEducation = ()=>{
+  setUpdatedUserData((prevState)=>{
+    const newUserData = { ...prevState };
+    newUserData.educations.push({schoolName: "",
+    degree: "",
+    description: ""});
+    setEducationIndex(newUserData.educations.length -1);
+    return newUserData;
+  });
+  setIsEducationModal(true);
 
-// Function to add an education to the user's profile
-const addEducation = () => {
-  try {
-    // Update the user data with a new education object
-    setUpdatedUserData(prevState => {
-      const newUserData = { ...prevState };
-      newUserData.educations.push({
-        schoolName: "",
-        degree: "",
-        description: ""
-      });
-      // Set the index of the newly added education
-      setEducationIndex(newUserData.educations.length - 1);
-      return newUserData;
-    });
-    // Open the education modal
-    setIsEducationModal(true);
-  } catch (error) {
-    console.log(error);
-  }
-};
+}
 
-  const addWorkExperience = () => {
-    try {
-      // Update the user's data by pushing a new work experience object to the experiences array
-      setUpdatedUserData(prevState => {
-        const newUserData = { ...prevState };
-        newUserData.experiences.push({
-          jobTitle: "",
-          company: "",
-          description: ""
-        });
-        // Set the index of the new work experience to the last item in the array
-        setWorkExperienceIndex(newUserData.experiences.length - 1);
-        return newUserData;
-      });
-      // Open the modal to allow the user to fill out the new work experience
-      setIsWorkExperienceModal(true);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+ const addWorkExperience= () =>{
+  setUpdatedUserData((prevState)=>{
+    const newUserData = { ...prevState };
+    newUserData.experiences.push({jobTitle: "",
+    company: "",
+    description: ""});
+    setWorkExperienceIndex(newUserData.experiences.length -1);
+    return newUserData;
+  });
+  setIsWorkExperienceModal(true);
+  
+ }
 
   async function saveUser (user) {
     const id = localStorage.getItem("id");
@@ -547,7 +387,7 @@ React.useEffect(()=>{
                     newUserData.experiences.splice(index, 1);
                     return newUserData;
                        });
-                       saveUser(updatedUserd);
+                       submitDetails();
                       }
                      }
                      
@@ -618,10 +458,9 @@ React.useEffect(()=>{
                       setUpdatedUserData((prevUserData) => {
                     const newUserData = { ...prevUserData };
                     newUserData.educations.splice(index, 1);
-                    console.log(newUserData.educations);
                     return newUserData;
                        });
-                       saveUser(updatedUserd)
+                       submitDetails();
                       } 
                      }
                      
@@ -649,8 +488,7 @@ React.useEffect(()=>{
 
           
 
-            <Modal isOpen={isDetailsModal} toggle={()=>{setIsDetailsModal(!isDetailsModal)}}
-            onClosed={()=>{cancelDetails()}}>
+            <Modal isOpen={isDetailsModal} toggle={()=>{setIsDetailsModal(!isDetailsModal)}}>
               <ModalHeader  className="text-center text-md-left ">
                 Edit account details
               </ModalHeader>
@@ -666,11 +504,6 @@ React.useEffect(()=>{
                      value={updatedUserd.name}
                      onChange={handleChange}
                      ></Input>
-                     {error.name!=='' && (
-                      <Alert color="danger">
-                      {error.name}
-                    </Alert>
-                     )}
                   </Col> 
                   <Col>
                       <Input name="lastName" 
@@ -678,11 +511,6 @@ React.useEffect(()=>{
                       value={updatedUserd.lastName}
                       onChange={handleChange}
                       ></Input>
-                      {error.lastName!=='' && (
-                      <Alert color="danger">
-                      {error.lastName}
-                    </Alert>
-                     )}
                   </Col>
                 </Row>
                 </ListGroupItem>
@@ -695,11 +523,6 @@ React.useEffect(()=>{
                       value={updatedUserd.occupation}
                       onChange={handleChange}
                       ></Input>
-                      {error.occupation!=='' && (
-                      <Alert color="danger">
-                      {error.occupation}
-                    </Alert>
-                     )}
                       </Col>
                 </Row>
                 </ListGroupItem>
@@ -778,11 +601,6 @@ React.useEffect(()=>{
                       onChange={handleChange}
                       type="email"
                       ></Input>
-                      {error.email!=='' && (
-                      <Alert color="danger">
-                      {error.email}
-                    </Alert>
-                     )}
                     </Col>
                 </Row>
                 </ListGroupItem>
@@ -796,11 +614,6 @@ React.useEffect(()=>{
                       onChange={handleChange}
                       data-index="0"
                       ></Input>
-                      {error.local!=='' && (
-                      <Alert color="danger">
-                      {error.local}
-                    </Alert>
-                     )}
                       </Col>
                 </Row>
 
@@ -814,8 +627,7 @@ React.useEffect(()=>{
             </Modal>
 
 
-            <Modal isOpen={isBioModal} toggle={()=>{setIsBioModal(!isBioModal)}}
-            onClosed={()=>{cancelDetails()}}>
+            <Modal isOpen={isBioModal} toggle={()=>{setIsBioModal(!isBioModal)}}>
               <ModalHeader  className="text-center text-md-left ">
                 Edit BIO
               </ModalHeader>
@@ -831,11 +643,6 @@ React.useEffect(()=>{
                         minHeight: '120px', 
                       }}
                       ></Input>
-                      {error.bio!=='' && (
-                      <Alert color="danger">
-                      {error.bio}
-                    </Alert>
-                     )}
                   </Row>
               </ModalBody>
               <ModalFooter>
@@ -844,8 +651,7 @@ React.useEffect(()=>{
             </ModalFooter>
             </Modal>
 
-            <Modal isOpen={isWorkExperienceModal} toggle={()=>{setIsWorkExperienceModal(!isWorkExperienceModal)}}
-            onClosed={()=>{cancelDetails()}}>
+            <Modal isOpen={isWorkExperienceModal} toggle={()=>{setIsWorkExperienceModal(!isWorkExperienceModal)}}>
               <ModalHeader  className="text-center text-md-left ">
                 Work experience:
               </ModalHeader>
@@ -898,13 +704,12 @@ React.useEffect(()=>{
                 </ListGroup>
               </ModalBody>)}
               <ModalFooter>
-              <Button color="primary" onClick={()=>{saveUser(updatedUserd); setIsWorkExperienceModal(false);}}>Save changes</Button>{' '}
+              <Button color="primary" onClick={()=>{submitDetails(); setIsWorkExperienceModal(false);}}>Save changes</Button>{' '}
             <Button color="secondary" onClick={()=>{cancelDetails(); setIsWorkExperienceModal(false);}}>Cancel</Button>
             </ModalFooter>
             </Modal>
 
-            <Modal isOpen={isEducationModal} toggle={()=>{setIsEducationModal(!isEducationModal)}} 
-            onClosed={()=>{cancelDetails()}}>
+            <Modal isOpen={isEducationModal} toggle={()=>{setIsEducationModal(!isEducationModal)}}>
               <ModalHeader  className="text-center text-md-left ">
                 Work experience:
               </ModalHeader>
@@ -958,7 +763,7 @@ React.useEffect(()=>{
                 </ListGroup>
               </ModalBody>)}
               <ModalFooter>
-              <Button color="primary" onClick={()=>{saveUser(updatedUserd); setIsEducationModal(false);}}>Save changes</Button>{' '}
+              <Button color="primary" onClick={()=>{submitDetails(); setIsEducationModal(false);}}>Save changes</Button>{' '}
             <Button color="secondary" onClick={()=>{cancelDetails(); setIsEducationModal(false);}}>Cancel</Button>
             </ModalFooter>
             </Modal>

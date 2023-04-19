@@ -24,14 +24,6 @@ module.exports = {
  //GITHUB
  GITHUB_CLIENT_ID : 'e82296c80066609bfa88',
  GITHUB_CLIENT_SECRET_KEY : '77909bb68977419ca0e3241726e544006aaae0d4',
- GITHUB_CALLBACK_URL: 'http://localhost:5000/github/auth/callback',
-
-
- //CLOUDINARY
- cloudinary: {
-  CLOUDNAME: 'djjimxala',
-  API_KEY: '835443316573354',
-  API_SECRET: '-kCoGza7xNvaAIHDDjGUvr3GRDA'
- }
+ GITHUB_CALLBACK_URL: 'http://localhost:5000/github/auth/callback'
 
 };

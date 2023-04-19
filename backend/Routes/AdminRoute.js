@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const Candidacy = require("../models/Candidacy");
 
 router.post('/addU', async (req, res) => {
   try {
@@ -126,6 +127,23 @@ router.get('/allU', requireAuth, checkRole("admin"), async (req, res) => {
     res.status(500).send('Error getting users');
   }
 });
+
+
+router.get('/allCandidacies', requireAuth, checkRole("admin"), async (req, res) => {
+  try {
+    console.log("aaaaaaaaaaaaaaa");
+
+    const candidacies = await Candidacy.find()
+    .populate('intern')
+    .populate('offer');
+    console.log(candidacies);
+    res.json(candidacies);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Error getting users');
+  }
+});
+
 
 
 async function getUser(req, res, next) {

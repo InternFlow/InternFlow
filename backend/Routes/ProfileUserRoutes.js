@@ -5,28 +5,11 @@ const { requireAuth } = require("../middlewares/requireAuth");
 const { checkRole } = require("../middlewares/checkRole");
 const twilio = require('twilio');
 const path = require('path');
-const multer = require('multer');
-
-
 
 
 const config = require('../config');
 
 const router = express.Router();
-
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/users');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
-const upload = multer({ storage });
-
-
-//------------------------- Les Fonctions -----------------------------------------//
 
 
 router.get("/", async (req, res) =>{
@@ -158,13 +141,6 @@ router.get('/getUser/:id', async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Une erreur est survenue lors de la récupération des informations du user.' });
   }
-});
-
-
-//--------------------------------- Upload Img -------------------------------------------------//
-router.post('/uploadImg', upload.single('photo'), (req, res) => {
-  const fileName = req.file.filename;
-  res.send(`Photo uploaded: ${fileName}`);
 });
 
 

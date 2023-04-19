@@ -18,7 +18,7 @@ import {
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { useHistory } from "react-router-dom";
+import { useHistory,Link } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 
@@ -125,8 +125,9 @@ React.useEffect(() => {
               />
             </div>
           <Row >
+            
             <Col md="4" >
-              <Card className="text-center text-md-left">
+               <Card className="text-center text-md-left">
                 <CardHeader>
                 <CardTitle  tag="h5" style={{fontWeight:"bold", fontSize: 22}}>{userd.name} {userd.lastName}</CardTitle>
                   {userd.occupation}
@@ -155,6 +156,9 @@ React.useEffect(() => {
                     
                 </CardBody>
               </Card >
+              <Link to="/ListCandidaciesIntern">
+              <button  className="btn-round btn btn-success btn-block">Consult your applies</button>           
+              </Link>
             </Col>
             <Col md="8">
              
