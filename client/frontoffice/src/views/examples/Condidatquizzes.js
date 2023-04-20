@@ -22,16 +22,18 @@ import {
 import CondidatNavbar from "components/Navbars/CondidatNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation,useParams } from "react-router-dom";
 
 function Condidatquizzes() {
   const history = useHistory();
   const token = localStorage.getItem("token");
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const offerId = searchParams.get("ido");
-  const [quizzes, setQuizzes] = useState([]);
-
+ // const offerId = searchParams.get("ido");
+  const { idO } = useParams();
+const offerId=idO;
+console.log(idO);
+ const [quizzes, setQuizzes] = useState([]);
   const [offer, setoffer] = useState([]);
   const [showQuizzes, setShowQuizzes] = useState(false);
   const [CompleteQuizzes, setCompleteQuizzes] = useState(false);

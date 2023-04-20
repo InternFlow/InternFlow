@@ -117,7 +117,7 @@ router.put('/offer/:offerId/user/:userId/application', requireAuth, checkRole("c
         return res.status(404).json({ error: 'Offre introuvable' });
       }
   
-      const applications = await Candidacy.find({ offer: req.params.offerId, interviewScheduled: { $ne: null } }).populate('user');
+      const applications = await Candidacy.find({ offer: req.params.offerId, interviewScheduled: { $ne: null } }).populate('intern');
   
       const interviewDates = applications.map(application => application.interviewScheduled);
   

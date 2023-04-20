@@ -132,10 +132,11 @@ console.log(offer.quizzes);
 router.get('/offer/condidat/:offerId/quizzes', requireAuth, checkRole('condidat'), async (req, res) => {
   try {
       const offerId = req.params.offerId;
+
       console.log("idididi");
     console.log(offerId);
       const offer = await Offer.findById(offerId).populate('quizzes');
-
+console.log(offer);
 console.log(offer.quizzes);
       if (!offer) {
           return res.status(404).json({ error: 'Offre non trouvée' });
@@ -511,9 +512,11 @@ router.get('/getListCandidacyInter/:id', async (req, res) => {
 });
 router.get('/getListCandidaciesOffer/:id', async (req, res) => {
   try {
-
+const id=req.params.id;
+console.log(id);
     const candidacies = await
-     Candidacy.find({ 'offer': req.params.id }).populate('offer');
+     Candidacy.find({ 'offer': req.params.id });
+     console.log(candidacies);
     res.json(candidacies);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -591,7 +594,7 @@ console.log(idO);
     const apply = await Candidacy.findOne({ intern: id, offer:idO });
     const comp = await User.findOne({ OfferIdC: { $in: idO } });
 
-    const comp2 = await User.findById('64389921c49256540309366b');
+    //const comp2 = await User.findById('64389921c49256540309366b');
 
     
 

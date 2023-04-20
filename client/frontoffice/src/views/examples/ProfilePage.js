@@ -163,6 +163,9 @@ React.useEffect(() => {
               </Card >
               <Link to="/ListCandidaciesIntern">
               <button  className="btn-round btn btn-success btn-block">Consult your applies</button>           
+              </Link><br></br>
+              <Link to="/Edit-condidat-page">
+              <button  className="btn-round btn btn-#7D7D7D btn-block">Update Your Profile</button>           
               </Link>
             </Col>
             <Col md="8">

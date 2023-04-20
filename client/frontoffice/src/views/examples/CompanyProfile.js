@@ -19,7 +19,7 @@ import {
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { useHistory } from "react-router-dom";
+import { useHistory ,Link} from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 import offerImage from "../uploads/offers/1681389235310-offers.jpg";
@@ -171,6 +171,9 @@ React.useEffect(() => {
                     
                 </CardBody>
               </Card >
+              <Link to="/Edit-company-page">
+              <button  className="btn-round btn btn-#7D7D7D btn-block">Update Your Profile</button>           
+              </Link>
             </Col>
             <Col md="8">
              
@@ -184,7 +187,7 @@ React.useEffect(() => {
 
               </CardBody>
                 </Card>
-            
+                
             </Col>
           </Row>
           <Row >

@@ -206,7 +206,7 @@ router.post("/register", async (req, res) => {
     errors.name = "donner le nom";
   } else {
     // Vérifier que le nom contient au moins 8 caractères sans les chiffres
-    if (!/^[a-zA-Z]{8,}$/.test(name)) {
+    if (!/^[a-zA-Z]{3,}$/.test(name)) {
       errors.name = "Name should contain at least 8 characters without numbers";
     }
   }

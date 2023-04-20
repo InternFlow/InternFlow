@@ -31,7 +31,7 @@ import OfferHeader from "components/Headers/OfferHeader";
 function ListCAndidiesOffer() {
 
   const history = useHistory();
-
+  const { id } = useParams();
 
 //ahmed
 const [currentPage, setCurrentPage] = useState(0);
@@ -56,12 +56,11 @@ const [currentPage, setCurrentPage] = useState(0);
 
 
 
-
-
   const handleViewCandidatesClick = async (offerId) => {
     try {
-      console.log(offerId);
-      const response = await fetch(`http://localhost:5000/Candidacy/offer/${offerId}/applications`, {
+
+
+      const response = await fetch(`http://localhost:5000/Candidacy/getListCandidaciesOffer/${offerId}/applications`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +70,6 @@ const [currentPage, setCurrentPage] = useState(0);
       });
       const data = await response.json();
       setCandidates(data.users);
-      console.log(data.users);
       setSelectedOfferId(offerId);
     } catch (error) {
       console.error(error);
@@ -102,7 +100,6 @@ const [currentPage, setCurrentPage] = useState(0);
         body: JSON.stringify({ status: newStatus })
       });
       const data = await response.json();
-      console.log(response.status);
       if(response.status==200)
       {
           const updatedCandidates = candidates.map((candidate) => {
@@ -161,7 +158,6 @@ const [currentPage, setCurrentPage] = useState(0);
       });
 
       const data = await response.json();
-console.log(data)
 
       if(!data.error){
         const updatedCandidates1 = candidates.map((candidate) => {
@@ -260,7 +256,8 @@ console.log(selectedCandidate2);
     if (!token) {
       history.push("/sign-in");
     } else {
-      fetch("http://localhost:5000/Candidacy/offers-with-applications", {
+      
+      fetch(`http://localhost:5000/Candidacy/getListCandidaciesOffer/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -270,7 +267,7 @@ console.log(selectedCandidate2);
       })
         .then((response) => response.json())
         .then((data) => {
-          setOffers(data.offers);
+          setCandidacies(data);
         })
         .catch((error) => console.error(error));
     }
@@ -281,12 +278,10 @@ console.log(selectedCandidate2);
 //ahmed
 
   // const { id } = useParams(); // Récupère l'id de l'offre depuis l'URL
-  const { id } = useParams();
 
 console.log(id);
   const [candidacies, setCandidacies] = useState([]);
 console.log(candidacies);
-
 
   async function getListCandidaciesOffer(){
     fetch(`${API}/Candidacy/getListCandidaciesOffer/${id}`, {
@@ -375,18 +370,18 @@ console.log(candidacies);
 
 
              <Container>
-          <h2 className="title">Mes offres d'emploi</h2>
+          <h2 className="title">*************</h2>
           <Row>
-            {offers.map((offer, index) => (
-              <React.Fragment key={offer._id}>
+            {candidacies.map((candidacy, index) => (
+              <React.Fragment key={candidacy._id}>
                 <Col lg="6">
                   <Card className="mb-3">
                     <CardBody>
-                      <CardTitle tag="h5">{offer.name}</CardTitle>
+                      <CardTitle tag="h5">{candidacy.status}</CardTitle>
                       <div className="d-flex justify-content-between">
                         <Button
                           color="secondary"
-                          onClick={() => handleViewCandidatesClick(offer._id)}
+                          onClick={() => handleViewCandidatesClick(candidacy._id)}
                         >
                           Voir candidats
                         </Button>
@@ -412,7 +407,7 @@ console.log(candidacies);
                     </tr>
                   </thead>
                   <tbody>
-                    {candidates
+                    {candidacies
                       .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
                       .map((candidate, index) => (
                         <React.Fragment key={index}>

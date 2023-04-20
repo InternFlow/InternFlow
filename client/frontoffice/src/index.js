@@ -54,6 +54,7 @@ import ApplyPageOffer from "views/examples/ApplyPageOffer";
 import QuestionsQuiz from "views/examples/QuestionsQuiz";
 import Condidatquizzes from "views/examples/Condidatquizzes";
 import CondidatQuestions from "views/examples/CondidatQuestions";
+import InterviewCompany from "views/examples/InterviewCompany";
 
 // others
 
@@ -182,12 +183,20 @@ root.render(
       
 
 <Route
-        path="/quizzes/offres/condidat"
+        path="/quizzes/offres/condidat/:idO"
         render={(props) => <Condidatquizzes {...props} />}
       />
       <Route
         path="/offre/condidat/questions"
         render={(props) => <CondidatQuestions {...props} />}
+      />
+      
+
+
+
+<Route
+        path="/InterviewCompany"
+        render={(props) => <InterviewCompany {...props} />}
       />
     <Redirect to="/index" />
 
