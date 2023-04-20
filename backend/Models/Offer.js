@@ -1,26 +1,43 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
+let Offer;
+
+// Vérifier si le modèle a déjà été défini
+if (mongoose.models.Offer) {
+  // Supprimer le modèle existant
+  delete mongoose.models.Offer;
+}
+
+// Définir le modèle
 const offerSchema = new mongoose.Schema({
-    title: { type: String, required: true},
-    type_offre: { type: String, enum: ['summer', 'worker', 'pre-hiring', 'PFE'], default: 'summer' },
-    description: { type: String, required: true},
-    availability: { type: String, required: true}, //online or not or full-time
+  title: { type: String, required: true},
+    type_offre: { type: String},
+    description: { type: String},
+    availability: { type: String}, //online or not or full-time
     startDate: { type: Date},
     endDate: { type: Date},
-    duration: { type: String, required: true },
-    location: { type: String, required: true},
+    duration: { type: String},
+    location: { type: String},
     nb_places_available: { type: Number},
     languages: { type: String, enum: ['arabic', 'french', 'english', 'german', 'italian', 'spanish', 'chinese', 'japanese', 'korean'] },
-    skills: [{ type: mongoose.Schema.Types.ObjectId, ref: "Skills" }],
+    skills: [{ type: String }],
     tags: [String],
+    image: { type: String  },
+    offre_file: { type: String  },
 
-    company: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
-    experience: { type: String },
-    education: { type: mongoose.Schema.Types.ObjectId, ref: 'Education' },
 
+    company:{
+    type:Schema.Types.ObjectId,
+    ref:"User"
+  },
+  Candidacies: [{ type: mongoose.Types.ObjectId, ref: 'Candidacy' }],
+  category:{
+    type:Schema.Types.ObjectId,
+    ref:"Category"
+  }
 });
 
-const Offer = mongoose.model('Offer', offerSchema);
-
+Offer = mongoose.model('Offer', offerSchema);
 
 module.exports = Offer;

@@ -29,9 +29,11 @@ import ViewUsers from "views/users/viewUsers";
 import CreateUsers from "views/users/createUsers";
 import EditUser from "views/users/editUser";
 import EditProfileUser from "views/users/EditProfileUser";
+import candidaciesList from "views/candidacies/candidaciesList";
+import ApplyPage from "views/candidacies/ApplyPage";
 import CreateOffer from "views/offers/createOffer";
 import ViewOffers from "views/offers/viewOffer";
-
+import EditOffer from "views/offers/editOffer";
 var routes = [
   {
     path: "/dashboard",
@@ -54,20 +56,13 @@ var routes = [
     component: Notifications,
     layout: "/admin"
   },
-  // {
-  //   path: "/user-page",
-  //   name: "User Profile",
-  //   icon: "nc-icon nc-single-02",
-  //   component: UserPage,
-  //   layout: "/admin"
-  // },
-  // {
-  //   path: "/tables",
-  //   name: "Table List",
-  //   icon: "nc-icon nc-tile-56",
-  //   component: TableList,
-  //   layout: "/admin"
-  // },
+  {
+    path: "/user-page",
+    name: "User Profile",
+    icon: "nc-icon nc-single-02",
+    component: UserPage,
+    layout: "/admin"
+  },
   {
     path: "/createUser",
     name: "Add A new User",
@@ -83,13 +78,48 @@ var routes = [
     layout: "/admin"
   },
   {
+    path: "/candidaciesList",
+    name: "candidacies List",
+    icon: "nc-icon nc-laptop",
+    component: candidaciesList,
+    layout: "/admin"
+  },
+  {
+    path: "/editUser",
+    name: "Edit User",
+    icon: "nc-icon nc-simple-add",
+    component: EditUser,
+    layout: "/admin"
+  },
+  // {
+  //   path: "/editProfileCondidat",
+  //   component: EditProfileUser,
+  //   layout: "/admin"
+  // },
+  {
+    path: "/showApply",
+    name: "Show Application",
+    icon: "nc-icon nc-laptop",
+    component: ApplyPage,
+    layout: "/admin"
+  }
+  ,
+  {
     path: "/createOffer",
     name: "Add A new Offer",
     icon: "nc-icon nc-simple-add",
     component: CreateOffer,
     layout: "/admin"
   },
+  
   {
+    path: "/editOffer",
+    name: "Edit an Offer",
+    icon: "nc-icon nc-simple-add",
+    component: EditOffer,
+    layout: "/admin"
+  },
+   {
     path: "/viewOffer",
     name: "Display Offers",
     icon: "nc-icon nc-laptop",
@@ -97,15 +127,13 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/editUser",
-    component: EditUser,
-    layout: "/admin"
-  },
-  {
     path: "/editProfileCondidat",
+    name: "Edit Profile Condidat",
+    icon: "nc-icon nc-simple-add",
     component: EditProfileUser,
     layout: "/admin"
   }
+
 
 ];
 export default routes;

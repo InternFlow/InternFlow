@@ -1,5 +1,5 @@
 
-import React ,{useState} from "react";
+import React ,{useEffect, useState} from "react";
 // reactstrap components
 import {
   Card, 
@@ -11,7 +11,8 @@ import {
   CardGroup,
   CardTitle,
   ListGroup,
-  ListGroupItem
+  ListGroupItem,
+  Button,CardImg
 } from "reactstrap";
 
 // core components
@@ -21,10 +22,18 @@ import DemoFooter from "components/Footers/DemoFooter.js";
 import { useHistory } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
+import offerImage from "../uploads/offers/1681389235310-offers.jpg";
+import axios from "axios";
+import { API } from "config";
+import Swal from "sweetalert2";
 
 function CompanyProfilePage() {
   const id = localStorage.getItem("id");
+  const offerId = localStorage.getItem('offerId');
 
+
+  const [offers, setOffers] = useState([]);
+  console.log(id);
   
   const history = useHistory();
 
@@ -68,12 +77,67 @@ description: ""
 
     //history.push('/Edit-condidat-page');
 
-    history.push(`/Edit-condidat-page`);
+    history.push(`/Edit-company-page`);
 
 
 }
+	
+const handleAddOffer = async() => {
+  history.push(`/AddOfferCompany`);
+}
+console.log(userd._id);
+const handleEditOffer = async() => {
+  history.push(`/EditOfferCompany`);
+}
 
 
+
+const handleDelete = async(offerId) => {
+  const companyId = localStorage.getItem('id');
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then(async(result) => {
+    if (result.isConfirmed) {
+      const response= await axios.delete(`${API}/Deletecompanies/${companyId}/offers/${offerId}`, {
+            withCredentials: true
+      })
+        Swal.fire("Success!", "Offer Deleted successfully!", "success");
+
+        //Refresh Page
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+  history.push("/profile-company-page");
+
+    }
+  })
+
+}
+
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  const companyId = localStorage.getItem('id');
+  if (token) {
+    fetch(`http://localhost:5000/Affichercompanies/${companyId}/offers`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setOffers(data);
+      })
+      .catch(error => console.error(error));
+  }
+}, []);
 
 
 React.useEffect(() => {
@@ -159,6 +223,52 @@ React.useEffect(() => {
             
             </Col>
           </Row>
+          <Row >
+          
+          <Col md="9">
+            <Row>
+            {offers.map((offer) => (
+              <Col md="4" key={offer.id}>
+              <Card className="mb-4"  key={offer.id}>
+              <CardImg top width="100%" src={offerImage} alt="Offer Image" />
+                <CardBody>
+                  <CardTitle tag="h5">{offer.title}</CardTitle>
+                  <p>{offer.description}</p>
+                  <Button color="primary" onClick={() => history.push(`/DetailsOffers/${offer._id}`)}>
+                    View Details
+                  </Button>
+                  {/* <span style={{ marginTop: '120px' }} /> */}
+                  <br></br>
+                  <br></br>
+                  <Button color="success" onClick={()=> history.push(`/EditOfferCompany/${id}/offers/${offer._id}`)} >
+                    Edit Offer
+                  </Button>
+
+                  <br></br>
+                  <br></br>
+                  <Button color="danger" onClick={()=> handleDelete(offer._id)}>Delete Offer</Button>
+                </CardBody>
+              </Card>
+            </Col>
+            ))}  
+            </Row>  
+          
+          
+          </Col>
+        </Row>
+          <Button
+            variant= "primary"
+            type="submit"
+            onClick={()=> goedit()}
+          >Edit profile</Button>
+          <span style={{ marginRight: '120px' }} />
+          <Button
+            color="danger"
+            type="submit"
+            onClick={handleAddOffer}
+          >
+            Add Offer
+          </Button>
 
 
 

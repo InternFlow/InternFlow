@@ -26,10 +26,11 @@ import "assets/demo/demo.css";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 import AdminLayout from "layouts/Admin.js";
-import SignIn from "views/SignIn";
+import SignUp from "views/SignUp";
 import GetSession from "views/GetSession";
 import Dashboard from "layouts/Admin";
 import ResetPassword from "views/resetPassword";
+import ApplyPage from "views/candidacies/ApplyPage";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 
@@ -61,16 +62,14 @@ async function getUserDetails(){
 root.render(
   <BrowserRouter>
     <Switch> 
-    <Route path="/signin" render={(props) => <SignIn {...props} />} />
-
       <Route path="/admin/get-sesstion" render={(props) => <GetSession {...props} />} />
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Route path="/forgotPassword" component={ResetPassword} />
+      <Route path="/showApply" component={ApplyPage} />
 
 
-      <Redirect to="/signin" />
 
-      {/* <Redirect to="/admin/dashboard" /> */}
+       <Redirect to="/admin" /> 
     </Switch>
   </BrowserRouter>
 );

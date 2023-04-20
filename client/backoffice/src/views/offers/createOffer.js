@@ -1,3 +1,4 @@
+
 /*!
 
 =========================================================
@@ -19,6 +20,8 @@
 import { API } from "../../config";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import Swal from "sweetalert2";  
+
 
 // reactstrap components
 import {
@@ -34,9 +37,11 @@ import {
   Row,
   Col
 } from "reactstrap";
+import axios from "axios";
 
 function CreateOffer() {
  
+
   const [formData, setFormData] = useState({
     title: "",
     type_offre: "",
@@ -45,39 +50,69 @@ function CreateOffer() {
     duration: "",
     location: "",
     languages: "",
-
+    image: null,
 
   });
 
 
   const history = useHistory();
 
-  const handleSubmit = async(e) => {
+
+  //-------------------- SubmitOffer -----------------------------//
+  // const submitOffer = async (formData) => {
+  //   try {
+  //     const response = await fetch(`${API}/Offer/addOfferImg`, {
+  //       method: 'POST',
+  //       body: formData
+  //     });
+  //     const data = await response.json();
+  //     return data;
+  //   } catch (error) {
+  //     console.log(error);
+  //     return null;
+  //   }
+  // };
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const { title, type_offre, description, availability, duration, location, image } = formData;
+
+    const data = new FormData();
+    data.append("title", title);
+    data.append("type_offre", type_offre);
+    data.append("description", description);
+    data.append("availability", availability);
+    data.append("duration", duration);
+    data.append("location", location);
+    data.append("image", image);
 
     try {
-      await fetch(`${API}/Offer/addOffer`, {
-        method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: 'include',
-      // body: JSON.stringify({ name,email, password })
-      body: JSON.stringify(formData)
+      await axios.post("http://localhost:5000/Offer/addOfferImg", data);
+      console.log("Offer added successfully");
 
-      });
+      Swal.fire(
+              'Success!',
+              'Offer added successfully!',
+              'success'
+      )
 
-      //const { token } = await response.json();
-      //localStorage.setItem("token", token);
       history.push("/admin/dashboard");
+
     } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
+      console.error(error);
+      Swal.fire({
+               icon: 'error',
+               title: 'Offer not created...',
+               text: 'Something went wrong!',
+      })
+
     }
-
-
   };
 
- 
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] });
+  };
+
 
   return (
     <>
@@ -106,48 +141,41 @@ function CreateOffer() {
                       </FormGroup>
                     </Col>
                   </Row>
-                  {/* <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>Offer's Category</label>
-                        <Input
-                          placeholder="category"
-                          type="select"
-                          value={formData.type_offre}
-                          onChange= {(e)=> setFormData({ ...formData, type_offre: e.target.value})}
-                        >
-
-                        <option value="summer">Summer Internship</option>
-                        <option value="worker">Worker Internship</option>
-                        <option value="pre-hiring">Pre-hiring Internship</option>
-                        <option value="PFE">PFE Internship</option>
-                        </Input>
-                       
-
-                      </FormGroup>
-                    </Col>
-                  </Row> */}
                   <Row>
                     <Col md="6">
                       <FormGroup>
-                        <label>Category</label>
+                        <label>Type of Offer</label>
                         <Input
+                        id="type_offre"
+                        type="select"
+                        name="select type"
+                        value={formData.type_offre}
+                        onChange= {(e)=> setFormData({ ...formData, type_offre: e.target.value})}
+                        >
+                          <option value="summer">Summer</option>
+                            <option value="worker">Worker</option>
+                            <option value="pre-hiring">Pre-Hiring</option>
+                            <option value="PFE">PFE</option>
+                            <option value="recherche">Recherche</option>
+
+
+                        </Input>
+                        {/* <Input
                           placeholder="type_offre"
                           type="text"
                           value={formData.type_offre}
                           onChange= {(e)=> setFormData({ ...formData, type_offre: e.target.value})}
 
-                        />
+                        /> */}
                       </FormGroup>
                     </Col>
                   </Row>
-                 
                   <Row>
                     <Col md="6">
                       <FormGroup>
-                        <label>description</label>
+                        <label>Description</label>
                         <Input
-                          placeholder="Description"
+                          placeholder="description"
                           type="textarea"
                           value={formData.description}
                           onChange= {(e)=> setFormData({ ...formData, description: e.target.value})}
@@ -156,11 +184,10 @@ function CreateOffer() {
                       </FormGroup>
                     </Col>
                   </Row>
-                 
                   <Row>
                     <Col md="6">
                       <FormGroup>
-                        <label>availability</label>
+                        <label>Availability</label>
                         <Input
                           placeholder="availability"
                           type="text"
@@ -199,45 +226,47 @@ function CreateOffer() {
                       </FormGroup>
                     </Col>
                   </Row>
+
+               
                   <Row>
                     <Col md="6">
                       <FormGroup>
                         <label>Languages</label>
                         <Input
-                          placeholder="languages"
-                          type="text"
-                          value={formData.languages}
-                          onChange= {(e)=> setFormData({ ...formData, languages: e.target.value})}
+                        id="languages"
+                        type="select"
+                        name="select offer"
+                        value={formData.languages}
+                        onChange= {(e)=> setFormData({ ...formData, languages: e.target.value})}
+                        >
+                          <option value="arabic">Arabic</option>
+                            <option value="french">French</option>
+                            <option value="english">English</option>
+                            <option value="german">German</option>
+                            <option value="italian">Italian</option>
+                            <option value="chinese">Chinese</option>
 
-                        />
+
+                        </Input>
+                       
                       </FormGroup>
                     </Col>
                   </Row>
-
-                  {/* <Row>
-                    <Col md="6">
+                  <Row>
+                  <Col md="6">
                       <FormGroup>
-                        <label>Languages</label>
-                        <Input
-                          placeholder="languages"
-                          type="select"
-                          value={formData.languages}
-                          onChange= {(e)=> setFormData({ ...formData, languages: e.target.value})}
-                        >
-                        <option value="">Select a Language</option>
-                        <option value="arabic">Arabic</option>
-                        <option value="french">French</option>
-                        <option value="english">English</option>
-                        <option value="german">German</option>
-
-                       
-                        </Input>
-                       
-
+                        <label>Image</label>
+                        <input type="file" className="form-control-file" onChange={handleFileChange} />
+                        {/* <input
+                          type="file"
+                          // accept="image/*"
+                          onChange={(e) => {
+                            setFormData({ ...formData, image: e.target.files[0] });
+                            }}
+                        /> */}
                       </FormGroup>
                     </Col>
-                  </Row> */}
-
+                  </Row>
                   <Row>
                     <div className="update ml-auto mr-auto">
                       <Button

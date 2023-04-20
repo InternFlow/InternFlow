@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+
+const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   lastName: { type: String },
@@ -32,7 +34,15 @@ const userSchema = new mongoose.Schema({
   linkedinId: {type:String},
 
   confirmationToken: { type: String },
-  confirmExpiration: { type: Date }
+  confirmExpiration: { type: Date },
+  OfferIdC: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Offer'
+  }],
+  OfferIdI: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Offer'
+  }]
 });
 
 

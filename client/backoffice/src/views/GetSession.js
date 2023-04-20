@@ -63,7 +63,7 @@ const history = useHistory();
     React.useEffect(()=>{
         getToken();
         getUserDetails();
-        document.location.href = "http://localhost:3001/admin/dashboard";
+        history.push("/admin/dashboard")
     },[])
 
   return (
