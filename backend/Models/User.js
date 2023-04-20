@@ -1,10 +1,16 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const Offer = require('./Offer');
-const Training = require('./Training');
 
 
 const Schema = mongoose.Schema;
+
+
+const notificationSchema = new mongoose.Schema({
+  message: { type: String, required: true },
+  link: { type: String },
+  offreid:{ type: String }
+});
+
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   lastName: { type: String },
@@ -19,10 +25,14 @@ const userSchema = new mongoose.Schema({
     schoolName: { type: String },
     degree: { type: String},
     description: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
   }],
   experiences: [{
     jobTitle: { type: String},
     company: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
     description: { type: String }
   }],
   skills: [{ type: String }],
@@ -37,18 +47,16 @@ const userSchema = new mongoose.Schema({
 
   confirmationToken: { type: String },
   confirmExpiration: { type: Date },
-  OfferId: [{
+  OfferIdC: [{
     type: Schema.Types.ObjectId,
     ref: 'Offer'
   }],
-  Trainer_TrainingId: [{
+  OfferIdI: [{
     type: Schema.Types.ObjectId,
-    ref: 'Training'
+    ref: 'Offer'
   }],
-  Intern_TrainingId: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Training'
-  }]
+  notifications: [notificationSchema]
+
 });
 
 

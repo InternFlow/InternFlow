@@ -1,0 +1,181 @@
+import React, { useState } from "react";
+
+function AddProductForm() {
+  const [formInputs, setFormInputs] = useState({
+    name: "",
+    description: "",
+    price: "",
+    quantity: "",
+    img: null
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormInputs({ ...formInputs, [name]: value });
+  };
+
+  const handleLoad = (e) => {
+    const file = e.target.files[0];
+    setFormInputs({ ...formInputs, img: file });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newErrors = {};
+
+    // Check for empty name field
+    if (formInputs.name.trim() === "") {
+      newErrors.name = "Name field cannot be empty";
+    }
+
+    // Check for empty description field
+    if (formInputs.description.trim() === "") {
+      newErrors.description = "Description field cannot be empty";
+    }
+
+    // Check for empty price field or non-numeric value
+    if (formInputs.price.trim() === "" || isNaN(formInputs.price)) {
+      newErrors.price = "Price field must be a number";
+    }
+
+    // Check for empty quantity field or non-numeric value
+    if (formInputs.quantity.trim() === "" || isNaN(formInputs.quantity)) {
+      newErrors.quantity = "Quantity field must be a number";
+    }
+
+    // If there are no errors, submit the form data
+    if (Object.keys(newErrors).length === 0) {
+      // Submit the form data to the server
+      console.log("Form data submitted successfully");
+    } else {
+      // If there are errors, update the state variable and display the error messages
+      setErrors(newErrors);
+    }
+  };
+
+  return (
+    <>
+      <h1>Add Product</h1>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Form style={{ marginLeft: "50px" }} onSubmit={handleSubmit}>
+          <Form.Group controlId="formName">
+            <Form.Label>Name:</Form.Label>
+            <Form.Control
+              type="text"
+              style={{ width: "150%" }}
+              onChange={handleChange}
+              placeholder="Enter a Name"
+              name="name"
+            />
+            {errors.name && <span className="error">{errors.name}</span>}
+          </Form.Group>
+
+          <Form.Group controlId="formDescription">
+            <Form.Label>Description:</Form.Label>
+            <Form.Control
+              type="text"
+              style={{ width: "150%" }}
+              onChange={handleChange}
+              placeholder="Enter a Description"
+              name="description"
+            />
+            {errors.description && <span className="error">{errors.description}</span>}
+          </Form.Group>
+
+          <Form.Group controlId="formPrice">
+            <Form.Label>Price:</Form.Label>
+            <Form.Control
+              type="number"
+              style={{ width: "150%" }}
+-------------------------------------
+const [name, setName] = useState("");
+const [description, setDescription] = useState("");
+const [price, setPrice] = useState("");
+const [quantity, setQuantity] = useState("");
+const [image, setImage] = useState("");
+const [nameError, setNameError] = useState("");
+const [priceError, setPriceError] = useState("");
+
+
+const validateName = () => {
+  if (!name) {
+    setNameError("Please enter a name");
+  } else {
+    setNameError("");
+  }
+};
+
+const validatePrice = () => {
+  if (!price) {
+    setPriceError("Please enter a price");
+  } else if (isNaN(price)) {
+    setPriceError("Price must be a number");
+  } else if (Number(price) <= 0) {
+    setPriceError("Price must be greater than 0");
+  } else {
+    setPriceError("");
+  }
+};
+
+
+const validateForm = () => {
+  validateName();
+  validatePrice();
+  return !nameError && !priceError;
+};
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  if (validateForm()) {
+    // soumettre le formulaire
+  }
+};
+
+
+const handleNameChange = (e) => {
+  setName(e.target.value);
+};
+
+const handlePriceChange = (e) => {
+  setPrice(e.target.value);
+};
+
+
+<Form.Group controlId="formName">
+  <Form.Label>Name:</Form.Label>
+  <Form.Control
+    type="text"
+    style={{ width: "150%" }}
+    onChange={handleNameChange}
+    onBlur={validateName}
+    placeholder="Enter a Name"
+    name="name"
+  />
+  <div style={{ color: "red" }}>{nameError}</div>
+</Form.Group>
+
+<Form.Group controlId="formPrice">
+  <Form.Label>Price:</Form.Label>
+  <Form.Control
+    type="number"
+    style={{ width: "150%" }}
+    onChange={handlePriceChange}
+    onBlur={validatePrice}
+    placeholder="Enter a Price"
+    name="price"
+  />
+  <div style={{ color: "red" }}>{priceError}</div>
+</Form.Group>
+
+
+<Button
+  variant="primary"
+  type="submit"
+  onClick={handleSubmit}
+  disabled={!validateForm()}
+>
+  Add Product
+</Button>

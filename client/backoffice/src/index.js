@@ -30,6 +30,7 @@ import SignUp from "views/SignUp";
 import GetSession from "views/GetSession";
 import Dashboard from "layouts/Admin";
 import ResetPassword from "views/resetPassword";
+import ApplyPage from "views/candidacies/ApplyPage";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 
@@ -64,11 +65,11 @@ root.render(
       <Route path="/admin/get-sesstion" render={(props) => <GetSession {...props} />} />
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Route path="/forgotPassword" component={ResetPassword} />
+      <Route path="/showApply" component={ApplyPage} />
 
 
-      <Redirect to="/signup" />
 
-      {/* <Redirect to="/admin/dashboard" /> */}
+       <Redirect to="/admin" /> 
     </Switch>
   </BrowserRouter>
 );

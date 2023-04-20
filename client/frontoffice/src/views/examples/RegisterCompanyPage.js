@@ -100,8 +100,8 @@ function RegisterPage() {
       setShowAlert(true);
       setTimeout(() => {
         setShowAlert(false);
-        history.push("/sign-in");
-      }, 2000);
+       history.push("/sign-in");
+      }, 8000);
 
       //window.alert("SignUp Successfull")
       //  toast.success('SignUp Successful'); // success message

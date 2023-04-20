@@ -25,11 +25,15 @@ import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
 import SignUp from "views/SignUp";
-import ViewUsers from "views/users/ViewUsers";
-import CreateUsers from "views/users/CreateUsers";
-import EditUser from "views/users/EditUser";
+import ViewUsers from "views/users/viewUsers";
+import CreateUsers from "views/users/createUsers";
+import EditUser from "views/users/editUser";
 import EditProfileUser from "views/users/EditProfileUser";
-
+import candidaciesList from "views/candidacies/candidaciesList";
+import ApplyPage from "views/candidacies/ApplyPage";
+import CreateOffer from "views/offers/createOffer";
+import ViewOffers from "views/offers/viewOffer";
+import EditOffer from "views/offers/editOffer";
 var routes = [
   {
     path: "/dashboard",
@@ -81,6 +85,51 @@ var routes = [
     layout: "/admin"
   },
   {
+    path: "/candidaciesList",
+    name: "candidacies List",
+    icon: "nc-icon nc-laptop",
+    component: candidaciesList,
+    layout: "/admin"
+  },
+  {
+    path: "/editUser",
+    component: EditUser,
+    layout: "/admin"
+  },
+  {
+    path: "/editProfileCondidat",
+    component: EditProfileUser,
+    layout: "/admin"
+  },
+  {
+    path: "/showApply",
+    component: ApplyPage,
+    layout: "/admin"
+  }
+  ,
+ 
+  {
+    path: "/createOffer",
+    name: "Add A new Offer",
+    icon: "nc-icon nc-simple-add",
+    component: CreateOffer,
+    layout: "/admin"
+  },
+  
+  {
+    path: "/editOffer",
+    component: EditOffer,
+    layout: "/admin"
+  },
+   {
+    path: "/viewOffer",
+    name: "Display Offers",
+    icon: "nc-icon nc-laptop",
+    component: ViewOffers,
+    layout: "/admin"
+  },
+  
+  {
     path: "/editUser",
     component: EditUser,
     layout: "/admin"
@@ -90,6 +139,7 @@ var routes = [
     component: EditProfileUser,
     layout: "/admin"
   }
+
 
 ];
 export default routes;

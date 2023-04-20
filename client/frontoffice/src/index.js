@@ -35,12 +35,27 @@ import FormateurProfile from "views/examples/FormateurProfile.js";
 import CompanyProfile from "views/examples/CompanyProfile.js";
 import Editcondidat from "views/examples/EditCondidatProfile";
 
+import ListeCandidacies from "views/examples/ListeCandidacies";
+
 import RegisterPage from "views/examples/RegisterPage.js";
 import Login from "views/examples/Login.js";
 import NewPass from "views/examples/NewPass";
 import NewPassEmail from "views/examples/NewPassEmail";
 import Editcompany from "views/examples/EditCompanyProfile";
-import CourseList from "./components/TrainerComponents/CourseList"
+import OfferPage from "views/examples/OfferPage";
+import ApplyPage from "views/examples/ApplyPage";
+import AllOffers from "views/examples/AllOffers";
+import OfferDetails from "views/examples/OfferDetails";
+import ListCAndidiesIntern from "views/examples/ListCandidaciesIntern";
+import AddOffer from "views/examples/AddOffer";
+import EditOffer from "views/examples/EditOffer";
+import ListCAndidiesOffer from "views/examples/ListCandidaciesOffer";
+import ApplyPageOffer from "views/examples/ApplyPageOffer";
+import QuestionsQuiz from "views/examples/QuestionsQuiz";
+import Condidatquizzes from "views/examples/Condidatquizzes";
+import CondidatQuestions from "views/examples/CondidatQuestions";
+import InterviewCompany from "views/examples/InterviewCompany";
+
 // others
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -49,10 +64,6 @@ root.render(
   <BrowserRouter>
     <Switch>
       <Route path="/index" render={(props) => <Index {...props} />} />
-      <Route
-        path="/test"
-        render={(props) => <CourseList {...props} />}
-      />
       <Route
         path="/nucleo-icons"
         render={(props) => <NucleoIcons {...props} />}
@@ -116,11 +127,77 @@ root.render(
 
 
 <Route
+        path="/liste-candidacies"
+        render={(props) => <ListeCandidacies {...props} />}
+      />
+<Route
         path="/sign-up-Trainer"
         render={(props) => <RegisterTrainerPage {...props} />}
       />
 
+<Route
+        path="/offer"
+        render={(props) => <OfferPage {...props} />}
+      />
+<Route
+        path="/showApply"
+        render={(props) => <ApplyPage {...props} />}
+      />
 
+<Route
+        path="/AllOffers"
+        render={(props) => <AllOffers {...props} />}
+      />
+      
+<Route
+        path="/DetailsOffers/:id"
+        render={(props) => <OfferDetails {...props} />}
+      />
+ 
+ <Route
+        path="/ListCandidaciesIntern"
+        render={(props) => <ListCAndidiesIntern {...props} />}
+      />
+      
+<Route
+        path="/AddOfferCompany"
+        render={(props) => <AddOffer {...props} />}
+      />
+<Route
+        path="/EditOfferCompany"
+       render={(props) => <EditOffer {...props} />}
+      />
+       
+ <Route
+        path="/ListCandidaciesOffer/:id"
+        render={(props) => <ListCAndidiesOffer {...props} />}
+      />
+      <Route
+        path="/ApplyPageOffer/:idC"
+        render={(props) => <ApplyPageOffer {...props} />}
+      />
+      <Route
+        path="/offres"
+        render={(props) => <QuestionsQuiz {...props} />}
+      />
+      
+
+<Route
+        path="/quizzes/offres/condidat/:idO"
+        render={(props) => <Condidatquizzes {...props} />}
+      />
+      <Route
+        path="/offre/condidat/questions"
+        render={(props) => <CondidatQuestions {...props} />}
+      />
+      
+
+
+
+<Route
+        path="/InterviewCompany"
+        render={(props) => <InterviewCompany {...props} />}
+      />
     <Redirect to="/index" />
 
 

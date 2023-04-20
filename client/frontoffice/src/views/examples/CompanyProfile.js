@@ -1,5 +1,5 @@
 
-import React ,{useState} from "react";
+import React ,{useEffect, useState} from "react";
 // reactstrap components
 import {
   Card, 
@@ -11,20 +11,24 @@ import {
   CardGroup,
   CardTitle,
   ListGroup,
-  ListGroupItem
+  ListGroupItem,
+  Button,CardImg
 } from "reactstrap";
 
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { useHistory } from "react-router-dom";
+import { useHistory ,Link} from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
+import offerImage from "../uploads/offers/1681389235310-offers.jpg";
 
 function CompanyProfilePage() {
   const id = localStorage.getItem("id");
 
+  const [offers, setOffers] = useState([]);
+  console.log(id);
   
   const history = useHistory();
 
@@ -68,12 +72,36 @@ description: ""
 
     //history.push('/Edit-condidat-page');
 
-    history.push(`/Edit-condidat-page`);
+    history.push(`/Edit-company-page`);
 
 
 }
-
-
+	
+const handleAddOffer = async() => {
+  history.push(`/AddOfferCompany`);
+}
+console.log(userd._id);
+const handleEditOffer = async() => {
+  history.push(`/EditOfferCompany`);
+}
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  const companyId = localStorage.getItem('id');
+  if (token) {
+    fetch(`http://localhost:5000/Affichercompanies/${companyId}/offers`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setOffers(data);
+      })
+      .catch(error => console.error(error));
+  }
+}, []);
 
 
 React.useEffect(() => {
@@ -143,6 +171,9 @@ React.useEffect(() => {
                     
                 </CardBody>
               </Card >
+              <Link to="/Edit-company-page">
+              <button  className="btn-round btn btn-#7D7D7D btn-block">Update Your Profile</button>           
+              </Link>
             </Col>
             <Col md="8">
              
@@ -156,9 +187,51 @@ React.useEffect(() => {
 
               </CardBody>
                 </Card>
-            
+                
             </Col>
           </Row>
+          <Row >
+          
+          <Col md="9">
+            <Row>
+            {offers.map((offer) => (
+              <Col md="4" key={offer.id}>
+              <Card className="mb-4"  key={offer.id}>
+              <CardImg top width="100%" src={offerImage} alt="Offer Image" />
+                <CardBody>
+                  <CardTitle tag="h5">{offer.title}</CardTitle>
+                  <p>{offer.description}</p>
+                  <Button color="primary" onClick={() => history.push(`/DetailsOffers/${offer._id}`)}>
+                    View Details
+                  </Button>
+                  {/* <span style={{ marginTop: '120px' }} /> */}
+                  <br></br>
+                  <br></br>
+                  <Button color="success" onClick={handleEditOffer} >
+                    Edit Offer
+                  </Button>
+                </CardBody>
+              </Card>
+            </Col>
+            ))}  
+            </Row>  
+          
+          
+          </Col>
+        </Row>
+          <Button
+            variant= "primary"
+            type="submit"
+            onClick={()=> goedit()}
+          >Edit profile</Button>
+          <span style={{ marginRight: '120px' }} />
+          <Button
+            color="danger"
+            type="submit"
+            onClick={handleAddOffer}
+          >
+            Add Offer
+          </Button>
 
 
 
