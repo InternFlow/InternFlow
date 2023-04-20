@@ -33,7 +33,11 @@ const offerSchema = new mongoose.Schema({
   category:{
     type:Schema.Types.ObjectId,
     ref:"Category"
-  }
+  },
+  quizzes: [{
+    type: Schema.Types.ObjectId,
+    ref: "Quiz"
+  }]
 });
 
 Offer = mongoose.model('Offer', offerSchema);

@@ -3,6 +3,14 @@ const bcrypt = require('bcrypt');
 
 
 const Schema = mongoose.Schema;
+
+
+const notificationSchema = new mongoose.Schema({
+  message: { type: String, required: true },
+  link: { type: String },
+  offreid:{ type: String }
+});
+
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   lastName: { type: String },
@@ -46,7 +54,9 @@ const userSchema = new mongoose.Schema({
   OfferIdI: [{
     type: Schema.Types.ObjectId,
     ref: 'Offer'
-  }]
+  }],
+  notifications: [notificationSchema]
+
 });
 
 
