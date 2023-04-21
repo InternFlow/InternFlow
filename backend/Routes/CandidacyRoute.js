@@ -515,13 +515,32 @@ router.get('/getListCandidaciesOffer/:id', async (req, res) => {
 const id=req.params.id;
 console.log(id);
     const candidacies = await
-     Candidacy.find({ 'offer': req.params.id });
+     Candidacy.find({ 'offer': req.params.id }).populate("intern");
      console.log(candidacies);
     res.json(candidacies);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
+
+
+
+router.get('/getListCandidaciesOffer/:id/applications', async (req, res) => {
+  try {
+const id=req.params.id;
+console.log("id cond");
+console.log(id);
+    const candidacies = await
+     Candidacy.findById(id);
+     console.log(candidacies);
+    res.json(candidacies);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 
 
 

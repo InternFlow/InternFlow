@@ -285,7 +285,7 @@ function CondidatNavbar() {
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="notification-message">{notification.message}</div>
                   {notification.link ? (
-            <Link to={`/quizzes/offres/condidat/${notification.offreid}`} className="btn btn-primary ml-3">passer quizzes</Link>
+            <Link to={`/quizzes/offres/condidat/${notification.offreid}`} className="btn btn-primary ml-3">{notification.offreid}passer quizzes</Link>
           ) : null}
                 </div>
               </li>
