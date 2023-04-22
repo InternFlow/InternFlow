@@ -58,9 +58,9 @@ function RegisterPage() {
     }
 
 
-    else if (name.length<3 || name>16){
+    else if (name.length<5 || name>16){
       errors.name = 'name is invalid';
-      setAlertMessage(' Name must be between 3 and 16 characters ');
+      setAlertMessage(' Name must be between 5 and 16 characters ');
       setShowAlert(true); 
     }
 
@@ -203,7 +203,7 @@ function RegisterPage() {
                       {errors.password && <span>{errors.password}</span>}
                     </div>
 
-                    <Button block  className="btn-round" onClick={handleSubmit} color="danger" type="submit">
+                    <Button block className="btn-round" onClick={handleSubmit} color="danger" type="submit">
                       Register
                     </Button>
 

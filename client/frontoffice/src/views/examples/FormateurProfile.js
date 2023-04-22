@@ -21,29 +21,19 @@ import DemoFooter from "components/Footers/DemoFooter.js";
 import { useHistory } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
-import CourseListItem from "components/TrainerComponents/CourseListItem";
 
-function FormateurProfilePage(props) {
-  const id = props.userId;
+function FormateurProfilePage() {
+  const id = localStorage.getItem("id");
 
   
-  const [courses, setCourses] = useState([]);
   const history = useHistory();
 
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  const [Open, setOpen] = React.useState(1);
 
-  const fetchCourses = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/Course/trainer/'+id, {
-        method: 'GET',
-        credentials: 'include'
-      });
-      const data = await response.json();
-      setCourses(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+
+console.log(role)
 
   
 const [userd, setUserData] = useState({
@@ -89,7 +79,7 @@ description: ""
 React.useEffect(() => {
   const token = localStorage.getItem('token');
   if (token) {
-    fetch('http://localhost:5000/profile/'+id, {
+    fetch('http://localhost:5000/profile', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -99,7 +89,6 @@ React.useEffect(() => {
     })
       .then(response => response.json())
       .then(data => {
-        fetchCourses();
         const userData = data.user;
         setUserData(userData);
       })
@@ -171,13 +160,9 @@ React.useEffect(() => {
             </Col>
           </Row>
 
-          <CardGroup>
-      {courses.map((course,Index ) => (
-        <CourseListItem key={course._id} course={course} searchTerm={""} onCourseNameClick={()=>{
-        console.log("name clicked")
-        }} />
-      ))}
-      </CardGroup>
+
+
+
            </div>
         </Container>
       </div>

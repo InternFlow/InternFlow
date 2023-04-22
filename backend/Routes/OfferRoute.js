@@ -7,6 +7,7 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
 
 
+
 // const User = require('../Models/User');
 
 // const openai = require('openai');
@@ -264,21 +265,52 @@ router.get('/DisplayOffers/:companyName', async (req, res) => {
   }
 });
 
-//---------------------------------- Upload Image --------------------------------------------------//
+//---------------------------------- Upload Image/File --------------------------------------------------//
+//IMG
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/offers');
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + '-' + file.originalname);
+//   },
+// });
+// const upload = multer({ storage });
+
+//FILE
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/offers');
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/offers')
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
   }
 });
-const upload = multer({ storage });
+
+const upload = multer({ storage: storage });
 
 
 router.post('/uploadImg', upload.single('image'), (req, res) => {
   const fileName = req.file.filename;
   res.send(`Image uploaded: ${fileName}`);
+});
+
+router.post('/uploadFile', upload.single('file'), (req, res) => {
+  res.send('File uploaded successfully!');
+  // const offre_file = req.file.filename;
+  // res.send(`File uploaded: ${offre_file}`);
+});
+
+router.get('/OfferFile', (req, res) => {
+  const fileName = req.query.fileName;
+  const offre_file = path.join(__dirname, '..','uploads', fileName);
+console.log(offre_file);
+  res.download(offre_file, error => {
+    if (error) {
+      console.error('Error while downloading file:', error);
+      res.status(500).send('Error while downloading file');
+    }
+  });
 });
 
 

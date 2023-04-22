@@ -30,14 +30,13 @@ const userRoutes = require('./routes/UserRoute');
 const EmailUser = require('./routes/EmailUser');
 const linkedInRoute = require('./routes/LinkedInUserRoute');
 const googleFacebookRoutes = require('./routes/GoogleFacebookRoute');
+const githubRoutes = require('./Routes/GithubRoute');
 const ProfileUserRoutes = require('./Routes/ProfileUserRoutes');
 const OfferRoutes = require('./Routes/OfferRoute');
 const InterviewRoutes = require('./Routes/InterviewRoute');
 const CandidacyRoutes = require('./Routes/CandidacyRoute');
-const applicationInterviewRoute = require('./Routes/InterviewRoute');
+
 const config = require('./config');
-const QuizRoute = require('./Routes/QuizRoute');
-const CourseRoute = require('./Routes/CourseRoute');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -68,6 +67,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/linkedIn', linkedInRoute);
     app.set('view engine', 'ejs');
     app.use('/Facebook', googleFacebookRoutes);
+    app.use('/github', githubRoutes);
     app.use('/education', educationRoutes);
     app.use('/experience', experienceRoutes);
     app.use('/category', categoryRoutes);
@@ -79,10 +79,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/Interview',InterviewRoutes);
     app.use('/Candidacy',CandidacyRoutes);
 
-    app.use('/Quiz',QuizRoute);
-    app.use('/userinterview',applicationInterviewRoute);
-    app.use('/Course',CourseRoute);
-    
+
 
 
 

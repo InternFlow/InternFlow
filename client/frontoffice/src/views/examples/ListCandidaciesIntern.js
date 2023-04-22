@@ -89,7 +89,7 @@ console.log(candidacies);
                     <CardTitle tag="h5">{candidacy.status}</CardTitle>
 
                     <p>{new Date(candidacy.dateApply).toLocaleDateString()}</p>
-                    <Button color="primary" onClick={() => history.push(`/ApplyPageOffer/${candidacy._id}`)}>
+                    <Button color="primary" onClick={() => history.push(`/showApply?param=${candidacy.offer._id}`)}>
 
                       View Details
                     </Button>

@@ -9,7 +9,7 @@
           "id": 1,
           "name": "Getting started with React",
           "description": "Introduction to React components and JSX",
-          "startDateTime": "2023-01-01T09:00:00Z",
+          "startDateTime": "2023-05-01T09:00:00Z",
           "duration": "2 hours",
           "material": [
             {

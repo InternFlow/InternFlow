@@ -13,7 +13,6 @@ import {
   ListGroup,
   ListGroupItem,Button,  Modal,ModalHeader,ModalFooter
 } from "reactstrap";
-import Swal from "sweetalert2";
 
 // core components
 
@@ -218,15 +217,6 @@ const deleteApply = () => {
     .then(data => {
       console.log('Candidacy deleted:', data);
       // Mettre à jour l'état ou effectuer une action supplémentaire si nécessaire
-   
-   
-      Swal.fire(
-        'Success!',
-        'Apply deleted successfully!',
-        'success'
-      )
-      history.push(`/profile-page`);
-
     })
     .catch(error => {
       console.error('Error while deleting Candidacy:', error);

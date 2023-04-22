@@ -24,6 +24,8 @@ const offerSchema = new mongoose.Schema({
     skills: [{ type: String }],
     tags: [String],
     image: { type: String  },
+    offre_file: { type: String  },
+
 
     company:{
     type:Schema.Types.ObjectId,
@@ -33,11 +35,7 @@ const offerSchema = new mongoose.Schema({
   category:{
     type:Schema.Types.ObjectId,
     ref:"Category"
-  },
-  quizzes: [{
-    type: Schema.Types.ObjectId,
-    ref: "Quiz"
-  }]
+  }
 });
 
 Offer = mongoose.model('Offer', offerSchema);

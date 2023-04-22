@@ -29,10 +29,10 @@ import ExamplesNavbar from "components/Navbars/ExamplesNavbar";
 import OfferHeader from "components/Headers/OfferHeader";
 
 function ListCAndidiesOffer() {
+
   const history = useHistory();
   const { id } = useParams();
-const idd=id;
-console.log(idd);
+
 //ahmed
 const [currentPage, setCurrentPage] = useState(0);
 
@@ -54,12 +54,11 @@ const [currentPage, setCurrentPage] = useState(0);
 
   const [couleur, setcouleur] = useState("");
 
-  console.log(selectedCandidate);
 
 
   const handleViewCandidatesClick = async (offerId) => {
     try {
-console.log(offerId);
+
 
       const response = await fetch(`http://localhost:5000/Candidacy/getListCandidaciesOffer/${offerId}/applications`, {
         method: "GET",
@@ -70,8 +69,8 @@ console.log(offerId);
         credentials: "include",
       });
       const data = await response.json();
-      setCandidates(data);
-      setSelectedOfferId(true);
+      setCandidates(data.users);
+      setSelectedOfferId(offerId);
     } catch (error) {
       console.error(error);
     }
@@ -79,7 +78,7 @@ console.log(offerId);
 
 
   const handlePlanInterview = (offerId, candidate) => {
-    history.push(`/InterviewCompany?offerId=${idd}&candidateId=${candidate.intern._id}`);
+    history.push(`/InterviewCompany?offerId=${offerId}&candidateId=${candidate.intern._id}`);
   };
 
 
@@ -91,7 +90,7 @@ console.log(offerId);
 
     
     try {
-      const response = await fetch(`http://localhost:5000/Candidacy/offer/${idd}/users/${selectedCandidate.intern._id}/status`, {
+      const response = await fetch(`http://localhost:5000/Candidacy/offer/${offerId}/users/${selectedCandidate.intern._id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -148,7 +147,7 @@ console.log(offerId);
     ///console.log(newStatus2)
 
     try {
-      const response = await fetch(`http://localhost:5000/Candidacy/offer/${idd}/users/${selectedCandidate2.intern._id}/statusQuiz`, {
+      const response = await fetch(`http://localhost:5000/Candidacy/offer/${offerId}/users/${selectedCandidate2.intern._id}/statusQuiz`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -233,7 +232,7 @@ console.log(offerId);
     setSelectedCandidate2(candidate);
 console.log(selectedCandidate2);
     try {
-      const response = await fetch(`http://localhost:5000/Candidacy/applications/${candidate.intern._id}/offers/${idd}/quiz-scores`, {
+      const response = await fetch(`http://localhost:5000/Candidacy/applications/${candidate.intern._id}/offers/${offerId}/quiz-scores`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

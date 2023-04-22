@@ -13,6 +13,8 @@ const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const router = express.Router();
 
+require('dotenv').config();
+
 //-------------------------------- Moodifier Offre de Company ----------------------------------------------//
 // Route pour modifier une offre d'une société
 router.put('/Modifiercompanies/:companyId/offers/:offerId', async (req, res) => {
@@ -69,34 +71,55 @@ async function removeOfferFromCompany(companyId, offerId) {
 
 
 // Route pour supprimer une offre d'une société
+// router.delete('/Deletecompanies/:companyId/offers/:offerId', async (req, res) => {
+//   try {
+//     const { companyId, offerId } = req.params;
+
+//     // Vérifier si la société existe
+//     const company = await User.findById(companyId);
+//     const offer = await Offer.findById(offerId);
+
+//     if (!company) {
+//       return res.status(404).send('Société non trouvée');
+//     }
+
+//     // Vérifier si l'offre existe dans la liste des offres de la société
+//     if (!company.offers.includes(offer)) {
+//       return res.status(404).send('Offre non trouvée');
+//     }
+   
+
+//     // Retirer l'offre de la liste des offres de la société
+//     await removeOfferFromCompany(companyId, offerId);
+
+//     res.status(200).send('Offre retirée avec succès');
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send('Erreur serveur');
+//   }
+// });
 router.delete('/Deletecompanies/:companyId/offers/:offerId', async (req, res) => {
   try {
     const { companyId, offerId } = req.params;
 
-    // Vérifier si la société existe
+    // Verify that the company exists
     const company = await User.findById(companyId);
     if (!company) {
-      return res.status(404).send('Société non trouvée');
+      return res.status(404).send('Company not found');
     }
 
-    // Vérifier si l'offre existe dans la liste des offres de la société
-    if (!company.offers.includes(offerId)) {
-      return res.status(404).send('Offre non trouvée');
-    }
+    // Remove the offer from the company object
+    await User.findByIdAndUpdate(companyId, { $pull: { offers: offerId } });
 
-    // Retirer l'offre de la liste des offres de la société
-    await removeOfferFromCompany(companyId, offerId);
+      // Remove the offer from the list of offers
+      await Offer.findByIdAndRemove(offerId);
 
-    res.status(200).send('Offre retirée avec succès');
+    res.status(200).send('Offer removed successfully');
   } catch (err) {
     console.error(err);
-    res.status(500).send('Erreur serveur');
+    res.status(500).send('Server error');
   }
 });
-
-
-
-
 
 
 
@@ -105,9 +128,27 @@ router.delete('/Deletecompanies/:companyId/offers/:offerId', async (req, res) =>
 //----------------------------- Cloudinary --------------------------------------------------------------//
 // configuration de cloudinary
 cloudinary.config({
-  cloud_name: 'djjimxala',
-  api_key: '835443316573354',
-  api_secret: '-kCoGza7xNvaAIHDDjGUvr3GRDA'
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+
+  secure: true,
+  cors: {
+    origins: ['http://localhost:3001', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+    allowed_headers: [
+      'Content-Type',
+      'Origin',
+      'X-Requested-With',
+      'Accept',
+      'x-client-key',
+      'x-client-token',
+      'x-client-secret',
+      'Authorization',
+    ],
+    credentials: true,
+  },
+
 });
 
 // configuration de multer et du stockage de Cloudinary
@@ -118,6 +159,18 @@ const storageC = new CloudinaryStorage({
     allowed_formats: ['jpg', 'jpeg', 'png', 'gif']
   }
 });
+
+//FILE
+const storageFile = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'Offer',
+    resource_type: 'auto'
+  }
+});
+
+const parser = multer({ storage: storageFile });
+
 
 const uploadC = multer({ storage: storageC });
 
@@ -149,6 +202,113 @@ async function assignOfferToCompany(companyId, offerId) {
   await company.save();
 }
 
+//---------------------------------- Upload File --------------------------------------------------//
+
+//CLOUDINARY
+router.post('/uploadF', parser.single('file'), (req, res) => {
+  res.json({ url: req.file.path });
+});
+//FILE
+const storageF = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/offers')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+
+const uploadF = multer({ storage: storageF });
+
+//CLOUDINARY 
+router.post('/AjoutercompaniesFil/:id/offers',parser.single('file'),async (req, res) => {
+  try {
+  console.log('aaaaaaa');
+    // const { companyId } = req.params;
+    const companyId = req.params.id;
+
+    console.log(companyId);
+
+    // Créer une nouvelle offre à partir des données envoyées dans la requête
+    const newOffer = new Offer({
+      title: req.body.title,
+      type_offre: req.body.type_offre,
+      description: req.body.description,
+      availability: req.body.availability,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+
+      duration: req.body.duration,
+      location: req.body.location,
+      nb_places_available: req.body.nb_places_available,
+      languages: req.body.languages,
+      skills: req.body.skills,
+      // image: req.file,
+      offre_file:req.file,
+      //offre_file
+
+
+      company: companyId
+    });
+
+    // Sauvegarder la nouvelle offre dans la base de données
+    const savedOffer = await newOffer.save();
+
+    // Appeler la fonction pour associer l'offre à la société
+    await assignOfferToCompany(companyId, savedOffer._id);
+
+    console.log(res.public_id);
+
+    res.status(201).json(savedOffer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur serveur');
+  }
+});
+// Route pour ajouter une offre à une société
+router.post('/AjoutercompaniesFile/:id/offers',uploadF.single('offre_file'),async (req, res) => {
+  try {
+  console.log('aaaaaaa');
+    // const { companyId } = req.params;
+    const companyId = req.params.id;
+
+    console.log(companyId);
+
+    // Créer une nouvelle offre à partir des données envoyées dans la requête
+    const newOffer = new Offer({
+      title: req.body.title,
+      type_offre: req.body.type_offre,
+      description: req.body.description,
+      availability: req.body.availability,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+
+      duration: req.body.duration,
+      location: req.body.location,
+      nb_places_available: req.body.nb_places_available,
+      languages: req.body.languages,
+      skills: req.body.skills,
+      // image: req.file,
+      offre_file:req.file,
+      //offre_file
+
+
+      company: companyId
+    });
+
+    // Sauvegarder la nouvelle offre dans la base de données
+    const savedOffer = await newOffer.save();
+
+    // Appeler la fonction pour associer l'offre à la société
+    await assignOfferToCompany(companyId, savedOffer._id);
+
+    res.status(201).json(savedOffer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
 // Route pour ajouter une offre à une société
 router.post('/Ajoutercompanies/:id/offers' ,async (req, res) => {
   try {
@@ -173,6 +333,7 @@ router.post('/Ajoutercompanies/:id/offers' ,async (req, res) => {
       languages: req.body.languages,
       skills: req.body.skills,
       // image: req.file,
+      //offre_file
 
 
       company: companyId
@@ -206,7 +367,7 @@ router.post("/register", async (req, res) => {
     errors.name = "donner le nom";
   } else {
     // Vérifier que le nom contient au moins 8 caractères sans les chiffres
-    if (!/^[a-zA-Z]{3,}$/.test(name)) {
+    if (!/^[a-zA-Z]{8,}$/.test(name)) {
       errors.name = "Name should contain at least 8 characters without numbers";
     }
   }
@@ -427,18 +588,6 @@ router.put("/confirm/:id", async (req, res) => {
 router.get("/profile", requireAuth, (req, res) => {
   var user = req.user;
   res.status(200).json({ user: user });
-});
-
-router.get("/profile/:id",  async (req, res) => {
-  try {
-  const { id } = req.params;
-  const user = await User.findById(id);
-  
-  res.status(200).json({ user: user });
-} catch (error) {
-  res.status(500).json(error.message);
-}
-
 });
 
 router.get("/company", requireAuth, (req, res) => {
