@@ -1,13 +1,15 @@
 import { API } from "../../config";
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { useHistory } from "react-router-dom";
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 import Accordion from 'components/Accordion';
-import {BsPencilSquare, BsXSquare } from 'react-icons/bs';
+import {BsPencilSquare, BsPlusCircle } from 'react-icons/bs';
 import { PlusCircleFill } from 'react-bootstrap-icons'
 import moment from "moment";
+import MyCourseListItem from "components/TrainerComponents/MyCourseListItem";
+import UpdateCourseForm from "components/TrainerComponents/UpdateCourseForm";
 // reactstrap components
 import {
   Button,
@@ -23,8 +25,9 @@ import {
   Container,
   Col, CardText, ListGroup,
   ListGroupItem,
-  Modal, ModalHeader, ModalBody, ModalFooter
+  Modal, ModalHeader, ModalBody, ModalFooter, CardGroup
 } from "reactstrap";
+import AddCourseForm from "components/TrainerComponents/AddCourseForm";
 function EditFormateurProfile() {
   const [userd, setUserData] = useState({
     name: "",
@@ -37,9 +40,27 @@ function EditFormateurProfile() {
     
   );
   
+  const [courses, setCourses] = useState([]);
+  const [courseU, setCourseU] = useState();
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/Course/trainer', {
+        method: 'GET',
+        credentials: 'include'
+      });
+      const data = await response.json();
+      setCourses(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+ 
 
 const [isDetailsModal, setIsDetailsModal] = useState(false);
 const [isBioModal, setIsBioModal] = useState(false);
+const [isUpdateCourseModal, setIsUpdateCourseModal] = useState(false);
+const [isAddCourseModal, setIsAddCourseModal] = useState(false);
 const [updatedUserd, setUpdatedUserData]  = useState({
   name: "",
   lastName: "",
@@ -51,6 +72,50 @@ const [updatedUserd, setUpdatedUserData]  = useState({
   description: ""
 });
 
+
+
+const deleteCourse = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:5000/Course/${id}`, {
+      method: 'DELETE'
+      
+      ,credentials: 'include'
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+
+    const deleted = await response.json();
+    return deleted;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+
+const handleEditCourse = (course) => {
+      setCourseU({...course})
+      setIsUpdateCourseModal(true);
+}
+const handleAddCourse = (course) => {
+  setIsAddCourseModal(true);
+}
+
+
+
+const handleDeleteCourse = (course) => {
+  // Send a DELETE request to delete the course
+  deleteCourse(course._id)
+    .then(res => {
+      console.log('Course deleted successfully:', res);
+      // Navigate to the course list page or do something else
+      fetchCourses();
+    })
+    .catch(err => console.error('Error deleting course:', err));
+}
 
  
   const history = useHistory();
@@ -152,7 +217,6 @@ const handleChange = (event) => {
 
 
   async function saveUser (user) {
-    const id = localStorage.getItem("id");
 try 
  { const requestOptions = {
       method: "PATCH",
@@ -195,10 +259,13 @@ try
   }
 }
 
-React.useEffect(()=>{
+
+
+useEffect(() => {
   getProfile();
-  
+  fetchCourses();
 }, []);
+
 
 
   return (
@@ -278,9 +345,35 @@ React.useEffect(()=>{
             
             </Col>
           </Row>
+                  <Row>
+               { (courses===[] || !courses) ? (
+                <Row>
+                    <h2>
+                      Nothing Here Yet!
+                    </h2>
+                </Row>
+               ) :(<Row>
+                  
+      <CardGroup>
+      {courses.map((course,Index ) => (
+        <MyCourseListItem key={course._id} course={course} searchTerm={""} onCourseNameClick={()=>{
+        console.log("name clicked")
+        }}
+        onEdit={handleEditCourse}
+        onDelete={handleDeleteCourse}  />
+      ))}
+     
+      </CardGroup>
+                </Row>)}
 
+                </Row>
 
-
+        <Row>
+        
+        <BsPlusCircle color="gray" onClick={handleAddCourse} 
+      style={{ cursor:"pointer",fontSize:"80"}}>
+        </BsPlusCircle>
+        </Row>
 
           
 
@@ -427,7 +520,30 @@ React.useEffect(()=>{
             </ModalFooter>
             </Modal>
 
+
+                    
+            <Modal isOpen={isUpdateCourseModal} toggle={()=>{setIsUpdateCourseModal(!isUpdateCourseModal)}}>
+            <ModalHeader>Edit Course Details</ModalHeader>
+        <ModalBody>
+                      {courseU && <UpdateCourseForm course={courseU} onCourseUpdated={()=>{
+                        setIsUpdateCourseModal(!isUpdateCourseModal);
+                        fetchCourses();
+                        }}/>}
+        </ModalBody>
+            </Modal>
           
+          
+            <Modal isOpen={isAddCourseModal} toggle={()=>{setIsAddCourseModal(!isAddCourseModal)}}>
+            <ModalHeader>Edit Course Details</ModalHeader>
+        <ModalBody>
+                       <AddCourseForm course={courseU} onCourseAdded={()=>{
+                        setIsAddCourseModal(!isAddCourseModal);
+                        fetchCourses();
+                        }}
+                      
+                          />
+        </ModalBody>
+            </Modal>
            </div>
         </Container>
       </div>

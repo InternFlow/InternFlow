@@ -1,5 +1,5 @@
 import { API } from "../../config";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
@@ -8,6 +8,7 @@ import Accordion from 'components/Accordion';
 import {BsPencilSquare, BsXSquare } from 'react-icons/bs';
 import { PlusCircleFill } from 'react-bootstrap-icons'
 import moment from "moment";
+import offerImage from "../uploads/offers/1681389235310-offers.jpg";
 // reactstrap components
 import {
   Button,
@@ -23,7 +24,7 @@ import {
   Container,
   Col, CardText, ListGroup,
   ListGroupItem,
-  Modal, ModalHeader, ModalBody, ModalFooter
+  Modal, ModalHeader, ModalBody, ModalFooter, CardImg
 } from "reactstrap";
 function EditCompanyProfile() {
   const [userd, setUserData] = useState({
@@ -37,6 +38,8 @@ function EditCompanyProfile() {
     
   );
   
+  
+  const [offers, setOffers] = useState([]);
 
 const [isDetailsModal, setIsDetailsModal] = useState(false);
 const [isBioModal, setIsBioModal] = useState(false);
@@ -51,6 +54,33 @@ const [updatedUserd, setUpdatedUserData]  = useState({
   description: ""
 });
 
+const handleAddOffer = async() => {
+  history.push(`/AddOfferCompany`);
+}
+console.log(userd._id);
+const handleEditOffer = async() => {
+  history.push(`/EditOfferCompany`);
+}
+
+
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  const companyId = localStorage.getItem('id');
+  if (token) {
+    fetch(`http://localhost:5000/Affichercompanies/${companyId}/offers`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setOffers(data);
+      })
+      .catch(error => console.error(error));
+  }
+}, []);
 
  
   const history = useHistory();
@@ -72,7 +102,7 @@ const [updatedUserd, setUpdatedUserData]  = useState({
 
       const response = await fetch(`${API}/Condidat/editprofile`, requestOptions);
       setUserData(await response.json().user);
-      //   onUpdate(data.user);
+      
       history.push("/profile-page");
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
@@ -195,7 +225,7 @@ try
   }
 }
 
-React.useEffect(()=>{
+useEffect(()=>{
   getProfile();
   
 }, []);
@@ -278,6 +308,45 @@ React.useEffect(()=>{
             
             </Col>
           </Row>
+
+          <Row >
+          
+          <Col md="9">
+            <Row>
+            {offers.map((offer) => (
+              <Col md="4" key={offer.id}>
+              <Card className="mb-4"  key={offer.id}>
+              <CardImg top width="100%" src={offerImage} alt="Offer Image" />
+                <CardBody>
+                  <CardTitle tag="h5">{offer.title}</CardTitle>
+                  <p>{offer.description}</p>
+                  <Button color="primary" onClick={() => history.push(`/DetailsOffers/${offer._id}`)}>
+                    View Details
+                  </Button>
+                  {/* <span style={{ marginTop: '120px' }} /> */}
+                  <br></br>
+                  <br></br>
+                  <Button color="success" onClick={handleEditOffer} >
+                    Edit Offer
+                  </Button>
+                </CardBody>
+              </Card>
+            </Col>
+            ))}  
+            </Row>  
+          
+          
+          </Col>
+        </Row>
+        
+          <Button
+            color="danger"
+            type="submit"
+            onClick={handleAddOffer}
+          >
+            Add Offer
+          </Button>
+
 
 
 

@@ -43,14 +43,20 @@ async function getUser(req, res, next) {
     if (req.body.email != null) {
       res.user.email = req.body.email;
     }
+    if (req.body.occupation != null) {
+      res.user.occupation = req.body.occupation;
+    }
     if (req.body.role != null) {
       res.user.role = req.body.role;
+    }
+    if (req.body.local != null) {
+      res.user.local = req.body.local;
     }
     if (req.body.educations != null) {
       res.user.educations = req.body.educations;
     }
     if (req.body.experiences != null) {
-      res.user.experiences = req.body.experiences;
+      res.user.experiences = req.body.experiences; 
     }
     if (req.body.skills != null) {
       res.user.skills = req.body.skills;

@@ -18,23 +18,20 @@ import {
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { useHistory,Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
-import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
-function ProfilePage() {
-  const id = localStorage.getItem("id");
+function ProfilePage(props) {
+  const id = props.userId;
 
   
   const history = useHistory();
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
-  const [Open, setOpen] = React.useState(1);
 
 
-console.log(role)
 
   
 const [userd, setUserData] = useState({
@@ -47,18 +44,14 @@ educations: [
   {
     schoolName: "",
     degree: "",
-    description: "",
-    startDate:"",
-    endDate:""
+    description: ""
   }
 ],
 experiences: [
   {
     jobTitle: "",
     company: "",
-    description: "",
-    startDate:"",
-    endDate:""
+    description: ""
   }
 ],
 skills: [],
@@ -97,7 +90,7 @@ description: ""
 React.useEffect(() => {
   const token = localStorage.getItem('token');
   if (token) {
-    fetch('http://localhost:5000/profile', {
+    fetch('http://localhost:5000/profile/'+id, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -117,7 +110,7 @@ React.useEffect(() => {
 
   return (
     <>
-      <CondidatNavbar />
+      <ExamplesNavbar />
       <ProfilePageHeader />
       <div className="section profile-content" >
         <Container>
@@ -130,9 +123,8 @@ React.useEffect(() => {
               />
             </div>
           <Row >
-            
             <Col md="4" >
-               <Card className="text-center text-md-left">
+              <Card className="text-center text-md-left">
                 <CardHeader>
                 <CardTitle  tag="h5" style={{fontWeight:"bold", fontSize: 22}}>{userd.name} {userd.lastName}</CardTitle>
                   {userd.occupation}
@@ -161,12 +153,6 @@ React.useEffect(() => {
                     
                 </CardBody>
               </Card >
-              <Link to="/ListCandidaciesIntern">
-              <button  className="btn-round btn btn-success btn-block">Consult your applies</button>           
-              </Link><br></br>
-              <Link to="/Edit-condidat-page">
-              <button  className="btn-round btn btn-#7D7D7D btn-block">Update Your Profile</button>           
-              </Link>
             </Col>
             <Col md="8">
              
@@ -183,7 +169,7 @@ React.useEffect(() => {
             <Row key={index} style={{padding: "18px"}}>
               <Col className="text-center text-md-left" >
                 <h6 className="text-uppercase">{experience.jobTitle}</h6>
-                <p style={{fontWeight: 500}}>Worked at: {experience.company} from : {new Date(experience.startDate).toLocaleDateString()} to: {new Date(experience.endDate).toLocaleDateString()}</p>
+                <p style={{fontWeight: 500}}>Worked at: {experience.company}</p>
                 <p>{experience.description}</p>
               </Col>
             </Row>
@@ -195,7 +181,7 @@ React.useEffect(() => {
             <Row key={index} style={{padding: "18px"}}>
               <Col className="text-center text-md-left" >
                 <h6 className="text-uppercase">{education.degree}</h6>
-                <p style={{fontWeight: 500}}>Studied at: {education.schoolName} from : {new Date(education.startDate).toLocaleDateString()} to: {new Date(education.endDate).toLocaleDateString()}</p>
+                <p style={{fontWeight: 500}}>Studied at: {education.schoolName}</p>
                 <p>{education.description}</p>
               </Col>
             </Row>

@@ -429,6 +429,18 @@ router.get("/profile", requireAuth, (req, res) => {
   res.status(200).json({ user: user });
 });
 
+router.get("/profile/:id",  async (req, res) => {
+  try {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  
+  res.status(200).json({ user: user });
+} catch (error) {
+  res.status(500).json(error.message);
+}
+
+});
+
 router.get("/company", requireAuth, (req, res) => {
   var user = req.user;
   res.status(200).json({ user: user });

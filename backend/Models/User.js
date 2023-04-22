@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
   phoneNumber:{ type:Number},
   description: { type: String},
   linkedinId: {type:String},
-
+  occupation: {type:String},
   confirmationToken: { type: String },
   confirmExpiration: { type: Date },
   OfferIdC: [{

@@ -55,6 +55,8 @@ import QuestionsQuiz from "views/examples/QuestionsQuiz";
 import Condidatquizzes from "views/examples/Condidatquizzes";
 import CondidatQuestions from "views/examples/CondidatQuestions";
 import InterviewCompany from "views/examples/InterviewCompany";
+import ProfileView from "views/examples/ProfileView";
+import ManageClasses from "views/examples/ManageClasses";
 
 // others
 
@@ -191,6 +193,22 @@ root.render(
         render={(props) => <CondidatQuestions {...props} />}
       />
       
+
+      <Route
+        path="/profile/:id"
+        render={(props) => <ProfileView {...props} />}
+      />
+      
+      <Route
+        path="/profile"
+        render={(props) => <ProfileView {...props} />}
+      />
+      
+      
+      <Route
+        path="/Classes/:id"
+        render={(props) => <ManageClasses {...props} />}
+      />
 
 
 

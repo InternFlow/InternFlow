@@ -1,0 +1,494 @@
+[
+    {
+      "id": 123,
+      "name": "Introduction to React",
+      "description": "Learn the basics of React and build your first web application",
+      "price": 49.99,
+      "classes": [
+        {
+          "id": 1,
+          "name": "Getting started with React",
+          "description": "Introduction to React components and JSX",
+          "startDateTime": "2023-01-01T09:00:00Z",
+          "duration": "2 hours",
+          "material": [
+            {
+              "id": 1,
+              "name": "Getting started with React slides",
+              "url": "https://example.com/getting-started-slides.pdf"
+            },
+            {
+              "id": 2,
+              "name": "React starter code",
+              "url": "https://github.com/example/react-starter"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Building a simple React app",
+          "description": "Building a to-do list app using React",
+          "startDateTime": "2023-05-08T09:00:00Z",
+          "duration": "2 hours",
+          "material": [
+            {
+              "id": 3,
+              "name": "To-do list app code",
+              "url": "https://github.com/example/to-do-list-app"
+            }
+          ]
+        }
+      ],
+      "enrollmentStartDate": "2023-04-01T00:00:00Z",
+      "enrollmentEndDate": "2023-05-01T00:00:00Z",
+      "courseStartDate": "2023-05-01T00:00:00Z",
+      "courseEndDate": "2023-05-15T00:00:00Z",
+      "tags": [
+        "react",
+        "web development",
+        "javascript"
+      ],
+      "image": "https://example.com/react-course-image.jpg"
+    }
+  ,{
+    "id": 456,
+    "name": "Intermediate French",
+    "description": "Improve your French language skills with this intermediate course",
+    "price": 79.99,
+    "classes": [
+      {
+        "id": 1,
+        "name": "French grammar and verb conjugation",
+        "description": "Review of basic grammar and introduction to more advanced concepts",
+        "startDateTime": "2023-06-01T14:00:00Z",
+        "duration": "2 hours",
+        "material": [
+          {
+            "id": 1,
+            "name": "French grammar exercises",
+            "url": "https://example.com/french-grammar-exercises.pdf"
+          },
+          {
+            "id": 2,
+            "name": "Verb conjugation cheat sheet",
+            "url": "https://example.com/verb-conjugation-cheat-sheet.pdf"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "French conversation and culture",
+        "description": "Practical conversation skills and introduction to French culture",
+        "startDateTime": "2023-06-08T14:00:00Z",
+        "duration": "2 hours",
+        "material": [
+          {
+            "id": 3,
+            "name": "French conversation topics",
+            "url": "https://example.com/french-conversation-topics.pdf"
+          },
+          {
+            "id": 4,
+            "name": "Introduction to French culture",
+            "url": "https://example.com/introduction-to-french-culture.pdf"
+          }
+        ]
+      }
+    ],
+    "enrollmentStartDate": "2023-05-01T00:00:00Z",
+    "enrollmentEndDate": "2023-06-01T00:00:00Z",
+    "courseStartDate": "2023-06-01T00:00:00Z",
+    "courseEndDate": "2023-06-30T00:00:00Z",
+    "tags": [
+      "french",
+      "language",
+      "culture"
+    ],
+    "image": "https://example.com/french-course-image.jpg"
+  }
+  ,{
+    "id": 789,
+    "name": "Python for Data Science",
+    "description": "Learn how to use Python to analyze and visualize data",
+    "price": 129.99,
+    "classes": [
+      {
+        "id": 1,
+        "name": "Introduction to Python and Data Science",
+        "description": "Overview of Python programming language and data science concepts",
+        "startDateTime": "2023-07-05T10:00:00Z",
+        "duration": "2 hours",
+        "material": [
+          {
+            "id": 1,
+            "name": "Python for Data Science slides",
+            "url": "https://example.com/python-data-science-slides.pdf"
+          },
+          {
+            "id": 2,
+            "name": "Python installation guide",
+            "url": "https://example.com/python-installation-guide.pdf"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Data Manipulation with Python",
+        "description": "How to manipulate data with Python using Pandas library",
+        "startDateTime": "2023-07-12T10:00:00Z",
+        "duration": "2 hours",
+        "material": [
+          {
+            "id": 3,
+            "name": "Pandas documentation",
+            "url": "https://example.com/pandas-documentation.pdf"
+          },
+          {
+            "id": 4,
+            "name": "Data manipulation exercises",
+            "url": "https://example.com/data-manipulation-exercises.pdf"
+          }
+        ]
+      }
+    ],
+    "enrollmentStartDate": "2023-06-01T00:00:00Z",
+    "enrollmentEndDate": "2023-07-01T00:00:00Z",
+    "courseStartDate": "2023-07-05T00:00:00Z",
+    "courseEndDate": "2023-07-30T00:00:00Z",
+    "tags": [
+      "python",
+      "data science",
+      "pandas"
+    ],
+    "image": "https://example.com/python-data-science-image.jpg"
+  },
+  
+  {
+    "id": 4,
+    "name": "Introduction to React",
+    "description": "Learn the basics of React and build your first web application",
+    "price": 49.99,
+    "classes": [
+      {
+        "id": 1,
+        "name": "Getting started with React",
+        "description": "Introduction to React components and JSX",
+        "startDateTime": "2023-05-01T09:00:00Z",
+        "duration": "2 hours",
+        "material": [
+          {
+            "id": 1,
+            "name": "Getting started with React slides",
+            "url": "https://example.com/getting-started-slides.pdf"
+          },
+          {
+            "id": 2,
+            "name": "React starter code",
+            "url": "https://github.com/example/react-starter"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Building a simple React app",
+        "description": "Building a to-do list app using React",
+        "startDateTime": "2023-05-08T09:00:00Z",
+        "duration": "2 hours",
+        "material": [
+          {
+            "id": 3,
+            "name": "To-do list app code",
+            "url": "https://github.com/example/to-do-list-app"
+          }
+        ]
+      }
+    ],
+    "enrollmentStartDate": "2023-04-01T00:00:00Z",
+    "enrollmentEndDate": "2023-05-01T00:00:00Z",
+    "courseStartDate": "2023-05-01T00:00:00Z",
+    "courseEndDate": "2023-05-15T00:00:00Z",
+    "tags": [
+      "react",
+      "web development",
+      "javascript"
+    ],
+    "image": "https://example.com/react-course-image.jpg"
+  }
+  ,{
+  "id": 4567,
+  "name": "Intermediate French",
+  "description": "Improve your French language skills with this intermediate course",
+  "price": 79.99,
+  "classes": [
+    {
+      "id": 1,
+      "name": "French grammar and verb conjugation",
+      "description": "Review of basic grammar and introduction to more advanced concepts",
+      "startDateTime": "2023-06-01T14:00:00Z",
+      "duration": "2 hours",
+      "material": [
+        {
+          "id": 1,
+          "name": "French grammar exercises",
+          "url": "https://example.com/french-grammar-exercises.pdf"
+        },
+        {
+          "id": 2,
+          "name": "Verb conjugation cheat sheet",
+          "url": "https://example.com/verb-conjugation-cheat-sheet.pdf"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "French conversation and culture",
+      "description": "Practical conversation skills and introduction to French culture",
+      "startDateTime": "2023-06-08T14:00:00Z",
+      "duration": "2 hours",
+      "material": [
+        {
+          "id": 3,
+          "name": "French conversation topics",
+          "url": "https://example.com/french-conversation-topics.pdf"
+        },
+        {
+          "id": 4,
+          "name": "Introduction to French culture",
+          "url": "https://example.com/introduction-to-french-culture.pdf"
+        }
+      ]
+    }
+  ],
+  "enrollmentStartDate": "2023-05-01T00:00:00Z",
+  "enrollmentEndDate": "2023-06-01T00:00:00Z",
+  "courseStartDate": "2023-06-01T00:00:00Z",
+  "courseEndDate": "2023-06-30T00:00:00Z",
+  "tags": [
+    "french",
+    "language",
+    "culture"
+  ],
+  "image": "https://example.com/french-course-image.jpg"
+  }
+  ,{
+  "id": 7891,
+  "name": "Python for Data Science",
+  "description": "Learn how to use Python to analyze and visualize data",
+  "price": 129.99,
+  "classes": [
+    {
+      "id": 1,
+      "name": "Introduction to Python and Data Science",
+      "description": "Overview of Python programming language and data science concepts",
+      "startDateTime": "2023-07-05T10:00:00Z",
+      "duration": "2 hours",
+      "material": [
+        {
+          "id": 1,
+          "name": "Python for Data Science slides",
+          "url": "https://example.com/python-data-science-slides.pdf"
+        },
+        {
+          "id": 2,
+          "name": "Python installation guide",
+          "url": "https://example.com/python-installation-guide.pdf"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Data Manipulation with Python",
+      "description": "How to manipulate data with Python using Pandas library",
+      "startDateTime": "2023-07-12T10:00:00Z",
+      "duration": "2 hours",
+      "material": [
+        {
+          "id": 3,
+          "name": "Pandas documentation",
+          "url": "https://example.com/pandas-documentation.pdf"
+        },
+        {
+          "id": 4,
+          "name": "Data manipulation exercises",
+          "url": "https://example.com/data-manipulation-exercises.pdf"
+        }
+      ]
+    }
+  ],
+  "enrollmentStartDate": "2023-06-01T00:00:00Z",
+  "enrollmentEndDate": "2023-07-01T00:00:00Z",
+  "courseStartDate": "2023-07-05T00:00:00Z",
+  "courseEndDate": "2023-07-30T00:00:00Z",
+  "tags": [
+    "python",
+    "data science",
+    "pandas"
+  ],
+  "image": "https://example.com/python-data-science-image.jpg"
+  },
+  
+  {
+    "id": 1235,
+    "name": "Introduction to React",
+    "description": "Learn the basics of React and build your first web application",
+    "price": 49.99,
+    "classes": [
+      {
+        "id": 1,
+        "name": "Getting started with React",
+        "description": "Introduction to React components and JSX",
+        "startDateTime": "2023-05-01T09:00:00Z",
+        "duration": "2 hours",
+        "material": [
+          {
+            "id": 1,
+            "name": "Getting started with React slides",
+            "url": "https://example.com/getting-started-slides.pdf"
+          },
+          {
+            "id": 2,
+            "name": "React starter code",
+            "url": "https://github.com/example/react-starter"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Building a simple React app",
+        "description": "Building a to-do list app using React",
+        "startDateTime": "2023-05-08T09:00:00Z",
+        "duration": "2 hours",
+        "material": [
+          {
+            "id": 3,
+            "name": "To-do list app code",
+            "url": "https://github.com/example/to-do-list-app"
+          }
+        ]
+      }
+    ],
+    "enrollmentStartDate": "2023-04-01T00:00:00Z",
+    "enrollmentEndDate": "2023-05-01T00:00:00Z",
+    "courseStartDate": "2023-05-01T00:00:00Z",
+    "courseEndDate": "2023-05-15T00:00:00Z",
+    "tags": [
+      "react",
+      "web development",
+      "javascript"
+    ],
+    "image": "https://example.com/react-course-image.jpg"
+  }
+  ,{
+  "id": 4568,
+  "name": "Intermediate French",
+  "description": "Improve your French language skills with this intermediate course",
+  "price": 79.99,
+  "classes": [
+    {
+      "id": 1,
+      "name": "French grammar and verb conjugation",
+      "description": "Review of basic grammar and introduction to more advanced concepts",
+      "startDateTime": "2023-06-01T14:00:00Z",
+      "duration": "2 hours",
+      "material": [
+        {
+          "id": 1,
+          "name": "French grammar exercises",
+          "url": "https://example.com/french-grammar-exercises.pdf"
+        },
+        {
+          "id": 2,
+          "name": "Verb conjugation cheat sheet",
+          "url": "https://example.com/verb-conjugation-cheat-sheet.pdf"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "French conversation and culture",
+      "description": "Practical conversation skills and introduction to French culture",
+      "startDateTime": "2023-06-08T14:00:00Z",
+      "duration": "2 hours",
+      "material": [
+        {
+          "id": 3,
+          "name": "French conversation topics",
+          "url": "https://example.com/french-conversation-topics.pdf"
+        },
+        {
+          "id": 4,
+          "name": "Introduction to French culture",
+          "url": "https://example.com/introduction-to-french-culture.pdf"
+        }
+      ]
+    }
+  ],
+  "enrollmentStartDate": "2023-05-01T00:00:00Z",
+  "enrollmentEndDate": "2023-06-01T00:00:00Z",
+  "courseStartDate": "2023-06-01T00:00:00Z",
+  "courseEndDate": "2023-06-30T00:00:00Z",
+  "tags": [
+    "french",
+    "language",
+    "culture"
+  ],
+  "image": "https://example.com/french-course-image.jpg"
+  }
+  ,{
+  "id": 7892,
+  "name": "Python for Data Science",
+  "description": "Learn how to use Python to analyze and visualize data",
+  "price": 129.99,
+  "classes": [
+    {
+      "id": 1,
+      "name": "Introduction to Python and Data Science",
+      "description": "Overview of Python programming language and data science concepts",
+      "startDateTime": "2023-07-05T10:00:00Z",
+      "duration": "2 hours",
+      "material": [
+        {
+          "id": 1,
+          "name": "Python for Data Science slides",
+          "url": "https://example.com/python-data-science-slides.pdf"
+        },
+        {
+          "id": 2,
+          "name": "Python installation guide",
+          "url": "https://example.com/python-installation-guide.pdf"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Data Manipulation with Python",
+      "description": "How to manipulate data with Python using Pandas library",
+      "startDateTime": "2023-07-12T10:00:00Z",
+      "duration": "2 hours",
+      "material": [
+        {
+          "id": 3,
+          "name": "Pandas documentation",
+          "url": "https://example.com/pandas-documentation.pdf"
+        },
+        {
+          "id": 4,
+          "name": "Data manipulation exercises",
+          "url": "https://example.com/data-manipulation-exercises.pdf"
+        }
+      ]
+    }
+  ],
+  "enrollmentStartDate": "2023-06-01T00:00:00Z",
+  "enrollmentEndDate": "2023-07-01T00:00:00Z",
+  "courseStartDate": "2023-07-05T00:00:00Z",
+  "courseEndDate": "2023-07-30T00:00:00Z",
+  "tags": [
+    "python",
+    "data science",
+    "pandas"
+  ],
+  "image": "https://example.com/python-data-science-image.jpg"
+  }
+    
+  ]

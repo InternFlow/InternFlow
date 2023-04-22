@@ -94,14 +94,9 @@ function Login() {
         console.log(user._id);
 
         localStorage.setItem("role", user.role);
-        if (user.role === "condidat") {
-          history.push("/profile-page");
-        } else if (user.role === "formateur") {
-          history.push("/profile-formateur-page");
-        } else if (user.role === "company") {
-          history.push("/profile-company-page");
+        if (user.role !== "admin") {
+          history.push("/profile");
         } else if (user.role === "admin") {
-          console.log("aaaaaaaaaaaa")
 
           document.getElementById("admin-redirect").setAttribute("href","http://localhost:3001/admin/get-sesstion?token=" + token);
           document.getElementById("admin-redirect").click();

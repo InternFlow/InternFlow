@@ -22,19 +22,19 @@ import DemoFooter from "components/Footers/DemoFooter.js";
 import { useHistory ,Link} from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
+
 import offerImage from "../uploads/offers/1681389235310-offers.jpg";
 
-function CompanyProfilePage() {
-  const id = localStorage.getItem("id");
+function CompanyProfilePage(props) {
+  const id = props.userId;
 
-  const [offers, setOffers] = useState([]);
   console.log(id);
   
   const history = useHistory();
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
-  const [Open, setOpen] = React.useState(1);
+  const [offers, setOffers] = useState([]);
 
 
 console.log(role)
@@ -77,13 +77,7 @@ description: ""
 
 }
 	
-const handleAddOffer = async() => {
-  history.push(`/AddOfferCompany`);
-}
-console.log(userd._id);
-const handleEditOffer = async() => {
-  history.push(`/EditOfferCompany`);
-}
+
 useEffect(() => {
   const token = localStorage.getItem('token');
   const companyId = localStorage.getItem('id');
@@ -103,11 +97,10 @@ useEffect(() => {
   }
 }, []);
 
-
 React.useEffect(() => {
   const token = localStorage.getItem('token');
   if (token) {
-    fetch('http://localhost:5000/profile', {
+    fetch('http://localhost:5000/profile/'+id, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -171,9 +164,7 @@ React.useEffect(() => {
                     
                 </CardBody>
               </Card >
-              <Link to="/Edit-company-page">
-              <button  className="btn-round btn btn-#7D7D7D btn-block">Update Your Profile</button>           
-              </Link>
+              
             </Col>
             <Col md="8">
              
@@ -190,6 +181,7 @@ React.useEffect(() => {
                 
             </Col>
           </Row>
+       
           <Row >
           
           <Col md="9">
@@ -207,9 +199,6 @@ React.useEffect(() => {
                   {/* <span style={{ marginTop: '120px' }} /> */}
                   <br></br>
                   <br></br>
-                  <Button color="success" onClick={handleEditOffer} >
-                    Edit Offer
-                  </Button>
                 </CardBody>
               </Card>
             </Col>
@@ -219,21 +208,6 @@ React.useEffect(() => {
           
           </Col>
         </Row>
-          <Button
-            variant= "primary"
-            type="submit"
-            onClick={()=> goedit()}
-          >Edit profile</Button>
-          <span style={{ marginRight: '120px' }} />
-          <Button
-            color="danger"
-            type="submit"
-            onClick={handleAddOffer}
-          >
-            Add Offer
-          </Button>
-
-
 
 
            </div>
