@@ -23,6 +23,7 @@ import { useHistory , useLocation } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 import queryString from 'query-string';
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 const  ApplyPage=()=> {
   const [modal, setModal] = useState(false);
@@ -247,11 +248,9 @@ const file = () => {
 
   return (
     <>
-      <ExamplesNavbar />
-      {resume.description}
-
-      {resume.filePath}
+    <CondidatNavbar></CondidatNavbar>
       <ProfilePageHeader />
+
       <div className="section profile-content" >
         <Container>
           <div className="owner">

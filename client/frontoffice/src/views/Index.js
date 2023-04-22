@@ -39,6 +39,7 @@ import SectionDark from "views/index-sections/SectionDark.js";
 import SectionLogin from "views/index-sections/SectionLogin.js";
 import SectionExamples from "views/index-sections/SectionExamples.js";
 import SectionDownload from "views/index-sections/SectionDownload.js";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function Index() {
 
@@ -54,7 +55,7 @@ function Index() {
   });
   return (
     <>
-      <IndexNavbar />
+     <CondidatNavbar />
       <IndexHeader />
 
       <div className="main">

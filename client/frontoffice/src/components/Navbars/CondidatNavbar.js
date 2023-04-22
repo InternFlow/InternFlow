@@ -21,9 +21,12 @@ import { Link } from "react-router-dom";
 // nodejs library that concatenates strings
 import classnames from "classnames";
 import { useHistory } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell } from '@fortawesome/free-solid-svg-icons'
 import { Badge } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//import { faCheckCircle,faCompany, faTimesCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import {faBuilding,faUserTie,faSchool,faCheckCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+
 // reactstrap components
 import {
   Collapse,
@@ -33,16 +36,20 @@ import {
   NavLink,
   Nav,Modal, ModalHeader, ModalBody,
   Container,
-  Button
+  Button, ModalFooter
 } from "reactstrap";
 import { useState } from 'react';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 function CondidatNavbar() {
-  
+  const [role, setRole] = useState("");
+
+  console.log(role);
+
     
   const history = useHistory();
   const token = localStorage.getItem("token");
-
+  const roleToken = localStorage.getItem("role");
+console.log(roleToken)
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [navbarCollapse, setNavbarCollapse] = React.useState(false);
 
@@ -50,12 +57,12 @@ function CondidatNavbar() {
     setNavbarCollapse(!navbarCollapse);
     document.documentElement.classList.toggle("nav-open");
   };
-
+/*
   if (!token) {
 
     history.push('/sign-in');
 
-  }  
+  }  */
   const [modal, setModal] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [numNotifications, setNumNotifications] = useState(0);
@@ -87,6 +94,21 @@ function CondidatNavbar() {
     
   };
 
+
+  const handlegoTomesStages = async (event) => {
+    try {
+
+        
+
+        history.push('/stagescompany');
+      
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   React.useEffect(() => {
     const fetchNotifications = async () => {
         try {
@@ -112,7 +134,13 @@ function CondidatNavbar() {
             console.error(error);
         }
     };
-    fetchNotifications();
+if(!token){
+setRole("guest");
+}
+else{
+   fetchNotifications();
+}
+   
 }, []);
 
 
@@ -163,10 +191,34 @@ function CondidatNavbar() {
     }
   }
 
+  const handleOption1Click = () => {
+    history.push('/sign-up');
+    toggle();
+  }
+
+  const handleOption2Click = () => {
+    history.push('/sign-up-Trainer');
+    toggle();
+  }
+
+  const handleOption3Click = () => {
+    history.push('/sign-up-Company');
+    toggle();
+  }
+
+  const handleLogin = async (event) => {
+
+    history.push('/sign-in');
+
+}
 
 
+const [modal2, setModal2] = useState(false);
+
+const toggle2 = () => setModal2(!modal2);
 
   return (
+    <>
     <Navbar
       className={classnames("fixed-top", navbarColor)}
       color-on-scroll="300"
@@ -201,19 +253,21 @@ function CondidatNavbar() {
           isOpen={navbarCollapse}
         >
           <Nav navbar>
+          {roleToken=="condidat" &&(
+
             <NavItem>
-              <NavLink to="/index" tag={Link}>
-                <i className="nc-icon nc-layout-11" /> Components
+              <NavLink to="/ListCandidaciesIntern" tag={Link}>
+                <i className="nc-icon nc-layout-11" /> My Applies
               </NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink
-                href="https://demos.creative-tim.com/paper-kit-react/#/documentation?ref=pkr-examples-navbar"
-                target="_blank"
-              >
-                <i className="nc-icon nc-book-bookmark" /> Documentation
-              </NavLink>
-            </NavItem>
+          )}
+            {roleToken=="company" &&(
+           <NavItem>
+           <NavLink to="/stagescompany" tag={Link}>
+             <i className="nc-icon nc-layout-11" /> My Offers
+           </NavLink>
+         </NavItem>
+            )}
             <NavItem>
               <NavLink
                 data-placement="bottom"
@@ -261,6 +315,7 @@ function CondidatNavbar() {
 
 
 
+            {role!="guest" && (
 
             <NavItem>
             <NavLink  onClick={toggle}>
@@ -272,6 +327,11 @@ function CondidatNavbar() {
         <span className="d-md-none ml-1">Notifications</span>
       </NavLink>
       </NavItem>
+
+            )}
+
+
+
       <Modal isOpen={modal} toggle={toggle}>
       <ModalHeader toggle={toggle}>
         <FontAwesomeIcon icon={faTimes} className="mr-2" />
@@ -297,6 +357,7 @@ function CondidatNavbar() {
       </ModalBody>
     </Modal>
 
+    {role!="guest" && (
 
 
             <NavItem>
@@ -309,10 +370,67 @@ function CondidatNavbar() {
                 <i className="nc-icon nc-spaceship"></i> LogOut
               </Button>
             </NavItem>
-          </Nav>
+    )}
+            {role=="guest" && (
+
+            <NavItem>
+ <Button
+                className="btn-round"
+                color="danger"
+                target="_blank"
+                outline
+                 onClick={toggle2}
+              >
+                <i className="nc-icon nc-spaceship"></i> Register
+              </Button>
+            </NavItem>
+            )}
+            {role=="guest" && (
+
+            <NavItem>
+            <Button
+                className="btn-round"
+                color="danger"
+                target="_blank"
+                outline
+                 onClick={handleLogin}
+              >
+                <i className="nc-icon nc-spaceship"></i> Login
+              </Button>
+            </NavItem>
+            )}
+    
+             </Nav>
         </Collapse>
       </Container>
     </Navbar>
+    <Modal isOpen={modal2} toggle={toggle2}>
+        <ModalHeader toggle={toggle2}>ARE YOU A :</ModalHeader>
+        <ModalBody style={{ paddingLeft: '20px', width: '600px' }}>
+        <Button color="danger" className="mb-2 mr-3" onClick={handleOption1Click}>
+          <FontAwesomeIcon icon={faUserTie} size="6x" className="mr-2"  />
+          <div>I'am a intern</div>
+          </Button>
+
+          <Button color="danger" className="mb-2 mr-3" onClick={handleOption2Click}>
+          <FontAwesomeIcon icon={faSchool} size="6x" className="mr-2"  />
+          <div>I'am a Trainer</div>
+
+          </Button>
+
+                    <Button color="danger" className="mb-2" onClick={handleOption3Click}>
+          <FontAwesomeIcon icon={faBuilding} size="6x" className="mr-2"  />
+          <div>I'am a Company</div>
+
+          </Button>
+
+           </ModalBody>
+        <ModalFooter>
+          <Button  color="secondary" onClick={toggle}>Fermer</Button>
+        </ModalFooter>
+      </Modal>
+
+    </>
   );
 }
 

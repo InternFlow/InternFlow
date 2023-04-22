@@ -23,6 +23,8 @@ import { Button, Card, Form, Input, Container, Row, Col, Alert } from "reactstra
 import { useForm } from "react-hook-form";
 // core components
 import LoginNavbar from "components/Navbars/LoginNavBar";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
+import ProfilePageHeader from "components/Headers/ProfilePageHeader";
 
 function RegisterPage() {
 
@@ -125,13 +127,13 @@ function RegisterPage() {
   }
   return (
     <>
-      <LoginNavbar />
-      <div
+<CondidatNavbar></CondidatNavbar>
+            <div
         className="page-header"
         style={{
           backgroundImage: "url(" + require("assets/img/intern.jpg") + ")",
         }}
-      >
+              >
         <div className="filter" />
         <Container>
           <Row>

@@ -21,6 +21,8 @@ import { useHistory, useParams } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 import { API } from "config";
+import CondidatNavbar from "components/Navbars/CompanyNavbar";
+import ProfilePageHeader from "components/Headers/ProfilePageHeader";
 
 function ListCAndidiesIntern() {
   const id = localStorage.getItem("id");
@@ -71,6 +73,9 @@ console.log(candidacies);
 
   return (
     <>
+      <CondidatNavbar></CondidatNavbar>
+      <ProfilePageHeader />
+
       <div className="section profile-content" >
         <br></br>
         <Container>

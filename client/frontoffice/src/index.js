@@ -51,6 +51,7 @@ import AddOffer from "views/examples/AddOffer";
 import EditOffer from "views/examples/EditOffer";
 import EventsList from "views/examples/Events/EventsList";
 import EventLandingPage from "views/examples/Events/EventsLandingPage";
+import CondidatNavbar from "components/Navbars/CompanyNavbar";
 
 // others
 
@@ -58,7 +59,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <BrowserRouter>
+
     <Switch>
+      
       <Route path="/index" render={(props) => <Index {...props} />} />
       <Route
         path="/nucleo-icons"
@@ -72,7 +75,8 @@ root.render(
         path="/profile-page"
         render={(props) => <ProfilePage {...props} />}
       />
-      <Route path="/sign-up" render={(props) => <RegisterPage {...props} />} />
+      <Route
+       path="/sign-up" render={(props) => <RegisterPage {...props} />} />
       <Route path="/sign-in" render={(props) => <Login {...props} />} />
       <Route path="/new-password" render={(props) => <NewPass {...props} />} />
       <Route

@@ -20,6 +20,7 @@ import DemoFooter from "components/Footers/DemoFooter.js";
 import { useHistory, Link } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from "components/Accordion";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function ProfilePage() {
   const id = localStorage.getItem("id");
@@ -97,7 +98,7 @@ function ProfilePage() {
 
   return (
     <>
-      <ExamplesNavbar />
+      <CondidatNavbar />
       <ProfilePageHeader />
       <div className="section profile-content">
         <Container>
