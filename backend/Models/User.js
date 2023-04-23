@@ -40,7 +40,9 @@ const userSchema = new mongoose.Schema({
 
   confirmationToken: { type: String },
   confirmExpiration: { type: Date },
-  notifications: [notificationSchema]
+  notifications: [notificationSchema],
+  messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }]
+
 
 });
 

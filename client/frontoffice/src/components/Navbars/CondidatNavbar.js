@@ -87,6 +87,22 @@ function CondidatNavbar() {
     
   };
 
+
+  const handlegointerveiewcandidate = async (event) => {
+    try {
+
+        
+
+        history.push('/CondidatInterview');
+      
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
   React.useEffect(() => {
     const fetchNotifications = async () => {
         try {
@@ -202,8 +218,8 @@ function CondidatNavbar() {
         >
           <Nav navbar>
             <NavItem>
-              <NavLink to="/index" tag={Link}>
-                <i className="nc-icon nc-layout-11" /> Components
+              <NavLink onClick={handlegointerveiewcandidate}>
+                <i className="nc-icon nc-layout-11" /> Interviews
               </NavLink>
             </NavItem>
             <NavItem>

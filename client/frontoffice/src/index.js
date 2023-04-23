@@ -49,6 +49,7 @@ import Editcompany from "views/examples/EditCompanyProfile";
 import Condidatquizzes from "views/examples/Condidatquizzes";
 
 import ApplicationCondidate from "views/examples/Applicationcondidate";
+import InterviewCondidat from "views/examples/InterviewCondidat";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -149,6 +150,11 @@ root.render(
       />
 
 
+
+<Route
+        path="/CondidatInterview"
+        render={(props) => <InterviewCondidat {...props} />}
+      />
 
 <Route
         path="/InterviewCompany"

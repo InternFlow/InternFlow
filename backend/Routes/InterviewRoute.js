@@ -128,6 +128,15 @@ router.put('/offer/:offerId/user/:userId/application', requireAuth, checkRole("c
     }
   });
   
+  router.get('/applications/interview-scheduled', requireAuth, checkRole("condidat"), async (req, res) => {
+    try {
+      const applications = await Application.find({ user: req.user._id, interviewScheduled: { $ne: null } }).populate('offer');
+      res.json(applications);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
   
   
 

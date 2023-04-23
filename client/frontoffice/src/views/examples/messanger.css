@@ -1,0 +1,35 @@
+.messages-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .sent {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-bottom: 10px;
+  }
+  
+  .received {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+  }
+  
+  .message-content {
+    padding: 10px;
+    border-radius: 15px;
+    max-width: 70%;
+  }
+  
+  .sent .message-content {
+    background-color: #a4cce7;
+
+    color: #4d2e9b;
+  }
+  
+  .received .message-content {
+    background-color: #c2b7e2;
+    color: #1a1a1a;
+  }
+  

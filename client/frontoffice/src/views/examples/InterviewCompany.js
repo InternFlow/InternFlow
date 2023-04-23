@@ -1,4 +1,4 @@
-import React, { useState,useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {
@@ -22,6 +22,10 @@ import {
     CardText,
     Button,
 } from "reactstrap";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+
+import { FaEnvelope } from "react-icons/fa";
+
 import { useHistory, useLocation } from "react-router-dom";
 import { FaCalendarAlt } from "react-icons/fa";
 import MapTunisie from "components/Maps/MapTunisie.js"
@@ -40,6 +44,8 @@ const localizer = momentLocalizer(moment);
 function InterviewCompany() {
     const location = useLocation();
     const history = useHistory();
+    const [isChatOpen, setIsChatOpen] = useState(false);
+
     const token = localStorage.getItem("token");
     const searchParams = new URLSearchParams(location.search);
     const offerId = searchParams.get("offerId");
@@ -50,7 +56,7 @@ function InterviewCompany() {
     const [alertMessage, setAlertMessage] = useState("");
 
     const [couleur, setcouleur] = useState("");
-    
+
 
     const [showNotificationButton, setShowNotificationButton] = useState(false);
 
@@ -67,12 +73,12 @@ function InterviewCompany() {
     const containerStyle = {
         width: "100%",
         height: "400px",
-      };
-      
-      const center = {
+    };
+
+    const center = {
         lat: 37.7749,
         lng: -122.4194,
-      };
+    };
 
 
     const getEventStyle = (event, start, end, isSelected) => {
@@ -149,42 +155,42 @@ function InterviewCompany() {
 
     const handleSendNotification = async () => {
         try {
-          const response = await fetch(
-            `http://localhost:5000/userinterview/notify/${userId}/interview/${offerId}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({ interviewDate: formData.date }),
-              credentials: "include",
+            const response = await fetch(
+                `http://localhost:5000/userinterview/notify/${userId}/interview/${offerId}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ interviewDate: formData.date }),
+                    credentials: "include",
+                }
+            );
+
+            const responseData = await response.json();
+
+            console.log("Success:", responseData);
+
+            if (response.status === 200) {
+                setcouleur("success");
+                setAlertMessage("Notification envoyée");
+                setShowAlert(true);
+                setTimeout(() => {
+                    setShowAlert(false);
+
+                }, 6000)
+                setShowNotificationButton(false)
+
+                setShowForm(false);
             }
-          );
-      
-          const responseData = await response.json();
-      
-          console.log("Success:", responseData);
-      
-          if (response.status === 200) {
-            setcouleur("success");
-            setAlertMessage("Notification envoyée");
-            setShowAlert(true);
-            setTimeout(() => {
-                setShowAlert(false);
-
-            }, 6000 )
-            setShowNotificationButton(false)
-
-            setShowForm(false);
-          }
         } catch (error) {
-          console.error("Error:", error);
-          setcouleur("danger");
-          setAlertMessage("Une erreur s'est produite");
-          setShowAlert(true);
+            console.error("Error:", error);
+            setcouleur("danger");
+            setAlertMessage("Une erreur s'est produite");
+            setShowAlert(true);
         }
-      };
+    };
 
 
 
@@ -269,6 +275,15 @@ function InterviewCompany() {
 
 
 
+    const handleCloseChat = () => {
+        setIsChatOpen(false);
+    };
+
+
+    const handleOpenChat = async (id) => {
+        setIsChatOpen(true);
+        
+    };
 
     return (
         <>
@@ -291,8 +306,38 @@ function InterviewCompany() {
                     />
 
                     <hr className="my-4" />
+                    <Modal isOpen={isChatOpen} toggle={handleCloseChat}>
+                        <ModalHeader toggle={handleCloseChat}>Messagerie</ModalHeader>
+                        <ModalBody>
+                            <ul className="messages-list">
+                               
+                            </ul>
 
+
+                            <Input
+                                type="text"
+                                placeholder="Écrire un nouveau message"
+                               
+                            />
+                        </ModalBody>
+                        <ModalFooter>
+                            <div className="d-flex">
+                         
+                                <Button color="primary" >
+                                    Envoyer
+                                </Button>
+                            </div>
+                            <Button color="secondary" onClick={handleCloseChat}>
+                                Fermer
+                            </Button>
+                        </ModalFooter>
+
+                    </Modal>
                     <div className="d-flex justify-content-between">
+                    <Button color="primary" onClick={() => handleOpenChat()}>
+                                        <FaEnvelope className="mr-2" />
+                                        Messagerie
+                                    </Button>
                         <Button color="primary" onClick={() => setShowForm(true)}>
                             <FaCalendarAlt className="mr-2" />
                             Nouvelle date d'entretien
@@ -326,18 +371,20 @@ function InterviewCompany() {
                         <Alert color={couleur}>{alertMessage}</Alert>
                     )}
 
-{showNotificationButton && (
-    <button
-    onClick={handleSendNotification}
-    >
-        Informer le candidat
-    </button>
-)}
+                    {showNotificationButton && (
+                        <button
+                            onClick={handleSendNotification}
+                        >
+                            Informer le candidat
+                        </button>
+                    )}
 
 
 
                 </Container>
             </div>
+        <DemoFooter />
+
         </>
     );
 }
