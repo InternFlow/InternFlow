@@ -63,6 +63,13 @@ var routes = [
     component: UserPage,
     layout: "/admin"
   },
+  // {
+  //   path: "/tables",
+  //   name: "Table List",
+  //   icon: "nc-icon nc-tile-56",
+  //   component: TableList,
+  //   layout: "/admin"
+  // },
   {
     path: "/createUser",
     name: "Add A new User",
@@ -86,24 +93,21 @@ var routes = [
   },
   {
     path: "/editUser",
-    name: "Edit User",
-    icon: "nc-icon nc-simple-add",
     component: EditUser,
     layout: "/admin"
   },
-  // {
-  //   path: "/editProfileCondidat",
-  //   component: EditProfileUser,
-  //   layout: "/admin"
-  // },
+  {
+    path: "/editProfileCondidat",
+    component: EditProfileUser,
+    layout: "/admin"
+  },
   {
     path: "/showApply",
-    name: "Show Application",
-    icon: "nc-icon nc-laptop",
     component: ApplyPage,
     layout: "/admin"
   }
   ,
+ 
   {
     path: "/createOffer",
     name: "Add A new Offer",
@@ -114,8 +118,6 @@ var routes = [
   
   {
     path: "/editOffer",
-    name: "Edit an Offer",
-    icon: "nc-icon nc-simple-add",
     component: EditOffer,
     layout: "/admin"
   },
@@ -126,10 +128,14 @@ var routes = [
     component: ViewOffers,
     layout: "/admin"
   },
+  
+  {
+    path: "/editUser",
+    component: EditUser,
+    layout: "/admin"
+  },
   {
     path: "/editProfileCondidat",
-    name: "Edit Profile Condidat",
-    icon: "nc-icon nc-simple-add",
     component: EditProfileUser,
     layout: "/admin"
   }

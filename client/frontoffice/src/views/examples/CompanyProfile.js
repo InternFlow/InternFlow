@@ -12,7 +12,7 @@ import {
   CardTitle,
   ListGroup,
   ListGroupItem,
-  Button,CardImg
+  Button,CardImg, Pagination, PaginationItem, PaginationLink
 } from "reactstrap";
 
 // core components
@@ -26,10 +26,13 @@ import offerImage from "../uploads/offers/1681389235310-offers.jpg";
 import axios from "axios";
 import { API } from "config";
 import Swal from "sweetalert2";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function CompanyProfilePage() {
   const id = localStorage.getItem("id");
   const offerId = localStorage.getItem('offerId');
+  const [currentPage, setCurrentPage] = useState(1);
+
 
 
   const [offers, setOffers] = useState([]);
@@ -160,10 +163,22 @@ React.useEffect(() => {
   }
 }, []);
 
+//--------------------------------- Pagination ---------------------------------------------------------//
+const pageSize = 5;
+  const pageCount1 = Math.ceil(offers.length / pageSize);
+  const pages = Array.from({ length: pageCount1 }, (_, i) => i + 1);
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+  const paginatedOffers = offers.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
 
   return (
     <>
-      <ExamplesNavbar />
+<CondidatNavbar></CondidatNavbar>
       <ProfilePageHeader />
       <div className="section profile-content" >
         <Container>
@@ -227,7 +242,7 @@ React.useEffect(() => {
           
           <Col md="9">
             <Row>
-            {offers.map((offer) => (
+            {paginatedOffers.map((offer) => (                    
               <Col md="4" key={offer.id}>
               <Card className="mb-4"  key={offer.id}>
               <CardImg top width="100%" src={offerImage} alt="Offer Image" />
@@ -253,7 +268,42 @@ React.useEffect(() => {
             ))}  
             </Row>  
           
-          
+            <Pagination
+                      className="pagination justify-content-end mb-0"
+                      listClassName="justify-content-end mb-0"
+                    >
+                      <PaginationItem disabled={currentPage === 1}>
+                        <PaginationLink
+                          onClick={() => handlePageClick(currentPage - 1)}
+                          tabIndex="-1"
+                        >
+                          <i className="fas fa-angle-left" />
+                          <span className="sr-only">Previous</span>
+                        </PaginationLink>
+                      </PaginationItem>
+                      {pages.map((page) => (
+                        <PaginationItem
+                          key={page}
+                          active={currentPage === page}
+                        >
+                          <PaginationLink onClick={() => handlePageClick(page)}>
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem disabled={currentPage === pageCount1}>
+                        <PaginationLink
+                          onClick={() => handlePageClick(currentPage + 1)}
+                          tabIndex="-1"
+                        >
+                          <i className="fas fa-angle-right" />
+                          <span className="sr-only">Next</span>
+                        </PaginationLink>
+                      </PaginationItem>
+                    </Pagination>
+                    <br></br>
+                    <br></br>
+
           </Col>
         </Row>
           <Button

@@ -49,6 +49,9 @@ import OfferDetails from "views/examples/OfferDetails";
 import ListCAndidiesIntern from "views/examples/ListCandidaciesIntern";
 import AddOffer from "views/examples/AddOffer";
 import EditOffer from "views/examples/EditOffer";
+import EventsList from "views/examples/Events/EventsList";
+import EventLandingPage from "views/examples/Events/EventsLandingPage";
+import CondidatNavbar from "components/Navbars/CompanyNavbar";
 
 // others
 
@@ -56,7 +59,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <BrowserRouter>
+
     <Switch>
+      
       <Route path="/index" render={(props) => <Index {...props} />} />
       <Route
         path="/nucleo-icons"
@@ -71,23 +76,15 @@ root.render(
         render={(props) => <ProfilePage {...props} />}
       />
       <Route
-        path="/sign-up"
-        render={(props) => <RegisterPage {...props} />}
-      />
-       <Route
-        path="/sign-in"
-        render={(props) => <Login {...props} />}
-      />
-      <Route
-        path="/new-password"
-        render={(props) => <NewPass {...props} />}
-      />
+       path="/sign-up" render={(props) => <RegisterPage {...props} />} />
+      <Route path="/sign-in" render={(props) => <Login {...props} />} />
+      <Route path="/new-password" render={(props) => <NewPass {...props} />} />
       <Route
         path="/new-passwordEmail"
         render={(props) => <NewPassEmail {...props} />}
       />
 
-<Route
+      <Route
         path="/linkedIn"
         render={(props) => <LinkedInLogin {...props} />}
       />
@@ -97,76 +94,65 @@ root.render(
         render={(props) => <FormateurProfile {...props} />}
       />
 
-
-<Route
+      <Route
         path="/profile-company-page"
         render={(props) => <CompanyProfile {...props} />}
       />
 
-<Route
+      <Route
         path="/Edit-condidat-page"
         render={(props) => <Editcondidat {...props} />}
       />
 
-<Route
+      <Route
         path="/Edit-company-page"
         render={(props) => <Editcompany {...props} />}
       />
 
-
-<Route
+      <Route
         path="/sign-up-Company"
         render={(props) => <RegisterCompanyPage {...props} />}
       />
 
-
-<Route
+      <Route
         path="/liste-candidacies"
         render={(props) => <ListeCandidacies {...props} />}
       />
-<Route
+      <Route
         path="/sign-up-Trainer"
         render={(props) => <RegisterTrainerPage {...props} />}
       />
 
-<Route
-        path="/offer"
-        render={(props) => <OfferPage {...props} />}
-      />
-<Route
-        path="/showApply"
-        render={(props) => <ApplyPage {...props} />}
-      />
+      <Route path="/offer" render={(props) => <OfferPage {...props} />} />
+      <Route path="/showApply" render={(props) => <ApplyPage {...props} />} />
 
-<Route
-        path="/AllOffers"
-        render={(props) => <AllOffers {...props} />}
-      />
-      
-<Route
+      <Route path="/AllOffers" render={(props) => <AllOffers {...props} />} />
+
+      <Route
         path="/DetailsOffers/:id"
         render={(props) => <OfferDetails {...props} />}
       />
- 
- <Route
+
+      <Route
         path="/ListCandidaciesIntern"
         render={(props) => <ListCAndidiesIntern {...props} />}
       />
-      
-<Route
+      <Route path="/Events" render={(props) => <EventsList {...props} />} />
+
+      <Route
         path="/AddOfferCompany"
         render={(props) => <AddOffer {...props} />}
       />
-<Route
+      <Route
         path="/EditOfferCompany/:id/offers/:id"
-       render={(props) => <EditOffer {...props} />}
+        render={(props) => <EditOffer {...props} />}
       />
-      
-    <Redirect to="/index" />
+      <Route
+        path="/eventslist"
+        render={(props) => <EventLandingPage {...props} />}
+      />
 
-
-
-
+      <Redirect to="/index" />
     </Switch>
   </BrowserRouter>
 );

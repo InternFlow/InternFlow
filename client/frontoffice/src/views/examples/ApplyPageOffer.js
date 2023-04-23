@@ -13,19 +13,24 @@ import {
   ListGroup,
   ListGroupItem,Button,  Modal,ModalHeader,ModalFooter
 } from "reactstrap";
+import Swal from "sweetalert2";
 
 // core components
 
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { useHistory , useLocation } from "react-router-dom";
+import { useHistory , useLocation,useParams } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 import queryString from 'query-string';
 import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
-const  ApplyPage=()=> {
+const  ApplyPageOffer=()=> {
+
+  const { idC } = useParams();
+  console.log(idC);
+
   const [modal, setModal] = useState(false);
   const openForm = () => setModal(!modal);
   const location = useLocation();
@@ -55,7 +60,7 @@ React.useEffect(() => {
 });
 
   React.useEffect(() => {
-    fetch(`http://localhost:5000/Candidacy/showApply/?id=${id}&idO=${idO}`, {
+    fetch(`http://localhost:5000/Candidacy/showApplyOffer/?idC=${idC}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +75,7 @@ React.useEffect(() => {
 console.log(applyData.resumeType);
 const id=applyData._id;
 
-          const response = await fetch(`http://localhost:5000/Candidacy/showResume?id=${id}`, {
+          const response = await fetch(`http://localhost:5000/Candidacy/showResume?id=${applyData._id}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -84,7 +89,7 @@ const id=applyData._id;
 
 
          const company=async()=>{
-          const response = await fetch(`http://localhost:5000/Candidacy/showCompany?idO=${idO}`, {
+          const response = await fetch(`http://localhost:5000/Candidacy/showCompany?idO=${idC}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -102,7 +107,57 @@ setCompany(d);
         .catch(error => console.error(error));
     
   }, []);
+/*
+  const getApply =  () => {
 
+  const r = fetch(`http://localhost:5000/Candidacy/showApply/?id=${id}&idO=${idO}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+         const applyData =data;
+         setApplyData(applyData);
+
+         setIdR(applyData.resume.toString())
+        })}
+
+
+   
+      /*  const getResume = async () => {
+
+             console.log(idR);
+               const response = await fetch(`http://localhost:5000/Candidacy/showResume?id=${idR}`, {
+                 method: 'GET',
+                 headers: {
+                   'Content-Type': 'application/json',
+                 }
+               });
+               const data = await response.json();
+               setResume(data);
+     console.log(data);
+             };    
+
+
+  React.useEffect(async() => {
+    getApply();
+    console.log(idR);
+    const response =  fetch(`http://localhost:5000/Candidacy/showResume?id=${idR}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    const data =  response.json();
+    setResume(data);
+console.log(data);  }, []);
+
+
+*/
+  
+  
 const [userd, setUserData] = useState({
 name: "",
 lastName: "",
@@ -168,6 +223,15 @@ const deleteApply = () => {
     .then(data => {
       console.log('Candidacy deleted:', data);
       // Mettre à jour l'état ou effectuer une action supplémentaire si nécessaire
+   
+   
+      Swal.fire(
+        'Success!',
+        'Apply deleted successfully!',
+        'success'
+      )
+      history.push(`/profile-page`);
+
     })
     .catch(error => {
       console.error('Error while deleting Candidacy:', error);
@@ -198,9 +262,12 @@ const file = () => {
 
   return (
     <>
-    <CondidatNavbar></CondidatNavbar>
-      <ProfilePageHeader />
 
+<CondidatNavbar></CondidatNavbar>
+      <ProfilePageHeader />
+            {resume.description}
+
+      {resume.filePath}
       <div className="section profile-content" >
         <Container>
           <div className="owner">
@@ -227,7 +294,7 @@ const file = () => {
               </ListGroupItem>
             <ListGroupItem className="justify-content-between">
             Company's name :
-                    <h6 className="description">{company.name} </h6>
+                    <h6 className="description">company name </h6>
   
         </ListGroupItem>
          
@@ -345,4 +412,4 @@ const file = () => {
 }
 
 
-export default ApplyPage;
+export default ApplyPageOffer;

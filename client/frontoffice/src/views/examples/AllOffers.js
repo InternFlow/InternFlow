@@ -26,6 +26,8 @@ import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 import { API } from "config";
 import offerImage from "../uploads/offers/1681389235310-offers.jpg";
+import ProfilePageHeader from "components/Headers/ProfilePageHeader";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function OfferList() {
   const id = localStorage.getItem("id");
@@ -69,8 +71,8 @@ function OfferList() {
 
   return (
     <>
-     <ExamplesNavbar />
-      <OfferHeader />
+    <CondidatNavbar></CondidatNavbar>
+      <ProfilePageHeader />
       <div className="section profile-content" >
         <br></br>
         <Container>
