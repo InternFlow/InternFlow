@@ -15,6 +15,28 @@ const router = express.Router();
 
 require('dotenv').config();
 
+
+//------------------------- VerifMail -----------------------------------------------//
+router.get('/verifMail/:mail', async (req, res) => {
+  const mail = req.params.mail;
+console.log(mail);
+  try {
+    const user = await User.find({ email: mail });
+if(user.length==0){
+  console.log("bien");
+
+  res.status(200).json({ successMessage: "mail not used" });
+}
+else{
+  console.log("non");
+
+  res.status(200).json({ successMessage: "mail used" });
+}
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching offers for company');
+  }
+});
 //-------------------------------- Moodifier Offre de Company ----------------------------------------------//
 // Route pour modifier une offre d'une société
 router.put('/Modifiercompanies/:companyId/offers/:offerId', async (req, res) => {
@@ -173,6 +195,9 @@ const parser = multer({ storage: storageFile });
 
 
 const uploadC = multer({ storage: storageC });
+
+const upload = multer({ storage: storageC });
+
 
 
 //------------------------- Consulter Offre de Company -----------------------------------------------//

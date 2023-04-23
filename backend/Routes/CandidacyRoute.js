@@ -7,7 +7,6 @@ const Candidacy = require("../models/Candidacy");
 const mongoose = require("mongoose");
 const router = express.Router();
 const multer = require("multer");
-const Offer = require("../models/Offer");
 const path = require('path');
 
 const storage = multer.diskStorage({
