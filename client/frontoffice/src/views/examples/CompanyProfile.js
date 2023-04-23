@@ -26,6 +26,7 @@ import offerImage from "../uploads/offers/1681389235310-offers.jpg";
 import axios from "axios";
 import { API } from "config";
 import Swal from "sweetalert2";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function CompanyProfilePage() {
   const id = localStorage.getItem("id");
@@ -163,7 +164,7 @@ React.useEffect(() => {
 
   return (
     <>
-      <ExamplesNavbar />
+<CondidatNavbar></CondidatNavbar>
       <ProfilePageHeader />
       <div className="section profile-content" >
         <Container>
