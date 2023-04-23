@@ -27,7 +27,7 @@ import {
 import axios from "axios";
 
 function EditOffer() {
-  
+    const history = useHistory();
     const companyId = localStorage.getItem("id");
     // const [offers, setOffers] = useState([]);
     // console.log(offers._id);
@@ -418,7 +418,7 @@ function EditOffer() {
                       <Button 
                         className="btn-round"
                         color="danger" 
-                        onClick={() => useHistory.goBack()}>
+                        onClick={() => history.goBack()}>
                           Go back
                       </Button>
                     </div>

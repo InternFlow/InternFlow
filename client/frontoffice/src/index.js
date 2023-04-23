@@ -52,6 +52,11 @@ import EditOffer from "views/examples/EditOffer";
 import EventsList from "views/examples/Events/EventsList";
 import EventLandingPage from "views/examples/Events/EventsLandingPage";
 import CondidatNavbar from "components/Navbars/CompanyNavbar";
+import ProfileView from "views/examples/ProfileView";
+import AllCourses from "views/examples/AllCourses";
+import CondidatCourses from "views/examples/CondidatCourses";
+import ManageClasses from "views/examples/ManageClasses";
+import ListCAndidiesOffer from "views/examples/ListCandidaciesOffer";
 
 // others
 
@@ -133,6 +138,12 @@ root.render(
         render={(props) => <OfferDetails {...props} />}
       />
 
+  <Route
+        path="/ListCandidaciesOffer/:id"
+        render={(props) => <ListCAndidiesOffer {...props} />}
+      />
+
+
       <Route
         path="/ListCandidaciesIntern"
         render={(props) => <ListCAndidiesIntern {...props} />}
@@ -151,6 +162,37 @@ root.render(
         path="/eventslist"
         render={(props) => <EventLandingPage {...props} />}
       />
+
+
+      <Route
+        path="/profile/:id"
+        render={(props) => <ProfileView {...props} />}
+      />
+      
+      <Route
+        path="/profile"
+        render={(props) => <ProfileView {...props} />}
+      />
+      
+
+       
+      <Route
+        path="/Classes/:id"
+        render={(props) => <ManageClasses {...props} />}
+      />
+
+      
+      <Route
+        path="/AllCourses"
+        render={(props) => <AllCourses {...props} />}
+      />
+
+      <Route
+        path="/CondidatCourses"
+        render={(props) => <CondidatCourses {...props} />}
+      />
+
+
 
       <Redirect to="/index" />
     </Switch>

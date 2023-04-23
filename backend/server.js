@@ -35,6 +35,8 @@ const ProfileUserRoutes = require('./Routes/ProfileUserRoutes');
 const OfferRoutes = require('./Routes/OfferRoute');
 const InterviewRoutes = require('./Routes/InterviewRoute');
 const CandidacyRoutes = require('./Routes/CandidacyRoute');
+const CourseRoute = require('./Routes/CourseRoute');
+const imageUploadRoute = require('./Routes/ImageUploadRoute');
 
 const config = require('./config');
 
@@ -78,7 +80,8 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/Offer',OfferRoutes);
     app.use('/Interview',InterviewRoutes);
     app.use('/Candidacy',CandidacyRoutes);
-
+    app.use('/Course',CourseRoute);
+    app.use('/uploadImage',imageUploadRoute);
 
 
 

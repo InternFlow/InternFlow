@@ -235,7 +235,7 @@ function AddOffer() {
 
       Swal.fire("Success!", "Offer added successfully!", "success");
 
-      history.push(`/profile-company-page`);
+      history.push(`/profile`);
     } catch (error) {
       console.error(error);
       setShowAlert(true);

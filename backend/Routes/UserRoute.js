@@ -441,6 +441,27 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.get('/verifMail/:mail', async (req, res) => {
+  const mail = req.params.mail;
+console.log(mail);
+  try {
+    const user = await User.find({ email: mail });
+if(user.length==0){
+  console.log("bien");
+
+  res.status(200).json({ successMessage: "mail not used" });
+}
+else{
+  console.log("non");
+
+  res.status(200).json({ successMessage: "mail used" });
+}
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching offers for company');
+  }
+});
+
 //ca
 
 router.get(
@@ -610,11 +631,27 @@ router.put("/confirm/:id", async (req, res) => {
   }
 });
 
+
+
 router.get("/profile", requireAuth, (req, res) => {
   var user = req.user;
   res.status(200).json({ user: user });
 });
 
+router.get("/profile/:id",  async (req, res) => {
+  try {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  
+  res.status(200).json({ user: user });
+} catch (error) {
+  res.status(500).json(error.message);
+}
+
+
+
+
+});
 router.get("/company", requireAuth, (req, res) => {
   var user = req.user;
   res.status(200).json({ user: user });

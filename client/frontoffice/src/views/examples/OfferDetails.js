@@ -9,11 +9,11 @@ import OfferHeader from "components/Headers/OfferHeader";
 import offerImage from "../uploads/offers/1681389235310-offers.jpg"
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { Image } from "cloudinary-react";
+import Swal from "sweetalert2";
 
 function OfferDetails() {
   const idIntern = localStorage.getItem("id");
-
+  const role = localStorage.getItem("role");
    //  const id = localStorage.getItem("id");
  //    console.log(id);
     const { id } = useParams(); // Récupère l'id de l'offre depuis l'URL
@@ -39,7 +39,6 @@ function OfferDetails() {
     const [description, setDescription] = useState('');
     const [showBoolean, setShowBoolean] = useState();
     const [userd, setUserData] = useState({});
-
     const handleFileChange = (event) => {
       setFile(event.target.files[0]);
     };
@@ -136,6 +135,11 @@ function OfferDetails() {
       setSelectedExperience(updatedExperiences);
     }
 
+    const redirectToApplies = () => {
+
+     history.push(`/ListCandidaciesOffer/${id}`);
+  
+    }
 
     const redirect = () => {
 
@@ -162,6 +166,11 @@ function OfferDetails() {
           method: "POST",
           body: formData
         });
+        Swal.fire(
+          'Success!',
+          'Apply added successfully!',
+          'success'
+        )
 
         const data = await response.json();
     
@@ -286,31 +295,34 @@ const handleCheckboxChange = (event) => {
                     <CardText className="h6">Location: {offer.location} </CardText>                    
                     <CardText className="h6">Requisted Languages:{offer.languages} </CardText>                    
 
-                <CardText>Offer File:</CardText>
-                <Image publicId={offer.offre_file} width="250" height="200" crop="fill" />
+                
                   </CardBody>
                 </Card>
                 <div>
                 <Button color="primary" onClick={() => history.goBack()}>
               Go back
             </Button>
-
             <span style={{ marginRight: '120px' }} />
+      <Form onSubmit={handleSubmit} className="register-form" method="POST">
 
-                  {showButton}  
-                  <Form onSubmit={handleSubmit} className="register-form" method="POST">
 
-                  {showBoolean==false && (
-        <Button color="secondary" onClick={openForm}>
+
+                  {showBoolean==false &&  role!="company" &&(
+        <Button color="primary" onClick={openForm}>
           Apply
         </Button>
       )}
-
-                {showBoolean==true && (
+                {showBoolean==true && role!="company" && (
         <Button color="primary" onClick={redirect}>
           Consult your apply
         </Button>
       )}
+                { role=="company" && (
+        <Button color="primary" onClick={redirectToApplies}>
+          Consult apllications
+                  </Button>
+      )}
+
 
                   </Form>
                 </div>
@@ -333,11 +345,11 @@ const handleCheckboxChange = (event) => {
   openFormCv();
   handleClick2();
 }}>
-          <div>cv specefique</div>
+          <div>Bespoke CV</div>
           </Button>
             <FormGroup>
-              <Label for="lettre">Lettre de motivation</Label>
-              <Input type="textarea" value={lettre} name="lettre" id="lettre" placeholder="Lettre"
+              <Label for="lettre">Cover Letter</Label>
+              <Input type="textarea" value={lettre} name="lettre" id="lettre" placeholder="Cover Letter"
                                       onChange={e => setLettre(e.target.value)}
                                       />
             </FormGroup>
@@ -357,24 +369,24 @@ const handleCheckboxChange = (event) => {
 
     <div>
       <Modal isOpen={modalCv} toggle={openFormCv}>
-        <ModalHeader toggle={openFormCv}>CV specefiquee</ModalHeader>
+        <ModalHeader toggle={openFormCv}>Bespoke CV</ModalHeader>
         <ModalBody>
           <Form>
           
           <FormGroup>
-              <Label for="lettre">Lettre de motivation</Label>
-              <Input type="textarea" value={lettre} name="lettre" id="lettre" placeholder="Lettre"
+              <Label for="lettre"><h6>Cover Letter</h6></Label>
+              <Input type="textarea" value={lettre} name="lettre" id="lettre" placeholder="Cover Letter"
                                       onChange={e => setLettre(e.target.value)}
                                       />
             </FormGroup>
           <FormGroup>
-              <Label for="lettre">Description :</Label>
-              <Input type="textarea" value={description} name="lettre" id="lettre" placeholder={userd.description}
+              <Label for="lettre"><h6>Description :</h6></Label>
+              <Input type="textarea" value={description} name="description" id="description" placeholder="Describe your self..."
                                       onChange={e => setDescription(e.target.value)}
                                       />
             </FormGroup>
             <FormGroup>
-<h3> Skills: </h3>
+<h6> Skills: </h6>
             {userd && userd.skills && userd.skills.map((name, index) => (
   <div key={index}>
     <input type="checkbox" id={`skill_${index}`} name={`skill_${index}`} value={name} 
@@ -386,29 +398,29 @@ const handleCheckboxChange = (event) => {
          
 
             <FormGroup>
-            <h3> Educatns: </h3>
+            <h6> Educations: </h6>
 
             {userd && userd.educations && userd.educations.map((education, index) => (
   <div key={education._id}>
     <input type="checkbox" id={education._id} name={education._id} value={education} 
     onChange={handleCheckboxChangeeducations} />
-    <label htmlFor={`skill_${index}`}>{education.schoolName}{education.degree}</label>
+    <label htmlFor={`skill_${index}`}>Worked at: {education.company} from : {new Date(education.startDate).toLocaleDateString()} to: {new Date(education.endDate).toLocaleDateString()}</label>
   </div>
 ))}
             </FormGroup>
 
             <FormGroup>
-<h3> experiences: </h3>
+<h6> experiences: </h6>
             {userd && userd.experiences && userd.experiences.map((experience, index) => (
   <div key={experience._id}>
     <input type="checkbox" id={experience._id} name={experience._id} value={experience} 
     onChange={handleCheckboxChangeexperieneces} />
-    <label htmlFor={`skill_${index}`}>{experience.jobTitle}</label>
+    <label htmlFor={`skill_${index}`}>Worked at: {experience.company} from : {new Date(experience.startDate).toLocaleDateString()} to: {new Date(experience.endDate).toLocaleDateString()}</label>
   </div>
 ))}
             </FormGroup>
 <FormGroup>
-            <input type="file" onChange={handleFileChange} />
+            <input type="file" accept="application/pdf" onChange={handleFileChange} />
             </FormGroup>
           </Form>
 
@@ -419,7 +431,7 @@ const handleCheckboxChange = (event) => {
                     )}
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={(event) => handleSubmit(event,"spec")}  type="submit">Enregistrer</Button>
+          <Button color="primary" onClick={(event) => handleSubmit(event,"spec")}  type="submit">Apply</Button>
           <Button color="secondary" >Annuler</Button>
         </ModalFooter>
       </Modal>

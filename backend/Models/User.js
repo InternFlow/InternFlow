@@ -17,12 +17,17 @@ const userSchema = new mongoose.Schema({
     schoolName: { type: String },
     degree: { type: String},
     description: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
   }],
   experiences: [{
     jobTitle: { type: String},
     company: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
     description: { type: String }
   }],
+  occupation: {type:String},
   skills: [{ type: String }],
   local: [{ type: String }],
   companies: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
