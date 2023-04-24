@@ -24,6 +24,7 @@ import { useHistory , useLocation,useParams } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 import queryString from 'query-string';
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 const  ApplyPageOffer=()=> {
 
@@ -226,10 +227,10 @@ const deleteApply = () => {
    
       Swal.fire(
         'Success!',
-        'Apply deleted successfully!',
+        'Application deleted successfully!',
         'success'
       )
-      history.push(`/profile-page`);
+      history.push(`/profile`);
 
     })
     .catch(error => {
@@ -261,11 +262,12 @@ const file = () => {
 
   return (
     <>
-      <ExamplesNavbar />
-      {resume.description}
+
+<CondidatNavbar></CondidatNavbar>
+      <ProfilePageHeader />
+            {resume.description}
 
       {resume.filePath}
-      <ProfilePageHeader />
       <div className="section profile-content" >
         <Container>
           <div className="owner">
