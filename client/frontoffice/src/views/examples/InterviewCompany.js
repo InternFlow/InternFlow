@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState,useRef, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {
@@ -22,14 +22,12 @@ import {
     CardText,
     Button,
 } from "reactstrap";
+import { useHistory, useLocation } from "react-router-dom";
+import { FaCalendarAlt } from "react-icons/fa";
+//import MapTunisie from "components/Maps/MapTunisie.js"
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { FaEnvelope } from "react-icons/fa";
-
-import { useHistory, useLocation } from "react-router-dom";
-import { FaCalendarAlt } from "react-icons/fa";
-import MapTunisie from "components/Maps/MapTunisie.js"
-
 // core components
 import CompanyNavbar from "components/Navbars/CompanyNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
@@ -44,8 +42,6 @@ const localizer = momentLocalizer(moment);
 function InterviewCompany() {
     const location = useLocation();
     const history = useHistory();
-    const [isChatOpen, setIsChatOpen] = useState(false);
-
     const token = localStorage.getItem("token");
     const searchParams = new URLSearchParams(location.search);
     const offerId = searchParams.get("offerId");
@@ -56,6 +52,7 @@ function InterviewCompany() {
     const [alertMessage, setAlertMessage] = useState("");
 
     const [couleur, setcouleur] = useState("");
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
 
     const [showNotificationButton, setShowNotificationButton] = useState(false);
@@ -73,12 +70,12 @@ function InterviewCompany() {
     const containerStyle = {
         width: "100%",
         height: "400px",
-    };
-
-    const center = {
+      };
+      
+      const center = {
         lat: 37.7749,
         lng: -122.4194,
-    };
+      };
 
 
     const getEventStyle = (event, start, end, isSelected) => {
@@ -116,7 +113,7 @@ function InterviewCompany() {
                 .then((response) => response.json())
                 .then((data) => {
                     const formattedEvents = data.map((item) => {
-                        const title = `Entretien pour le candidat ${item.user.name}`;
+                        const title = `Entretien pour le candidat ${item.intern.name}`;
                         const start = moment(item.interviewScheduled.date)
                             .subtract(1, "hours")
                             .toDate();
@@ -124,7 +121,7 @@ function InterviewCompany() {
                             .add(item.interviewScheduled.duration, "minutes")
                             .subtract(1, "hours")
                             .toDate();
-                        const isuser = item.user._id;
+                        const isuser = item.intern._id;
 
                         return {
                             title,
@@ -155,42 +152,42 @@ function InterviewCompany() {
 
     const handleSendNotification = async () => {
         try {
-            const response = await fetch(
-                `http://localhost:5000/userinterview/notify/${userId}/interview/${offerId}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ interviewDate: formData.date }),
-                    credentials: "include",
-                }
-            );
-
-            const responseData = await response.json();
-
-            console.log("Success:", responseData);
-
-            if (response.status === 200) {
-                setcouleur("success");
-                setAlertMessage("Notification envoyée");
-                setShowAlert(true);
-                setTimeout(() => {
-                    setShowAlert(false);
-
-                }, 6000)
-                setShowNotificationButton(false)
-
-                setShowForm(false);
+          const response = await fetch(
+            `http://localhost:5000/userinterview/notify/${userId}/interview/${offerId}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ interviewDate: formData.date }),
+              credentials: "include",
             }
-        } catch (error) {
-            console.error("Error:", error);
-            setcouleur("danger");
-            setAlertMessage("Une erreur s'est produite");
+          );
+      
+          const responseData = await response.json();
+      
+          console.log("Success:", responseData);
+      
+          if (response.status === 200) {
+            setcouleur("success");
+            setAlertMessage("Notification envoyée");
             setShowAlert(true);
+            setTimeout(() => {
+                setShowAlert(false);
+
+            }, 6000 )
+            setShowNotificationButton(false)
+
+            setShowForm(false);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          setcouleur("danger");
+          setAlertMessage("Une erreur s'est produite");
+          setShowAlert(true);
         }
-    };
+      };
 
 
 
@@ -274,7 +271,6 @@ function InterviewCompany() {
     };
 
 
-
     const handleCloseChat = () => {
         setIsChatOpen(false);
     };
@@ -343,7 +339,7 @@ function InterviewCompany() {
                             Nouvelle date d'entretien
                         </Button>
                     </div>
-
+                    
                     {showForm && (
                         <form onSubmit={handleFormSubmit}>
                             <FormGroup>
@@ -371,19 +367,19 @@ function InterviewCompany() {
                         <Alert color={couleur}>{alertMessage}</Alert>
                     )}
 
-                    {showNotificationButton && (
-                        <button
-                            onClick={handleSendNotification}
-                        >
-                            Informer le candidat
-                        </button>
-                    )}
+{showNotificationButton && (
+    <button
+    onClick={handleSendNotification}
+    >
+        Informer le candidat
+    </button>
+)}
 
 
 
                 </Container>
             </div>
-        <DemoFooter />
+            <DemoFooter />
 
         </>
     );

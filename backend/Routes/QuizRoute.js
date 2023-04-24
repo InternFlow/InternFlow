@@ -7,7 +7,7 @@ const Question = require("../models/Question");
 
 const { requireAuth } = require("../middlewares/requireAuth");
 const { checkRole } = require("../middlewares/checkRole");
-const Application = require("../models/Application");
+const Candidacy = require("../models/Candidacy");
 
 
 
@@ -117,7 +117,7 @@ router.post(
         return res.status(404).json({ message: "Offer not found" });
       }
 
-      const application = await Application.findOne({
+      const application = await Candidacy.findOne({
         offer: offer._id,
         status: "approved",
         statusQuiz: "pending"
@@ -265,7 +265,7 @@ router.post('/offer/:offerId/quiz/:quizId/addquestion', requireAuth, checkRole("
       }
   
 
-      const application = await Application.findOne({
+      const application = await Candidacy.findOne({
         offer: offer._id,
         status: "approved",
         statusQuiz: "pending"
@@ -295,6 +295,45 @@ router.post('/offer/:offerId/quiz/:quizId/addquestion', requireAuth, checkRole("
   
   
 
+
+  router.put('/offer/:offerId/editquiz/:quizId/editquestion/:questionId', requireAuth, checkRole("company"), async (req, res) => {
+    try {
+      const offerId = req.params.offerId;
+      const quizId = req.params.quizId;
+      const questionId = req.params.questionId;
+  
+      const offer = await Offer.findById(offerId);
+      if (!offer) {
+        return res.status(404).json({ message: 'Offer not found' });
+      }
+  
+      const quiz = await Quiz.findById(quizId);
+      if (!quiz) {
+        return res.status(404).json({ message: 'Quiz not found' });
+      }
+  
+      const question = await Question.findById(questionId);
+      if (!question) {
+        return res.status(404).json({ message: 'Question not found' });
+      }
+  
+      // Update the question object with the new data
+      question.text = req.body.text || question.text;
+      question.choices = req.body.choices || question.choices;
+      question.correctChoice = req.body.correctChoice || question.correctChoice;
+      question.score = req.body.score || question.score;
+  
+      // Save the updated question object to the database
+      await question.save();
+      quiz.scoremax=quiz.scoremax + newQuestion.score;
+      await quiz.save();
+
+      res.status(200).json({ message: 'Question updated successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  });
   
 
   

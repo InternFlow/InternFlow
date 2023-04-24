@@ -22,7 +22,7 @@ import {
 import CondidatNavbar from "components/Navbars/CondidatNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation,useParams } from "react-router-dom";
 
 function Condidatquizzes() {
   const history = useHistory();
@@ -30,8 +30,10 @@ function Condidatquizzes() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const offerId = searchParams.get("ido");
-  const [quizzes, setQuizzes] = useState([]);
-
+ // const { idO } = useParams();
+//const offerId=idO;
+console.log(offerId);
+ const [quizzes, setQuizzes] = useState([]);
   const [offer, setoffer] = useState([]);
   const [showQuizzes, setShowQuizzes] = useState(false);
   const [CompleteQuizzes, setCompleteQuizzes] = useState(false);
@@ -39,7 +41,7 @@ function Condidatquizzes() {
   const handleViewQuizzesClick = async (offerId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/applicationquiz/offer/condidat/${offerId}/quizzes`,
+        `http://localhost:5000/Candidacy/offer/condidat/${offerId}/quizzes`,
         {
           method: "GET",
           headers: {
@@ -53,9 +55,10 @@ function Condidatquizzes() {
 
       if(response.status==200)
       {      
-        console.log(data);
         setQuizzes(data);
         setShowQuizzes(true);
+        console.log(data);
+
       }else if(response.status==400)
       {
 console.log(data.message)
@@ -123,7 +126,7 @@ setCompleteQuizzes(true)
                         size="sm"
                         onClick={() =>
                           history.push(
-                            `/offer/condidat/questions?ido=${offerId}&quiz&idq=${quiz._id}`
+                            `/offre/condidat/questions?ido=${offerId}&quiz&idq=${quiz._id}`
                           )
                         }
                       >

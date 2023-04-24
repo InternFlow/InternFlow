@@ -32,7 +32,6 @@ function CondidatQuestions() {
   const [timerId, setTimerId] = useState(null);
 
 
-
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [tempup, settempup] = useState(false);
@@ -148,8 +147,7 @@ useEffect(() => {
 }, [Countdown]);
 
 useEffect(() => {
-  console.log(Countdown)
-  if ( Countdown===1190) {
+  if ( Countdown===0) {
     // Envoyer les données ici
 handleSubmit();
 
@@ -162,7 +160,7 @@ const handleSubmit = () => {
   const offerId = searchParams.get("ido");
   const quizId = searchParams.get("idq");
   console.log(quizId);
-  fetch(`http://localhost:5000/applicationquiz/offer/${offerId}/quiz/${quizId}/submit`, {
+  fetch(`http://localhost:5000/Candidacy/offer/${offerId}/quiz/${quizId}/submit`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

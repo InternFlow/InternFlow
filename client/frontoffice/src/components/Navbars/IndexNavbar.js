@@ -1,29 +1,9 @@
-/*!
-
-=========================================================
-* Paper Kit React - v1.3.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-kit-react
-
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/paper-kit-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 // nodejs library that concatenates strings
 import classnames from "classnames";
 // reactstrap components
 
 import { useHistory } from "react-router-dom";
-
-
 import {
   Button,
   Collapse,
@@ -32,12 +12,11 @@ import {
   NavItem,
   NavLink,
   Nav,
-  Container
+  Container,
 } from "reactstrap";
+import { Link, scroller } from "react-scroll";
 
 function IndexNavbar() {
-
-
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [navbarCollapse, setNavbarCollapse] = React.useState(false);
   const history = useHistory();
@@ -69,29 +48,34 @@ function IndexNavbar() {
     };
   });
 
-
-
   const handleLogin = async (event) => {
+    history.push("/sign-in");
+  };
 
-        history.push('/sign-in');
+  const toEvents = async (event) => {
+    history.push("/Events");
+  };
 
-  }
   return (
     <Navbar className={classnames("fixed-top", navbarColor)} expand="lg">
       <Container>
         <div className="navbar-translate">
           <NavbarBrand
             data-placement="bottom"
-            href="/index"
+            onClick={() => {
+              history.push("./index");
+            }}
             target="_blank"
-            title="Coded by Creative Tim"
+            style={{ cursor: "pointer" }}
           >
-            InternFlow
+            <Link to="mainheader" smooth={true} duration={200}>
+              <b> InternFlow</b>
+            </Link>
           </NavbarBrand>
           <button
             aria-expanded={navbarCollapse}
             className={classnames("navbar-toggler navbar-toggler", {
-              toggled: navbarCollapse
+              toggled: navbarCollapse,
             })}
             onClick={toggleNavbarCollapse}
           >
@@ -106,70 +90,51 @@ function IndexNavbar() {
           isOpen={navbarCollapse}
         >
           <Nav navbar>
-            <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://twitter.com/CreativeTim?ref=creativetim"
-                target="_blank"
-                title="Follow us on Twitter"
-              >
-                <i className="fa fa-twitter" />
-                <p className="d-lg-none">Twitter</p>
+            <NavItem style={{ cursor: "pointer" }}>
+              <NavLink>
+                <Link to="contactUs" smooth={true} duration={200}>
+                  <b>Contact Us</b>
+                </Link>
               </NavLink>
             </NavItem>
+
+            
             <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://www.facebook.com/CreativeTim?ref=creativetim"
-                target="_blank"
-                title="Like us on Facebook"
+            <Button
+                
+                outline onClick={toEvents}
               >
-                <i className="fa fa-facebook-square" />
-                <p className="d-lg-none">Facebook</p>
+                <i className="nc-icon nc-spaceship"></i> Events
+              </Button>
+            </NavItem>
+
+
+            <NavItem style={{ cursor: "pointer" }}>
+              <NavLink>
+                <Link to="Project" smooth={true} duration={200} offset={-120}>
+                  <b>What is InternFlow</b>
+                </Link>
               </NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://www.instagram.com/CreativeTimOfficial?ref=creativetim"
-                target="_blank"
-                title="Follow us on Instagram"
-              >
-                <i className="fa fa-instagram" />
-                <p className="d-lg-none">Instagram</p>
+
+            <NavItem style={{ cursor: "pointer" }}>
+              <NavLink>
+                <Link to="Team" smooth={true} duration={200} offset={-100}>
+                  <b>Team</b>
+                </Link>
               </NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://www.github.com/CreativeTimOfficial/paper-kit-react?ref=creativetim"
-                target="_blank"
-                title="Star on GitHub"
-              >
-                <i className="fa fa-github" />
-                <p className="d-lg-none">GitHub</p>
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                href="https://demos.creative-tim.com/paper-kit-react/#/documentation?ref=pkr-index-navbar"
-                target="_blank"
-              >
-                <i className="nc-icon nc-book-bookmark" /> Documentation
-              </NavLink>
-            </NavItem>
+
             <NavItem>
               <Button
                 className="btn-round"
                 color="danger"
                 target="_blank"
                 outline
-                 onClick={handleLogin}
+                onClick={handleLogin}
               >
-                <i className="nc-icon nc-spaceship"></i> login
+                login
               </Button>
-
-
             </NavItem>
           </Nav>
         </Collapse>

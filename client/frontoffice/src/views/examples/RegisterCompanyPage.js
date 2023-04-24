@@ -24,9 +24,27 @@ import { useForm } from "react-hook-form";
 
 // core components
 import LoginNavbar from "components/Navbars/LoginNavBar";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function RegisterPage() {
-
+  const [verif, setVerif] = useState("");
+  function verifMail(mail){
+    console.log(mail);
+      fetch(`http://localhost:5000/verifMail/${mail}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+        ,credentials: 'include'
+      })
+        .then(response => response.json())
+        .then(data => {
+          setVerif(data.successMessage);
+          
+        })
+        .catch(error => console.error(error));
+    
+  }
   document.documentElement.classList.remove("nav-open");
   React.useEffect(() => {
     document.body.classList.add("register-page");
@@ -50,7 +68,12 @@ function RegisterPage() {
     event.preventDefault();
     // validate the form fields
     let errors = {};
-
+    if(verif=="mail used")
+    {
+      errors.email = 'this email is used';
+          setAlertMessage(' this email is used ! ');
+          setShowAlert(true); 
+    }
     if (name.trim() === '') {
       errors.name = 'name is required';
       setAlertMessage(' Please Fill in with your whole name ! ');
@@ -100,8 +123,8 @@ function RegisterPage() {
       setShowAlert(true);
       setTimeout(() => {
         setShowAlert(false);
-        history.push("/sign-in");
-      }, 2000);
+       history.push("/sign-in");
+      }, 8000);
 
       //window.alert("SignUp Successfull")
       //  toast.success('SignUp Successful'); // success message
@@ -121,7 +144,7 @@ function RegisterPage() {
   }
   return (
     <>
-      <LoginNavbar />
+<CondidatNavbar></CondidatNavbar>
       <div
         className="page-header"
         style={{
@@ -182,6 +205,8 @@ function RegisterPage() {
                         name="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
+                        onBlur={e => verifMail(e.target.value)}
+
                       />
                       {errors.email && <span>{errors.email}</span>}
                     </div>

@@ -1,5 +1,5 @@
 
-import React ,{useState} from "react";
+import React ,{useEffect, useState} from "react";
 // reactstrap components
 import {
   Card, 
@@ -11,26 +11,31 @@ import {
   CardGroup,
   CardTitle,
   ListGroup,
-  ListGroupItem
+  ListGroupItem,
+  Button,CardImg
 } from "reactstrap";
 
 // core components
-import CompanyNavbar from "components/Navbars/CompanyNavbar.js";
+import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { useHistory } from "react-router-dom";
+import { useHistory ,Link} from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 
-function CompanyProfilePage() {
-  const id = localStorage.getItem("id");
+import offerImage from "../uploads/offers/1681389235310-offers.jpg";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
+function CompanyProfilePage(props) {
+  const id = props.userId;
+
+  console.log(id);
   
   const history = useHistory();
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
-  const [Open, setOpen] = React.useState(1);
+  const [offers, setOffers] = useState([]);
 
 
 console.log(role)
@@ -68,18 +73,34 @@ description: ""
 
     //history.push('/Edit-condidat-page');
 
-    history.push(`/Edit-condidat-page`);
+    history.push(`/Edit-company-page`);
 
 
 }
+	
 
-
-
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    fetch(`http://localhost:5000/Affichercompanies/${id}/offers`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setOffers(data);
+      })
+      .catch(error => console.error(error));
+  }
+}, []);
 
 React.useEffect(() => {
   const token = localStorage.getItem('token');
   if (token) {
-    fetch('http://localhost:5000/profile', {
+    fetch('http://localhost:5000/profile/'+id, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -99,7 +120,7 @@ React.useEffect(() => {
 
   return (
     <>
-      <CompanyNavbar />
+<CondidatNavbar></CondidatNavbar>
       <ProfilePageHeader />
       <div className="section profile-content" >
         <Container>
@@ -143,6 +164,7 @@ React.useEffect(() => {
                     
                 </CardBody>
               </Card >
+              
             </Col>
             <Col md="8">
              
@@ -156,11 +178,35 @@ React.useEffect(() => {
 
               </CardBody>
                 </Card>
-            
+                
             </Col>
           </Row>
-
-
+       
+          <Row >
+          
+          <Col md="9">
+            <Row>
+            {offers.map((offer) => (
+              <Col md="4" key={offer.id}>
+              <Card className="mb-4"  key={offer.id}>
+              <CardImg top width="100%" src={offerImage} alt="Offer Image" />
+                <CardBody>
+                  <CardTitle tag="h5">{offer.title}</CardTitle>
+                  <p>{offer.description}</p>
+                  <Button color="primary" onClick={() => history.push(`/DetailsOffers/${offer._id}`)}>
+                    View Details
+                  </Button>
+                  <br></br>
+                  <br></br>
+                </CardBody>
+              </Card>
+            </Col>
+            ))}  
+            </Row>  
+          
+          
+          </Col>
+        </Row>
 
 
            </div>

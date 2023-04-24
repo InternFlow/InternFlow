@@ -1,0 +1,29 @@
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  date:{ type:Date },
+  lastName: { type: String },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  phoneNumber:{ type:Number},
+  description: { type: String},
+  identificationCompany: { type: String},
+  role: { type: String, enum: ['formateur', 'company', 'admin','condidat'], default: 'condidat' },
+  confirmed: { type: Boolean },
+  educations: [{
+    schoolName: { type: String },
+    degree: { type: String},
+    fieldOfStudy: { type: String },
+  }],
+  experiences: [{
+    jobTitle: { type: String},
+    company: { type: String },
+    description: { type: String }
+  }],
+  skills: [{ 
+    nameS: {type:String }
+  }],
+  local: { type: String },
+  companies: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+  interns: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+  uploadedFiles: [{ type: String }]
+});

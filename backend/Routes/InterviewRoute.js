@@ -4,7 +4,7 @@ const router = express.Router();
 const Offer = require("../models/offer");
 const Quiz = require("../models/Quiz");
 const Question = require("../models/Question");
-const Application = require("../models/Application");
+const Candidacy = require("../models/Candidacy");
 const User = require("../models/User");
 
 const { requireAuth } = require("../middlewares/requireAuth");
@@ -23,7 +23,7 @@ router.put('/offer/:offerId/user/:userId/application', requireAuth, checkRole("c
         return res.status(404).json({ error: 'Offre introuvable' });
       }
   
-      const application = await Application.findOne({ user: req.params.userId, offer: req.params.offerId });
+      const application = await Candidacy.findOne({ intern: req.params.userId, offer: req.params.offerId });
   
       if (!application) {
         return res.status(404).json({ error: 'Candidature introuvable' });
@@ -66,7 +66,7 @@ router.put('/offer/:offerId/user/:userId/application', requireAuth, checkRole("c
       const interviewScheduled = datetime.utc();
   
 
-      const overlappingApplications = await Application.find({
+      const overlappingApplications = await Candidacy.find({
         offer: req.params.offerId,
         'interviewScheduled.date': {
           $gte: moment(interviewScheduled)
@@ -117,7 +117,7 @@ router.put('/offer/:offerId/user/:userId/application', requireAuth, checkRole("c
         return res.status(404).json({ error: 'Offre introuvable' });
       }
   
-      const applications = await Application.find({ offer: req.params.offerId, interviewScheduled: { $ne: null } }).populate('user');
+      const applications = await Candidacy.find({ offer: req.params.offerId, interviewScheduled: { $ne: null } }).populate('intern');
   
       const interviewDates = applications.map(application => application.interviewScheduled);
   
@@ -130,7 +130,7 @@ router.put('/offer/:offerId/user/:userId/application', requireAuth, checkRole("c
   
   router.get('/applications/interview-scheduled', requireAuth, checkRole("condidat"), async (req, res) => {
     try {
-      const applications = await Application.find({ user: req.user._id, interviewScheduled: { $ne: null } }).populate('offer');
+      const applications = await Candidacy.find({ intern: req.user._id, interviewScheduled: { $ne: null } }).populate('offer');
       res.json(applications);
     } catch (err) {
       console.error(err);
@@ -149,7 +149,7 @@ router.post('/notify/:userId/interview/:offerId', requireAuth, checkRole('compan
     const user = await User.findById(userId);
     const offer = await Offer.findById(offerId);
     const newNotification = {
-      message: `Vous avez un entretien pour l'offre ${offer.name} le ${interviewDate}`,
+      message: `Vous avez un entretien pour l'offre ${offer.title} le ${interviewDate}`,
       link: '',
       offreid: offerId
     };
@@ -162,6 +162,7 @@ router.post('/notify/:userId/interview/:offerId', requireAuth, checkRole('compan
     res.status(500).json({ message: 'Une erreur s\'est produite' });
   }
 });
+
 
 
 module.exports = router;

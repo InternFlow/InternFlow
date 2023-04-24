@@ -7,7 +7,7 @@ const notificationSchema = new mongoose.Schema({
   offreid:{ type: String }
 });
 
-
+const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   lastName: { type: String },
@@ -22,12 +22,17 @@ const userSchema = new mongoose.Schema({
     schoolName: { type: String },
     degree: { type: String},
     description: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
   }],
   experiences: [{
     jobTitle: { type: String},
     company: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
     description: { type: String }
   }],
+  occupation: {type:String},
   skills: [{ type: String }],
   local: [{ type: String }],
   companies: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
@@ -40,9 +45,15 @@ const userSchema = new mongoose.Schema({
 
   confirmationToken: { type: String },
   confirmExpiration: { type: Date },
-  notifications: [notificationSchema],
-  messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }]
-
+  OfferIdC: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Offer'
+  }],
+  OfferIdI: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Offer'
+  }],
+  notifications: [notificationSchema]
 
 });
 

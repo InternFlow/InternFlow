@@ -76,8 +76,9 @@ function InterviewCondidat() {
             )
                 .then((response) => response.json())
                 .then((data) => {
+                    console.log(data)
                     const formattedEvents = data.map((item) => {
-                        const title = `Entretien pour le offre ${item.offer.name}`;
+                        const title = `Entretien pour le offre ${item.offer.title}`;
                         const start = moment(item.interviewScheduled.date)
                             .subtract(1, "hours")
                             .toDate();
@@ -85,7 +86,7 @@ function InterviewCondidat() {
                             .add(item.interviewScheduled.duration, "minutes")
                             .subtract(1, "hours")
                             .toDate();
-                        const isuser = item.user._id;
+                        const isuser = item.intern._id;
 
                         return {
                             title,
@@ -153,7 +154,7 @@ function InterviewCondidat() {
   <Card className="mb-3">
     <CardBody style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
       <div style={{ flex: "1 1 auto", marginRight: "1rem" }}>
-        <CardTitle tag="h5" style={{fontWeight: "bold", marginBottom: "0.5rem"}}>{application.offer.name}</CardTitle>
+        <CardTitle tag="h5" style={{fontWeight: "bold", marginBottom: "0.5rem"}}>{application.offer.title}</CardTitle>
         <CardSubtitle tag="h6" className="mb-2 text-muted">
           Entretien le {moment(application.interviewScheduled.date).format("DD/MM/YYYY")} à {moment(application.interviewScheduled.date).format("HH:mm")}
         </CardSubtitle>
