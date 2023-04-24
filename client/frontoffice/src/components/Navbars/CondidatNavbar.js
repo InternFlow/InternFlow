@@ -260,6 +260,15 @@ const toggle2 = () => setModal2(!modal2);
   </NavLink>
 </NavItem>
 )}
+        {roleToken=="condidat" &&(
+
+<NavItem>
+  <NavLink to="/CondidatInterview" tag={Link}>
+    <i className="nc-icon nc-layout-11" /> My interviews
+  </NavLink>
+</NavItem>
+)}
+
           {roleToken=="condidat" &&(
 
 <NavItem>
@@ -295,7 +304,7 @@ const toggle2 = () => setModal2(!modal2);
 
 
 
-            {role=="condidat" && (
+            {roleToken==="condidat" && (
 
             <NavItem>
             <NavLink  onClick={toggle}>

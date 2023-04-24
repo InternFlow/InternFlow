@@ -11,6 +11,7 @@ import offerImage from "../uploads/offers/1681389235310-offers.jpg"
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 import Swal from "sweetalert2";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function OfferDetails() {
   const [showQuizForm, setShowQuizForm] = useState(false);
@@ -387,7 +388,7 @@ const handleCheckboxChange = (event) => {
 
   return(
     <>
-   <ExamplesNavbar />
+   <CondidatNavbar />
       <OfferHeader />
       <Container style={{ marginTop: "30px" }}>
         <Row>

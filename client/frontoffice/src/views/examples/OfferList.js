@@ -28,6 +28,7 @@ import OfferHeader from "components/Headers/OfferHeader";
 
 // Importez votre image statique ici
 import offerImage from "../uploads/offers/1681389235310-offers.jpg";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function OfferList() {
   const id = localStorage.getItem("id");
@@ -71,7 +72,7 @@ function OfferList() {
 
   return (
     <>
-      <ExamplesNavbar />
+   <CondidatNavbar />
       <OfferHeader />
       <div className="section profile-content" >
         <br></br>

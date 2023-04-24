@@ -21,6 +21,7 @@ import { useHistory } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from "components/Accordion";
 import ReactPaginate from "react-paginate";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function ApplicationCondidate() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -282,7 +283,7 @@ console.log(selectedCandidate2);
 
   return (
     <>
-      <CompanyNavbar />
+   <CondidatNavbar />
       <ProfilePageHeader />
       <div className="section profile-content">
         <Container>
