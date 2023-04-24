@@ -15,17 +15,40 @@ import {
   Container,
 } from "reactstrap";
 import { Link, scroller } from "react-scroll";
+import { useState } from 'react';
 
 function IndexNavbar() {
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [navbarCollapse, setNavbarCollapse] = React.useState(false);
   const history = useHistory();
-
+  const [role, setRole] = useState("");
+  const token = localStorage.getItem("token");
+  const roleToken = localStorage.getItem("role");
   const toggleNavbarCollapse = () => {
     setNavbarCollapse(!navbarCollapse);
     document.documentElement.classList.toggle("nav-open");
   };
+  const handleLogOut = async (event) => {
+    try {
+      const res = await fetch('http://127.0.0.1:5000/logout', {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
 
+      if (res.status === 200) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push('/');
+      }
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
   React.useEffect(() => {
     const updateNavbarColor = () => {
       if (
@@ -40,7 +63,9 @@ function IndexNavbar() {
         setNavbarColor("navbar-transparent");
       }
     };
-
+    if(!token){
+      setRole("guest");
+    }
     window.addEventListener("scroll", updateNavbarColor);
 
     return function cleanup() {
@@ -52,6 +77,12 @@ function IndexNavbar() {
     history.push("/sign-in");
   };
 
+  const toCourses = async (event) => {
+    history.push("/AllCourses");
+  };
+  const toOffers = async (event) => {
+    history.push("/Alloffers");
+  };
   const toEvents = async (event) => {
     history.push("/Events");
   };
@@ -98,17 +129,52 @@ function IndexNavbar() {
               </NavLink>
             </NavItem>
 
+            {roleToken=="condidat" &&(
+
+            <NavItem>
+            <Button
+                
+                outline onClick={toCourses}
+              >
+                <i className="nc-icon nc-spaceship"></i> All Courses
+              </Button>
+            </NavItem>
+            )}
+
             
+{roleToken=="condidat" &&(
+
+<NavItem>
+<Button
+    
+    outline onClick={toOffers}
+  >
+     All Offers
+  </Button>
+</NavItem>
+)}
+            {roleToken=="condidat" &&(
+
+<NavItem>
+<Button
+    
+    outline onClick={toCourses}
+  >
+     My Courses
+  </Button>
+</NavItem>
+)}
+            {role!="guest" && (
+
             <NavItem>
             <Button
                 
                 outline onClick={toEvents}
               >
-                <i className="nc-icon nc-spaceship"></i> Events
+                 Events
               </Button>
             </NavItem>
-
-
+            )}
             <NavItem style={{ cursor: "pointer" }}>
               <NavLink>
                 <Link to="Project" smooth={true} duration={200} offset={-120}>
@@ -124,6 +190,7 @@ function IndexNavbar() {
                 </Link>
               </NavLink>
             </NavItem>
+            {role=="guest" && (
 
             <NavItem>
               <Button
@@ -136,6 +203,24 @@ function IndexNavbar() {
                 login
               </Button>
             </NavItem>
+            )}
+
+
+            
+    {role!="guest" && (
+
+
+<NavItem>
+<Button
+    className="btn-round"
+    color="danger"
+    target="_blank"
+    outline onClick={handleLogOut}
+  >
+    <i className="nc-icon nc-spaceship"></i> LogOut
+  </Button>
+</NavItem>
+)}
           </Nav>
         </Collapse>
       </Container>

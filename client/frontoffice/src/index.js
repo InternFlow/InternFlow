@@ -61,6 +61,7 @@ import QuestionsQuiz from "views/examples/QuestionsQuiz";
 import Condidatquizzes from "views/examples/Condidatquizzes";
 import CondidatQuestions from "views/examples/CondidatQuestions";
 import InterviewCompany from "views/examples/InterviewCompany";
+import InterviewCondidat from "views/examples/InterviewCondidat";
 
 // others
 
@@ -212,6 +213,16 @@ root.render(
         path="/InterviewCompany"
         render={(props) => <InterviewCompany {...props} />}
       />
+
+
+
+<Route
+        path="/CondidatInterview"
+        render={(props) => <InterviewCondidat {...props} />}
+      />
+
+
+
 <Route
         path="/UserEvent"
         render={(props) => <EventLandingPage {...props} />}

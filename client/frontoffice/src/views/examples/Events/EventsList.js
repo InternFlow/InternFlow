@@ -7,8 +7,10 @@ import axios from "axios";
 import "./Events.css";
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 const EventsList = () => {
   const [data, setData] = useState([]);
+  console.log(data);
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await axios.get("http://localhost:5000/Event/allEvents");
@@ -19,8 +21,7 @@ const EventsList = () => {
 
   return (
     <>
-      <ExamplesNavbar />
-      <ProfilePageHeader />
+<CondidatNavbar/>      <ProfilePageHeader />
       <EventsListWrapper>
         <div className="container">
           <div className="Events-list-top">

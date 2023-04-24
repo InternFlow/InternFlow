@@ -38,7 +38,7 @@ const [currentPage, setCurrentPage] = useState(0);
 
   const token = localStorage.getItem("token");
   const [offers, setOffers] = useState([]);
-  const [selectedOfferId, setSelectedOfferId] = useState(null);
+  const [selectedOfferId, setSelectedOfferId] = useState(true);
   const itemsPerPage = 6;
   const offerId = selectedOfferId;
   const [candidates, setCandidates] = useState([]);
@@ -56,11 +56,11 @@ console.log(alertMessage);
   console.log(selectedCandidate);
 
 
-  const handleViewCandidatesClick = async (offerId) => {
+  const handleViewCandidatesClick = async () => {
     try {
 console.log(offerId);
 
-      const response = await fetch(`http://localhost:5000/Candidacy/getListCandidaciesOffer/${offerId}/applications`, {
+      const response = await fetch(`http://localhost:5000/Candidacy/getListCandidaciesOffer/${id}/applications`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -100,10 +100,12 @@ console.log(offerId);
       });
       const data = await response.json();
       console.log(response.status);
+      console.log(selectedCandidate)
+      console.log(response.status);
       if(response.status==200)
       {
           const updatedCandidates = candidates.map((candidate) => {
-        if (candidate.intern._id === selectedCandidate.intern._id) {
+        if (candidate.intern === selectedCandidate.intern._id) {
           return { ...candidate, status: newStatus };
         }
         return candidate;
@@ -118,10 +120,13 @@ console.log(offerId);
       
       }
       else if(response.status==400){
-        
-        console.log(data.error);
-
-     //   setCandidates(updatedCandidates); 
+        const updatedCandidates = candidates.map((candidate) => {
+          if (candidate.intern === selectedCandidate.intern._id) {
+            return { ...candidate, status: candidate.status };
+          }
+          return candidate;
+        });
+        setCandidates(updatedCandidates); 
 
         setAlertMessage(data.error);
         setcouleur("danger")
@@ -161,7 +166,7 @@ console.log(offerId);
 
       if(!data.error){
         const updatedCandidates1 = candidates.map((candidate) => {
-          if (candidate.intern._id === selectedCandidate2.intern._id) {
+          if (candidate.intern === selectedCandidate2.intern._id) {
             return { ...candidate, statusQuiz: newStatus2 };
           }
           return candidate;
@@ -180,7 +185,7 @@ console.log(offerId);
       else{
 
         const updatedCandidates = candidates.map((candidate) => {
-          if (candidate.intern._id === selectedCandidate2.intern._id) {
+          if (candidate.intern === selectedCandidate2.intern._id) {
             return { ...candidate, statusQuiz: candidate.statusQuiz };
           }
           return candidate;
@@ -267,11 +272,11 @@ console.log(selectedCandidate2);
       })
         .then((response) => response.json())
         .then((data) => {
-          setCandidacies(data);
+          setCandidates(data);
         })
         .catch((error) => console.error(error));
     }
-  }, [history, token]);
+  }, [history, token,candidates]);
 
 
 
@@ -279,17 +284,7 @@ console.log(selectedCandidate2);
 
   // const { id } = useParams(); // Récupère l'id de l'offre depuis l'URL
 
-console.log(id);
-  const [candidacies, setCandidacies] = useState([]);
-console.log(candidacies);
 
-  async function getListCandidaciesOffer(){
-    fetch(`${API}/Candidacy/getListCandidaciesOffer/${id}`, {
-      credentials: 'include'
-    })
-    .then((response) => response.json())
-    .then((data) => setCandidacies(data));
- }
 
  // useEffect(()=>{
    // console.log("wa");
@@ -371,27 +366,7 @@ console.log(candidacies);
 
              <Container>
           <h2 className="title">*************</h2>
-          <Row>
-            {candidacies.map((candidacy, index) => (
-              <React.Fragment key={candidacy._id}>
-                <Col lg="6">
-                  <Card className="mb-3">
-                    <CardBody>
-                      <CardTitle tag="h5">{candidacy.status}</CardTitle>
-                      <div className="d-flex justify-content-between">
-                        <Button
-                          color="secondary"
-                          onClick={() => handleViewCandidatesClick(candidacy._id)}
-                        >
-                          Voir candidats
-                        </Button>
-                      </div>
-                    </CardBody>
-                  </Card>
-                </Col>
-              </React.Fragment>
-            ))}
-          </Row>
+          
           {selectedOfferId && (
             <Row>
               <Col>
@@ -407,7 +382,7 @@ console.log(candidacies);
                     </tr>
                   </thead>
                   <tbody>
-                    {candidacies
+                    {candidates
                       .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
                       .map((candidate, index) => (
                         <React.Fragment key={index}>

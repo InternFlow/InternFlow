@@ -20,6 +20,25 @@ const candidacySchema = new mongoose.Schema({
  , resume:{
   type:Schema.Types.ObjectId,
   ref:"Resume"
+ },
+ statusQuiz: {
+   type: String,
+   enum: ['pending', 'approved', 'rejected'],
+   default: 'pending',
+   required: true,
+ },
+ quizScores: [
+   {
+     quizId: { type: mongoose.Schema.Types.ObjectId, ref: 'Quiz', required: true },
+     name: { type: String, required: true },
+     score: { type: Number, default: 0, required: true },
+   }
+ ],
+ interviewScheduled: { 
+   date: { type: Date },
+   time: { type: String },
+   duration: { type: Number }, // duration in minutes
+   location: { type: String }
  }
 });
 

@@ -255,7 +255,7 @@ const toggle2 = () => setModal2(!modal2);
           {roleToken=="condidat" &&(
 
 <NavItem>
-  <NavLink to="/ListCandidaciesIntern" tag={Link}>
+  <NavLink to="/AllCourses" tag={Link}>
     <i className="nc-icon nc-layout-11" /> All courses
   </NavLink>
 </NavItem>
@@ -276,6 +276,15 @@ const toggle2 = () => setModal2(!modal2);
               </NavLink>
             </NavItem>
           )}
+          
+          {roleToken=="condidat" &&(
+
+<NavItem>
+  <NavLink to="/Alloffers" tag={Link}>
+    <i className="nc-icon nc-layout-11" /> All Offers
+  </NavLink>
+</NavItem>
+)}
             {roleToken=="company" &&(
            <NavItem>
            <NavLink to="/stagescompany" tag={Link}>
@@ -286,7 +295,7 @@ const toggle2 = () => setModal2(!modal2);
 
 
 
-            {role!="guest" && (
+            {role=="condidat" && (
 
             <NavItem>
             <NavLink  onClick={toggle}>

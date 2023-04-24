@@ -147,7 +147,7 @@ useEffect(() => {
 }, [Countdown]);
 
 useEffect(() => {
-  if ( Countdown===1190) {
+  if ( Countdown===0) {
     // Envoyer les données ici
 handleSubmit();
 

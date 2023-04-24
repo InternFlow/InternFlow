@@ -24,7 +24,6 @@ import PerfectScrollbar from "perfect-scrollbar";
 
 import logo from "logo.svg";
 
-
 var ps;
 
 function Sidebar(props) {
@@ -63,7 +62,7 @@ function Sidebar(props) {
         <a
           className="simple-text logo-normal"
         >
-          InternFlow
+          Creative Tim
         </a>
       </div>
       <div className="sidebar-wrapper" ref={sidebar}>

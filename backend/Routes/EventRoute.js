@@ -56,6 +56,7 @@ router.delete("/deleteevent/:id", (req, res) => {
 router.get("/allEvents", async (req, res) => {
   try {
     const events = await Event.find();
+    console.log(events);
     res.json(events);
   } catch (err) {
     res.status(500).send(err);

@@ -130,7 +130,7 @@ router.put('/offer/:offerId/user/:userId/application', requireAuth, checkRole("c
   
   router.get('/applications/interview-scheduled', requireAuth, checkRole("condidat"), async (req, res) => {
     try {
-      const applications = await Candidacy.find({ user: req.user._id, interviewScheduled: { $ne: null } }).populate('offer');
+      const applications = await Candidacy.find({ intern: req.user._id, interviewScheduled: { $ne: null } }).populate('offer');
       res.json(applications);
     } catch (err) {
       console.error(err);
@@ -149,7 +149,7 @@ router.post('/notify/:userId/interview/:offerId', requireAuth, checkRole('compan
     const user = await User.findById(userId);
     const offer = await Offer.findById(offerId);
     const newNotification = {
-      message: `Vous avez un entretien pour l'offre ${offer.name} le ${interviewDate}`,
+      message: `Vous avez un entretien pour l'offre ${offer.title} le ${interviewDate}`,
       link: '',
       offreid: offerId
     };
@@ -162,6 +162,7 @@ router.post('/notify/:userId/interview/:offerId', requireAuth, checkRole('compan
     res.status(500).json({ message: 'Une erreur s\'est produite' });
   }
 });
+
 
 
 module.exports = router;

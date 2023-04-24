@@ -104,8 +104,9 @@ function Login() {
         }
       } else if (res.status === 400) {
         const data = await res.json();
-       // console.log(data.errors);
-
+       console.log(data.errors);
+       setAlertMessage(data.errors.password);
+       setShowAlert(true); 
         setConfirmerr(data.errors.expiration);
         console.log(confirmerr);
       }
