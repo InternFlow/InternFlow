@@ -27,19 +27,21 @@ import {
   Col,
 } from "reactstrap";
 import axios from "axios";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function AddOffer() {
   const history = useHistory();
   const [newSkill, setNewSkill] = useState(""); // Nouveau champ pour stocker la nouvelle compétence
   const id = localStorage.getItem("id");
   // const [companyId, setCompanyId] = useState(id);
+  const [errors, setErrors] = useState({});
 
   const [updatedUserData, setUpdatedUserData] = useState({
     skills: [],
   });
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
-
-  
   const [formData, setFormData] = useState({
     title: "",
     type_offre: "",
@@ -57,47 +59,87 @@ function AddOffer() {
   });
 
   const OffreData = new FormData();
-    OffreData.append("file", formData.offre_file);
-    OffreData.append("upload_preset", "ce5nvvl8");
+  OffreData.append("file", formData.offre_file);
+  OffreData.append("upload_preset", "ce5nvvl8");
+
+  const validate = async (values) => {
+    const errors = {};
+
+    // if (!values.title) {
+    //   errors.title = "Title is required";
+
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: "there is an Error...",
+    //     text: "Title is required!",
+    //   });
+    // }
 
 
+    //----------------- Availability --------------------------------//
 
-    //------------------------------ HandleFile ---------------------------------------//
+    if (!values.availability) {
+      errors.availability = "Availability is required";
 
-    const handleFile = async(e)=>{
-      const offre_file = e.target.files[0];
-      var formdata = new FormData();
-  
-      formdata.append("file", offre_file);
-      formdata.append("cloud_name", "djjimxala");
-      formdata.append("upload_preset", "ce5nvvl8");
-  
-      let res = await fetch(
-        "https://api.cloudinary.com/v1_1/djjimxala/auto/upload",
-        {
-          method: "post",
-          mode: "cors",
-          body: formdata
-        }
-      );
-  
-      let json = await res.json();
-      console.log(JSON.stringify(json.secure_url));
-      // setFormData({ ...formData, offre_file: offre_file });
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        offre_file: json.secure_url,
-      }));
-  
-      console.log(formData.offre_file);
-  
-      // console.log(res.public_id);
-  
-      // console.log(formData);
-      
+      Swal.fire({
+        icon: "error",
+        title: "there is an Error...",
+        text: "Availability is required!",
+      });
+    } else if (
+      formData.availability !== "full-time" &&
+      formData.availability !== "Full-time" &&
+      formData.availability !== "Full-Time" &&
+      formData.availability !== "half-time" &&
+      formData.availability !== "Half-time" &&
+      formData.availability !== "Half-Time" &&
+      formData.availability !== "OnSite" &&
+      formData.availability !== "Online"
+    ) {
+      errors.availability = "Invalid availability";
+      Swal.fire({
+        icon: "error",
+        title: "there is an Error...",
+        text: "Availability is invalid!",
+      });
     }
+  };
 
-    //-------------------------- HandleSubmit ----------------------------------------//
+  //------------------------------ HandleFile ---------------------------------------//
+
+  const handleFile = async (e) => {
+    const offre_file = e.target.files[0];
+    var formdata = new FormData();
+
+    formdata.append("file", offre_file);
+    formdata.append("cloud_name", "djjimxala");
+    formdata.append("upload_preset", "ce5nvvl8");
+
+    let res = await fetch(
+      "https://api.cloudinary.com/v1_1/djjimxala/auto/upload",
+      {
+        method: "post",
+        mode: "cors",
+        body: formdata,
+      }
+    );
+
+    let json = await res.json();
+    console.log(JSON.stringify(json.secure_url));
+    // setFormData({ ...formData, offre_file: offre_file });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      offre_file: json.secure_url,
+    }));
+
+    console.log(formData.offre_file);
+
+    // console.log(res.public_id);
+
+    // console.log(formData);
+  };
+
+  //-------------------------- HandleSubmit ----------------------------------------//
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -111,8 +153,72 @@ function AddOffer() {
     };
 
     try {
+      if (!formData.title) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error Field...',
+          text: 'Title is required!',
+        });
+        return;
+      }
+       if (!formData.type_offre) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error Field...',
+          text: 'Category is required!',
+        });
+        return;
+      }
+       if (!formData.description) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error Field...',
+          text: 'Description is required!',
+        });
+        return;
+      }
+      else if (formData.description.trim().split(" ").length<5) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error Field...',
+          text: 'Description should contain at least 5 words!',
+        });
+        return;
+      }
+      if (!formData.availability) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error Field...',
+          text: 'Availibility is required!',
+        });
+        return;
+      }
 
-     
+      if (formData.startDate >= formData.endDate) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error Field...',
+          text: 'StartDate is invalid!, you can either change the start Date or change the end Date',
+        });
+        return;
+      }
+      if (!formData.location) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error Field...',
+          text: 'Location is required!',
+        });
+        return;
+      }
+      if (!formData.nb_places_available) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error Field...',
+          text: 'Number of Places available is required!',
+        });
+        return;
+      }
+
       const response = await fetch(
         `http://localhost:5000/AjoutercompaniesFil/${id}/offers`,
         {
@@ -123,39 +229,31 @@ function AddOffer() {
           credentials: "include",
           config,
           body: JSON.stringify(formData),
-
         }
       );
 
       console.log("Offer added successfully", formData);
 
-        // const data = await response.json();
-        // console.log("Offer added successfully", data);
+      Swal.fire("Success!", "Offer added successfully!", "success");
 
-        Swal.fire("Success!", "Offer added successfully!", "success");
-
-        history.push(`/profile-company-page`);
-      
+      history.push(`/profile`);
     } catch (error) {
       console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "Offer not created...",
-        text: "Something went wrong!",
-      });
+      setShowAlert(true);
+      setAlertMessage("Something went wrong!");
+      // Swal.fire({
+      //   icon: "error",
+      //   title: "Offer not created...",
+      //   text: "Something went wrong!",
+      // });
     }
   };
 
-  // const handleFileChange = (e) => {
-  //   setFormData({ ...formData, offre_file: e.target.files[0] });
-  // };
   const handleFileChange = (e) => {
     const formData = new FormData();
     formData.set("offre_file", e.target.files[0]);
     setFormData(formData);
   };
-
-  // console.log(formData.offre_file);
 
   const handleSkillChange = (event) => {
     const {
@@ -172,20 +270,15 @@ function AddOffer() {
   const handleFileUpload = (result) => {
     if (result && result.url) {
       setFormData({ ...formData, offre_file: result.url });
-    }
-    else {
+    } else {
       console.error("Error uploading file: invalid response");
     }
   };
 
-
-  
-
-
   return (
     <>
-      <ExamplesNavbar />
-      <ProfilePageHeader />
+<CondidatNavbar></CondidatNavbar>
+        <ProfilePageHeader />
       <div className="section profile-content">
         <Container>
           <div className="owner">
@@ -225,6 +318,11 @@ function AddOffer() {
                                 })
                               }
                             />
+                            {/* {!formData.title && (
+                              <div style={{ color: "red", fontWeight: "bold" }}>
+                                Title is required!
+                              </div>
+                            )} */}
                           </FormGroup>
                         </Col>
                       </Row>
@@ -252,6 +350,13 @@ function AddOffer() {
                               <option value="pre-hiring">Pre-Hiring</option>
                               <option value="PFE">PFE</option>
                               <option value="recherche">Recherche</option>
+                              {/* {!formData.type_offre && (
+                                <div
+                                  style={{ color: "red", fontWeight: "bold" }}
+                                >
+                                  Category is required!
+                                </div>
+                              )} */}
                             </Input>
                           </FormGroup>
                         </Col>
@@ -270,7 +375,13 @@ function AddOffer() {
                                   description: e.target.value,
                                 })
                               }
+                              
                             />
+                            {/* {!formData.description && (
+                              <div style={{ color: "red", fontWeight: "bold" }}>
+                                Description is required!
+                              </div>
+                            )} */}
                           </FormGroup>
                         </Col>
                       </Row>
@@ -289,7 +400,13 @@ function AddOffer() {
                                   availability: e.target.value,
                                 })
                               }
+                              
                             />
+                            {/* {!formData.availability && (
+                              <div style={{ color: "red", fontWeight: "bold" }}>
+                                Availability is required!
+                              </div>
+                            )} */}
                           </FormGroup>
                         </Col>
                       </Row>
@@ -310,7 +427,10 @@ function AddOffer() {
                                   startDate: e.target.value,
                                 })
                               }
+                              
                             />
+                              {/* {!formData.startDate && <div style={{ color: 'red', fontWeight: 'bold' }}>StartDate is required!</div>} */}
+
                           </FormGroup>
                         </Col>
                       </Row>
@@ -331,7 +451,10 @@ function AddOffer() {
                                   endDate: e.target.value,
                                 })
                               }
+                              
                             />
+                              {/* {!formData.endDate && <div style={{ color: 'red', fontWeight: 'bold' }}>EndDate is required!</div>} */}
+
                           </FormGroup>
                         </Col>
                       </Row>
@@ -351,6 +474,7 @@ function AddOffer() {
                                 })
                               }
                             />
+
                           </FormGroup>
                         </Col>
                       </Row>
@@ -368,7 +492,10 @@ function AddOffer() {
                                   location: e.target.value,
                                 })
                               }
+                              
                             />
+                              {/* {!formData.location && <div style={{ color: 'red', fontWeight: 'bold' }}>Location is required!</div>} */}
+
                           </FormGroup>
                         </Col>
                       </Row>
@@ -388,6 +515,8 @@ function AddOffer() {
                                 })
                               }
                             />
+                              {/* {!formData.nb_places_available && <div style={{ color: 'red', fontWeight: 'bold' }}>Number of Places is required!</div>} */}
+
                           </FormGroup>
                         </Col>
                       </Row>
@@ -407,6 +536,7 @@ function AddOffer() {
                                   languages: e.target.value,
                                 })
                               }
+                              
                             >
                               <option value="">Select your Language</option>
                               <option value="arabic">Arabic</option>
@@ -420,15 +550,6 @@ function AddOffer() {
                         </Col>
                       </Row>
 
-                      {/* <Row>
-                  <Col md="6">
-                      <FormGroup>
-                        <label>Image</label>
-                        <input type="file" className="form-control-file" onChange={handleFileChange} />
-                        
-                      </FormGroup>
-                    </Col>
-                  </Row> */}
 
                       {/** Skills */}
 
@@ -518,32 +639,23 @@ function AddOffer() {
                       <br></br>
 
                       {/** File Upload */}
-                      <Row>
-                    <Col md="6">
-                      <FormGroup>
-                        <label>Offer File</label>
-                        <input 
-                        type="file" 
-                        name="offre_file"
-                        className="form-control-file" 
-                        value={formData.offre_file.secure_url}
-                        onChange={handleFile}
-                         />
-                        </FormGroup>
-
-                        {/* <Input
+                      {/* <Row>
+                        <Col md="6">
+                          <FormGroup>
+                            <label>Offer File</label>
+                          
+                             <Input
                           placeholder="offre_file"
                           type="file"
                           value={formData.offre_file}
                           onChange={(e) => setFormData({ ...formData, offre_file: e.target.files[0] })}
                         /> 
-                        */}
-                    </Col>
-                  </Row>
+                          </FormGroup>
 
-                    
-
-
+                          
+                        
+                        </Col>
+                      </Row> */}
 
                       <Row>
                         <div className="update ml-auto mr-auto">

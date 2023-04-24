@@ -21,7 +21,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from 'components/Accordion';
 import { API } from "config";
-import CondidatNavbar from "components/Navbars/CompanyNavbar";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader";
 
 function ListCAndidiesIntern() {
@@ -73,7 +73,7 @@ console.log(candidacies);
 
   return (
     <>
-      <CondidatNavbar></CondidatNavbar>
+<CondidatNavbar></CondidatNavbar>
       <ProfilePageHeader />
 
       <div className="section profile-content" >

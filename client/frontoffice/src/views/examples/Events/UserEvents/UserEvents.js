@@ -5,22 +5,37 @@ import { TiEdit } from "react-icons/ti";
 import { useState } from "react";
 import "./UserEvents.css";
 import UpdateEvent from "./UpdateEvent";
+import Swal from "sweetalert2";
 
 const UserEvents = ({ data, onDelete }) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const formattedDate = new Date(data.startDate).toLocaleDateString();
 
   // Delete Function
   const handleDeleteChange = async (event, id) => {
     event.preventDefault();
-    await onDelete(id);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await onDelete(id);
+        Swal.fire("Deleted!", "Your Event has been deleted.", "success");
+      }
+    });
   };
 
   return (
     <>
       <UpdateEvent
-        eventolddata={data}
+        eventid={data._id}
         show={show}
         onHide={handleClose}
         backdrop="static"
@@ -39,8 +54,8 @@ const UserEvents = ({ data, onDelete }) => {
           <div className="fw-7 text-purple">{data.location}</div>
           <div className="fw-6 ">{data.category}</div>
           <div className="fw-6 ">{data.adress}</div>
-          <div className="fw-6 ">{data.moreinfo}</div>
-          <div className="fw-6 ">{data.date}</div>
+          <div className="fw-6 ">{data.moreInfo}</div>
+          <div className="fw-6 ">{formattedDate}</div>
           <br />
           <button
             type="button"
@@ -57,7 +72,7 @@ const UserEvents = ({ data, onDelete }) => {
             className="edit-btn fs-13  fw-6"
             onClick={handleShow}
           >
-            Edit{" "}
+            Edit
             <span>
               <TiEdit />
             </span>

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Card, CardHeader, Col, Container, Row } from 'reactstrap';
 import ExamplesNavbar from 'components/Navbars/ExamplesNavbar';
 import ProfilePageHeader from 'components/Headers/ProfilePageHeader';
+import CourseStudentList from 'components/TrainerComponents/CourseStudentList';
 export default function ManageClasses() {
     const { id } = useParams();
     const [course, setCourse]=useState();
@@ -44,9 +45,11 @@ export default function ManageClasses() {
       <ExamplesNavbar />
       <ProfilePageHeader />
       <Container>
+      {course &&(
         <Row>
        <Col md="3">
-       <Card>
+       <Card className='card no-transition' style={{minHeight:"500px"}}>
+        <CourseStudentList courseId={course._id}/>
        </Card>
         </Col>
         <Col md="9">
@@ -57,7 +60,7 @@ export default function ManageClasses() {
         </Card>
         </Col>
         </Row>
-
+)}
       </Container>
     </div>
   )

@@ -227,10 +227,10 @@ const deleteApply = () => {
    
       Swal.fire(
         'Success!',
-        'Apply deleted successfully!',
+        'Application deleted successfully!',
         'success'
       )
-      history.push(`/profile-page`);
+      history.push(`/profile`);
 
     })
     .catch(error => {

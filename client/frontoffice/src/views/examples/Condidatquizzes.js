@@ -29,10 +29,10 @@ function Condidatquizzes() {
   const token = localStorage.getItem("token");
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
- // const offerId = searchParams.get("ido");
-  const { idO } = useParams();
-const offerId=idO;
-console.log(idO);
+  const offerId = searchParams.get("ido");
+ // const { idO } = useParams();
+//const offerId=idO;
+console.log(offerId);
  const [quizzes, setQuizzes] = useState([]);
   const [offer, setoffer] = useState([]);
   const [showQuizzes, setShowQuizzes] = useState(false);

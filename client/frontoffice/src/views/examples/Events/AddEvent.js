@@ -6,15 +6,19 @@ import axios from "axios";
 import "./Events.css";
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader";
+import { useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
 
 // reactstrap components
 import { Button, Form, Input, Container, Row, Col } from "reactstrap";
 function AddEvent() {
+  const location = useLocation();
+  const id = JSON.parse(new URLSearchParams(location.search).get("data"));
   //add event
   const [title, setTitle] = useState("");
   const [creator, setCreator] = useState("");
   const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
+  const [place, setLocation] = useState("");
   const [address, setAddress] = useState("");
   const [category, setCategory] = useState("");
   const [date, setStartdate] = useState("");
@@ -70,18 +74,20 @@ function AddEvent() {
       title: title,
       description: description,
       creator: creator,
-      location: location,
+      location: place,
       address: address,
       category: category,
       startDate: date,
       moreInfo: phone,
       imageBase64: imageBase64,
+      userid: id,
     };
-    console.log(data);
+
     try {
       const response = await axios.post(URL, data);
       if (response.status === 200) {
-        window.alert(JSON.stringify(response.data));
+        // window.alert(JSON.stringify(response.data));
+        Swal.fire("success", JSON.stringify(response.data.message), "success");
       } else {
         window.alert(response.data.message);
       }
@@ -93,8 +99,6 @@ function AddEvent() {
 
   return (
     <div id="AddEvent">
-      <ExamplesNavbar />
-      <ProfilePageHeader />
       <Container>
         <Row>
           <Col className="ml-auto mr-auto" md="8">
@@ -146,7 +150,7 @@ function AddEvent() {
                   <label>Type</label>
                   <Select options={Locations} onChange={handleLocationChange} />
                 </Col>
-                {location === "Hybride" || location === "Onsite" ? (
+                {place === "Hybride" || place === "Onsite" ? (
                   <Col>
                     <label>Address</label>
                     <Input
