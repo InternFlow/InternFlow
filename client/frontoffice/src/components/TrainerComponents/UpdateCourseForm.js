@@ -152,10 +152,7 @@ const UpdateCourseForm = (props) => {
 
    
 
-    if (course.image.trim() === "") {
-      error.image = "Image URL is required";
-      isError = true;
-    }
+   
     setErrors(error);
     return !isError;
   };
@@ -277,7 +274,7 @@ const UpdateCourseForm = (props) => {
         </Alert>
       )}
     </FormGroup>
-    <FormGroup>
+    {/* <FormGroup>
       <Label for="image">Image</Label>
       <Input
         type="text"
@@ -292,7 +289,7 @@ const UpdateCourseForm = (props) => {
           {errors.image}
         </Alert>
         )}
-      </FormGroup>
+      </FormGroup> */}
       <FormGroup>
                   Tags:
                 <Row style={{marginBottom: "20px",}} noGutters>

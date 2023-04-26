@@ -5,6 +5,7 @@ import { Card, CardHeader, Col, Container, Row } from 'reactstrap';
 import ExamplesNavbar from 'components/Navbars/ExamplesNavbar';
 import ProfilePageHeader from 'components/Headers/ProfilePageHeader';
 import CourseStudentList from 'components/TrainerComponents/CourseStudentList';
+import CondidatNavbar from 'components/Navbars/CondidatNavbar';
 export default function ManageClasses() {
     const { id } = useParams();
     const [course, setCourse]=useState();
@@ -42,7 +43,7 @@ export default function ManageClasses() {
       
   return (
     <div>
-      <ExamplesNavbar />
+      <CondidatNavbar/>
       <ProfilePageHeader />
       <Container>
       {course &&(
