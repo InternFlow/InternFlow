@@ -24,7 +24,11 @@ const offerSchema = new mongoose.Schema({
     skills: [{ type: String }],
     tags: [String],
     image: { type: String  },
-    offre_file: { type: String  },
+    //AI
+    rating: { type: Number},
+    numRatings: { type: Number},
+
+
 
 
     company:{
@@ -35,8 +39,17 @@ const offerSchema = new mongoose.Schema({
   category:{
     type:Schema.Types.ObjectId,
     ref:"Category"
-  }
+  },
+  quizzes: [{
+    type: Schema.Types.ObjectId,
+    ref: "Quiz"
+  }]
 });
+
+//AI
+//Create the index for enabling the text search
+offerSchema.index({ title: "text" });
+
 
 Offer = mongoose.model('Offer', offerSchema);
 

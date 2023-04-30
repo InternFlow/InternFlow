@@ -27,6 +27,7 @@ import {
   Col,
 } from "reactstrap";
 import axios from "axios";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function AddOffer() {
   const history = useHistory();
@@ -218,6 +219,24 @@ function AddOffer() {
         return;
       }
 
+ 
+
+  // Calculer la durée en mois
+  const startDate = new Date(formData.startDate);
+  const endDate = new Date(formData.endDate);
+  const diffInMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+
+  // Mettre à jour la propriété 'duration' de formData
+  setFormData({
+    ...formData,
+    duration: diffInMonths
+  });
+ // Mise à jour des données du formulaire avec la durée calculée
+ const updatedFormData = { ...formData, duration: diffInMonths.toString() };
+ setFormData(updatedFormData);
+
+
+
       const response = await fetch(
         `http://localhost:5000/AjoutercompaniesFil/${id}/offers`,
         {
@@ -227,15 +246,15 @@ function AddOffer() {
           },
           credentials: "include",
           config,
-          body: JSON.stringify(formData),
+          body: JSON.stringify(formData, updatedFormData),
         }
       );
 
-      console.log("Offer added successfully", formData);
+      console.log("Offer added successfully", formData, updatedFormData);
 
       Swal.fire("Success!", "Offer added successfully!", "success");
 
-      history.push(`/profile-company-page`);
+      history.push(`/profile`);
     } catch (error) {
       console.error(error);
       setShowAlert(true);
@@ -276,8 +295,8 @@ function AddOffer() {
 
   return (
     <>
-      <ExamplesNavbar />
-      <ProfilePageHeader />
+<CondidatNavbar />
+        <ProfilePageHeader />
       <div className="section profile-content">
         <Container>
           <div className="owner">
@@ -461,18 +480,8 @@ function AddOffer() {
                       <Row>
                         <Col md="6">
                           <FormGroup>
-                            <label>Duration</label>
-                            <Input
-                              placeholder="duration"
-                              type="text"
-                              value={formData.duration}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  duration: e.target.value,
-                                })
-                              }
-                            />
+                          <p>Duration: {formData.duration} months</p>
+
 
                           </FormGroup>
                         </Col>

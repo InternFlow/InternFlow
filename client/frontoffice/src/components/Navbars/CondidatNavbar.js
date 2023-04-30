@@ -254,6 +254,22 @@ const toggle2 = () => setModal2(!modal2);
           <Nav navbar>
           {roleToken=="condidat" &&(
 
+<NavItem>
+  <NavLink to="/ListCandidaciesIntern" tag={Link}>
+    <i className="nc-icon nc-layout-11" /> All courses
+  </NavLink>
+</NavItem>
+)}
+          {roleToken=="condidat" &&(
+
+<NavItem>
+  <NavLink to="/ListCandidaciesIntern" tag={Link}>
+    <i className="nc-icon nc-layout-11" /> My Courses
+  </NavLink>
+</NavItem>
+)}
+          {roleToken=="condidat" &&(
+
             <NavItem>
               <NavLink to="/ListCandidaciesIntern" tag={Link}>
                 <i className="nc-icon nc-layout-11" /> My Applies
@@ -267,50 +283,6 @@ const toggle2 = () => setModal2(!modal2);
            </NavLink>
          </NavItem>
             )}
-            <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://twitter.com/CreativeTim?ref=creativetim"
-                target="_blank"
-                title="Follow us on Twitter"
-              >
-                <i className="fa fa-twitter" />
-                <p className="d-lg-none">Twitter</p>
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://www.facebook.com/CreativeTim?ref=creativetim"
-                target="_blank"
-                title="Like us on Facebook"
-              >
-                <i className="fa fa-facebook-square" />
-                <p className="d-lg-none">Facebook</p>
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://www.instagram.com/CreativeTimOfficial?ref=creativetim"
-                target="_blank"
-                title="Follow us on Instagram"
-              >
-                <i className="fa fa-instagram" />
-                <p className="d-lg-none">Instagram</p>
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://www.github.com/CreativeTimOfficial?ref=creativetim"
-                target="_blank"
-                title="Star on GitHub"
-              >
-                <i className="fa fa-github" />
-                <p className="d-lg-none">GitHub</p>
-              </NavLink>
-            </NavItem>
 
 
 
@@ -344,8 +316,8 @@ const toggle2 = () => setModal2(!modal2);
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="notification-message">{notification.message}</div>
                   {notification.link ? (
-            <Link to={`/quizzes/offres/condidat/${notification.offreid}`} className="btn btn-primary ml-3">passer quizzes</Link>
-          ) : null}
+
+<Link to={`/quizzes/offres/condidat?ido=${notification.offreid}`} className="btn btn-primary ml-3">passer quizzes</Link>          ) : null}
                 </div>
               </li>
             ))}

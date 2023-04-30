@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const notificationSchema = new mongoose.Schema({
+  message: { type: String, required: true },
+  link: { type: String },
+  offreid:{ type: String }
+});
 
 const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
@@ -17,12 +22,17 @@ const userSchema = new mongoose.Schema({
     schoolName: { type: String },
     degree: { type: String},
     description: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
   }],
   experiences: [{
     jobTitle: { type: String},
     company: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
     description: { type: String }
   }],
+  occupation: {type:String},
   skills: [{ type: String }],
   local: [{ type: String }],
   companies: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
@@ -32,6 +42,7 @@ const userSchema = new mongoose.Schema({
   phoneNumber:{ type:Number},
   description: { type: String},
   linkedinId: {type:String},
+  
 
   confirmationToken: { type: String },
   confirmExpiration: { type: Date },
@@ -42,7 +53,9 @@ const userSchema = new mongoose.Schema({
   OfferIdI: [{
     type: Schema.Types.ObjectId,
     ref: 'Offer'
-  }]
+  }],
+  notifications: [notificationSchema]
+
 });
 
 

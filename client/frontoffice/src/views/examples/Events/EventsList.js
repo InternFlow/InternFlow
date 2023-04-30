@@ -5,7 +5,8 @@ import Tabs from "./Tabs";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Events.css";
-
+import ExamplesNavbar from "components/Navbars/ExamplesNavbar";
+import ProfilePageHeader from "components/Headers/ProfilePageHeader";
 const EventsList = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -17,16 +18,20 @@ const EventsList = () => {
   }, []);
 
   return (
-    <EventsListWrapper>
-      <div className="container">
-        <div className="Events-list-top">
-          <h2>Events</h2>
-          <p>Grow your social circule & Gain New Experience</p>
-        </div>
+    <>
+      <ExamplesNavbar />
+      <ProfilePageHeader />
+      <EventsListWrapper>
+        <div className="container">
+          <div className="Events-list-top">
+            <h2>Events</h2>
+            <p>Grow your social circule & Gain New Experience</p>
+          </div>
 
-        <Tabs events={data} />
-      </div>
-    </EventsListWrapper>
+          <Tabs events={data} />
+        </div>
+      </EventsListWrapper>
+    </>
   );
 };
 

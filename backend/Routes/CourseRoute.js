@@ -8,7 +8,7 @@ const { checkRole } = require("../middlewares/checkRole");
 router.get('/', async (req, res) => {
   try {
     const courses = await Course.find();
-    res.json(courses);
+    res.status(200).json(courses);
   } catch (error) {
     res.status(500).json({ errorMessage: 'Failed to get courses' });
   }
@@ -234,7 +234,7 @@ router.get("/EnrolledList/:courseId", requireAuth, checkRole("formateur"), async
 
 
 //Get the list of courses that a candidate is enrolled in
-router.get("/MyCourses", requireAuth, checkRole("condidat"), async (req, res) => {
+router.get("/MyCourses/get", requireAuth, checkRole("condidat"), async (req, res) => {
   try {
     const user = req.user;
     const courses = await Course.find({ students: user._id });

@@ -386,13 +386,12 @@ router.get("/login", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   const { name, email, password, role } = req.body;
-
   let errors = {};
   if (!name) {
     errors.name = "donner le nom";
   } else {
     // Vérifier que le nom contient au moins 8 caractères sans les chiffres
-    if (!/^[a-zA-Z]{8,}$/.test(name)) {
+    if (!/^[a-zA-Z]{3,}$/.test(name)) {
       errors.name = "Name should contain at least 8 characters without numbers";
     }
   }
@@ -438,6 +437,27 @@ router.post("/register", async (req, res) => {
       console.log(err);
       res.status(500).json({ errors: { server: "Server error" } });
     }
+  }
+});
+
+router.get('/verifMail/:mail', async (req, res) => {
+  const mail = req.params.mail;
+console.log(mail);
+  try {
+    const user = await User.find({ email: mail });
+if(user.length==0){
+  console.log("bien");
+
+  res.status(200).json({ successMessage: "mail not used" });
+}
+else{
+  console.log("non");
+
+  res.status(200).json({ successMessage: "mail used" });
+}
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching offers for company');
   }
 });
 
@@ -610,11 +630,27 @@ router.put("/confirm/:id", async (req, res) => {
   }
 });
 
+
+
 router.get("/profile", requireAuth, (req, res) => {
   var user = req.user;
   res.status(200).json({ user: user });
 });
 
+router.get("/profile/:id",  async (req, res) => {
+  try {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  
+  res.status(200).json({ user: user });
+} catch (error) {
+  res.status(500).json(error.message);
+}
+
+
+
+
+});
 router.get("/company", requireAuth, (req, res) => {
   var user = req.user;
   res.status(200).json({ user: user });

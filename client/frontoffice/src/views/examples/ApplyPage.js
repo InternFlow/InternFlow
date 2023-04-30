@@ -15,6 +15,7 @@ import {
 } from "reactstrap";
 
 // core components
+import Swal from "sweetalert2";
 
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
@@ -163,12 +164,15 @@ const deleteApply = () => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
+
+      setTimeout(() => {
+        Swal.fire("Success!", "Apply added successfully!", "success");
+
+        history.push("/profile");
+      }, 2000);
       return response.json();
     })
-    .then(data => {
-      console.log('Candidacy deleted:', data);
-      // Mettre à jour l'état ou effectuer une action supplémentaire si nécessaire
-    })
+    
     .catch(error => {
       console.error('Error while deleting Candidacy:', error);
       // Gérer l'erreur ou afficher un message d'erreur si nécessaire
@@ -283,7 +287,7 @@ const file = () => {
             <Row key={index} style={{padding: "18px"}}>
               <Col className="text-center text-md-left" >
                 <h6 className="text-uppercase">{experience.jobTitle}</h6>
-                <p style={{fontWeight: 500}}>Worked at: {experience.company}</p>
+                <p style={{fontWeight: 500}}>Worked at: {experience.company} </p><p> from : {new Date(experience.startDate).toLocaleDateString()} to: {new Date(experience.endDate).toLocaleDateString()}</p>
                 <p>{experience.description}</p>
               </Col>
             </Row>
@@ -295,7 +299,7 @@ const file = () => {
             <Row key={index} style={{padding: "18px"}}>
               <Col className="text-center text-md-left" >
                 <h6 className="text-uppercase">{education.degree}</h6>
-                <p style={{fontWeight: 500}}>Studied at: {education.schoolName}</p>
+                <p style={{fontWeight: 500}}>Studied at: {education.schoolName} </p><p> from : {new Date(education.startDate).toLocaleDateString()} to: {new Date(education.endDate).toLocaleDateString()}</p>
                 <p>{education.description}</p>
               </Col>
             </Row>

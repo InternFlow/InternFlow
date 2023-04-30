@@ -78,7 +78,7 @@ export default function MyEventModel(props) {
                   wordWrap: "break-word",
                 }}
               >
-                {props.data.adress}
+                {props.data.address}
               </div>
             </li>
             <li style={{ paddingBottom: "10px" }}>
@@ -91,7 +91,7 @@ export default function MyEventModel(props) {
                   wordWrap: "break-word",
                 }}
               >
-                {props.data.moreinfo}
+                {props.data.moreInfo}
               </div>
             </li>
           </ul>

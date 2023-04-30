@@ -16,6 +16,7 @@ const Event = (props) => {
         data={Eventdata}
         onHide={() => setModalShow(false)}
       />
+
       <EventCard>
         <div className="item-img">
           <img src={imagePath} alt=""></img>

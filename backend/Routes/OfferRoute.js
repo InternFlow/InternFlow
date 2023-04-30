@@ -5,6 +5,12 @@ const User = require("../models/User");
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
+const natural = require('natural');
+
+
+//AI
+const AiController = require("../controllers/Ai.controller");
+const { default: mongoose } = require("mongoose");
 
 
 
@@ -483,6 +489,231 @@ router.post('/companies/:companyId/offers',upload.single('image') ,async (req, r
 });
 
 
+
+//AI
+// router.route("/getRecommendation").get(AiController.getRecommendation);
+router.get("/getRecommendation", AiController.getRecommendation)
+
+
+
+//---------------------------- AI ----------------------------------------//
+//OK 5/5
+// Entraînement du modèle de recommandation et stockage dans la base de données
+router.post('/offers/train-recommendation-model', async (req, res) => {
+  try {
+    //    const offers = await Offer.find({}, 'title description skills type_offre');
+    const offers = await Offer.find({ company: { $exists: true } }, 'skills type_offre').populate('company');
+    const corpus = offers.map((offer) => {
+      const text = ` ${offer.skills.join(' ')} ${offer.type_offre}`;
+      return text.toLowerCase();
+    });
+    const tfidf = new natural.TfIdf();
+    corpus.forEach((doc) => {
+      tfidf.addDocument(doc);
+    });
+    const model = {};
+    offers.forEach((offer, index) => {
+      const tfidfScores = {};
+      tfidf.listTerms(index).forEach((term) => {
+        tfidfScores[term.term] = term.tfidf;
+      });
+      model[offer._id] = tfidfScores;
+    });
+    // Enregistrement du modèle dans la base de données
+    const Model = mongoose.model('RecommendationOffers', new mongoose.Schema({
+      model: Object,
+    }));
+    const recommendationModel = new Model({ model: model });
+    await recommendationModel.save();
+    res.status(200).json({ message: 'Le modèle de recommandation a été entraîné et enregistré avec succès.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+//GET Recommendation
+
+const getRecommendations = async (id) => {
+  try {
+    // Récupération du modèle de recommandation depuis la base de données
+    const Model = mongoose.model('RecommendationModel', new mongoose.Schema({
+      model: Object,
+    }));
+    const recommendationModel = await Model.findOne();
+    if (!recommendationModel) {
+      return [];
+    }
+    const model = recommendationModel.model;
+
+    // Calcul des scores de similarité entre l'offre donnée et toutes les autres offres
+    const scores = [];
+    const tfidf = new natural.TfIdf();
+    tfidf.addDocument(await getOfferText(id));
+    for (const offerId in model) {
+      const tfidfScores = model[offerId];
+      let score = 0;
+      tfidf.listTerms().forEach((term) => {
+        if (tfidfScores[term.term]) {
+          score += term.tfidf * tfidfScores[term.term];
+        }
+      });
+      if (score > 0) {
+        scores.push({ offerId, score });
+      }
+    }
+
+    // Tri des offres selon leurs scores de similarité décroissants
+    scores.sort((a, b) => b.score - a.score);
+
+    // Récupération des offres recommandées
+    const recommendations = [];
+    for (const score of scores) {
+      const recommendedOffer = await Offer.findById(score.offerId);
+      if (recommendedOffer && recommendedOffer._id.toString() !== id) {
+        recommendations.push({
+          offerId: recommendedOffer._id.toString(),
+          title: recommendedOffer.title,
+          description: recommendedOffer.description,
+          company: recommendedOffer.company.toString(),
+          type_offre: recommendedOffer.type_offre,
+          score: score.score,
+        });
+      }
+      if (recommendations.length === 10) {
+        break;
+      }
+    }
+    return recommendations;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
+
+//----------------------------- GET AI -----------------------------------------//
+router.get('/company/:companyId/offers/recommendations/:offerId', async (req, res) => {
+  try {
+    const { companyId, offerId } = req.params;
+
+    // Vérification que l'entreprise existe
+    const company = await User.findById(companyId);
+    if (!company) {
+      return res.status(404).json({ error: "L'entreprise n'existe pas." });
+    }
+
+    // Vérification que l'offre appartient à l'entreprise
+    const offer = await Offer.findOne({ _id: offerId, company: companyId });
+    if (!offer) {
+      return res.status(404).json({ error: "L'offre n'existe pas ou n'appartient pas à l'entreprise." });
+    }
+
+    // Obtention des recommandations pour l'offre donnée
+    const recommendations = await getRecommendations(offerId);
+
+    // Filtrage des recommandations pour ne garder que celles appartenant à l'entreprise
+    const companyRecommendations = [];
+    for (const recommendation of recommendations) {
+      const recommendedOffer = await Offer.findById(recommendation.offerId);
+      if (recommendedOffer && recommendedOffer.company.equals(companyId)) {
+        companyRecommendations.push(recommendation);
+      }
+    }
+
+    res.status(200).json({ recommendations: companyRecommendations });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+router.get('/interns/:internId/offers/recommendations', async (req, res) => {
+  try {
+    const { internId } = req.params;
+
+    // Vérification que le stagiaire existe
+    const intern = await User.findById(internId);
+    if (!intern) {
+      return res.status(404).json({ error: "Le stagiaire n'existe pas." });
+    }
+
+    // Obtention des offres pour le modèle de recommandation
+    const offers = await Offer.find({}, 'skills type_offre');
+    const corpus = offers.map((offer) => {
+      const text = ` ${offer.skills.join(' ')} ${offer.type_offre}`;
+      return text.toLowerCase();
+    });
+    const tfidf = new natural.TfIdf();
+    corpus.forEach((doc) => {
+      tfidf.addDocument(doc);
+    });
+
+    // Obtention du modèle de recommandation
+    const RecommendationModel = mongoose.model('RecommendationModel', new mongoose.Schema({
+      model: Object,
+    }));
+    const model = await RecommendationModel.findOne();
+
+    // Calcul des scores TF-IDF pour les offres
+    const internCorpus = intern.skills.join(' ').toLowerCase();
+    const tfidfScores = {};
+    tfidf.listTerms(internCorpus).forEach((term) => {
+      tfidfScores[term.term] = term.tfidf;
+    });
+
+    // Calcul des scores de similarité cosinus entre les offres et les compétences du stagiaire
+    const similarities = {};
+    for (const offer of offers) {
+      let offerScore = 0;
+      const offerCorpus = `${offer.skills.join(' ')} ${offer.type_offre}`.toLowerCase();
+      tfidf.listTerms(offerCorpus).forEach((term) => {
+        if (term.term in tfidfScores) {
+          offerScore += term.tfidf * tfidfScores[term.term];
+        }
+      });
+      similarities[offer._id] = offerScore;
+    }
+
+    // Triage des offres par ordre décroissant de score de similarité cosinus
+    const sortedOffers = Object.keys(similarities).sort((a, b) => {
+      return similarities[b] - similarities[a];
+    });
+
+    // Obtention des offres recommandées
+    const recommendations = [];
+    // for (const offerId of sortedOffers) {
+    //   if (intern.appliedOffers.indexOf(offerId) === -1) {
+    //     recommendations.push({
+    //       offerId: offerId,
+    //       score: similarities[offerId],
+    //     });
+    //   }
+    //   if (recommendations.length >= 5) {
+    //     break;
+    //   }
+    // }
+    if (intern && intern.appliedOffers && Array.isArray(intern.appliedOffers)) {
+      for (const offerId of sortedOffers) {
+        if (intern.appliedOffers.indexOf(offerId) === -1) {
+          recommendations.push({
+            offerId: offerId,
+            score: similarities[offerId],
+          });
+        }
+        if (recommendations.length >= 5) {
+          break;
+        }
+      }
+    } else {
+      console.error('Invalid intern object or appliedOffers property.');
+    }
+
+    res.status(200).json({ recommendations: recommendations });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 

@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const User = require("./models/User");
+const EmailSender = require("./sendEmail.js");
 
 //----------------- Passport & Authentification ------------------------//
 const session = require('express-session');
@@ -19,8 +20,10 @@ const categoryRoutes = require('./routes/CategoryRoute');
 const skillsRoutes = require('./routes/SkillsRoute');
 const uploadRoutes = require('./routes/UploadRoute');
 const adminRoutes =require('./routes/AdminRoute');
+const EventRoutes = require("./routes/EventRoute");
 
-
+const applicationInterviewRoute = require('./Routes/InterviewRoute');
+const QuizRoute = require('./Routes/QuizRoute');
 dotenv.config();
 
 const app = express();
@@ -35,8 +38,11 @@ const ProfileUserRoutes = require('./Routes/ProfileUserRoutes');
 const OfferRoutes = require('./Routes/OfferRoute');
 const InterviewRoutes = require('./Routes/InterviewRoute');
 const CandidacyRoutes = require('./Routes/CandidacyRoute');
+const CourseRoute = require('./Routes/CourseRoute');
+const imageUploadRoute = require('./Routes/ImageUploadRoute');
 
 const config = require('./config');
+const { trainData } = require('./controllers/Score.controller');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -78,10 +84,13 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/Offer',OfferRoutes);
     app.use('/Interview',InterviewRoutes);
     app.use('/Candidacy',CandidacyRoutes);
+    app.use('/Course',CourseRoute);
+    app.use('/uploadImage',imageUploadRoute);
+    app.use("/Event", EventRoutes);
 
 
-
-
+    app.use('/Quiz',QuizRoute);
+    app.use('/userinterview',applicationInterviewRoute);
 
 passport.serializeUser((user, done) => {
       done(null, user.id);
@@ -211,6 +220,28 @@ passport.use(new GitHubStrategy({
   return done(null, profile);
 }));
 
+
+    // ****** SEND API
+    app.post("/send", async (req, res) => {
+      try {
+        const { fullName, email, phone, message } = req.body;
+        EmailSender({ fullName, email, phone, message });
+        res.json({ msg: "Your message sent successfully" });
+      } catch (error) {
+        res.status(404).json({ msg: "Error ❌" });
+      }
+    });
+
+
+    //Checking if the data is needed to be trained for cosine similarity.
+    
+// if (process.env.TRAINDATA == "true") {
+//   trainData.trainData;
+// }
+// else
+// {
+// 	console.log("Data Trained");
+// }
 
 
 //---------------- Server Listening -----------------------------//

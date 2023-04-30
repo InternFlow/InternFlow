@@ -32,7 +32,6 @@ function CondidatQuestions() {
   const [timerId, setTimerId] = useState(null);
 
 
-
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [tempup, settempup] = useState(false);

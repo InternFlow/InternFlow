@@ -43,7 +43,6 @@ const UserEventsList = () => {
 };
 
 const CartWrapper = styled.div`
-  padding: 30px 0;
   .card-pg-title {
     padding: 20px 0 6px 0;
   }

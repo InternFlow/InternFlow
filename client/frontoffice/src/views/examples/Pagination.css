@@ -1,0 +1,41 @@
+.pagination {
+    font-size: 1.2rem;
+  }
+  
+  .pagination-item {
+    margin: 0 5px;
+  }
+  
+  .pagination-link {
+    color: #555;
+    border-color: #ddd;
+    border-radius: 50%;
+    padding: 8px 12px;
+  }
+  
+  .pagination-link:hover,
+  .pagination-link:focus {
+    background-color: #ddd;
+  }
+  
+  .pagination-item.active .pagination-link {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+  }
+  
+  .pagination-item.disabled .pagination-link {
+    color: #bbb;
+    background-color: #fff;
+    border-color: #ddd;
+    cursor: not-allowed;
+  }
+
+  .custom-card {
+    aspect-ratio: 1 / 1; /* définit un rapport 1:1 pour l'élément */
+    width: 350px;
+    padding: 20px;
+
+  }
+  
+  

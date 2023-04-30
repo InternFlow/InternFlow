@@ -52,6 +52,15 @@ import EditOffer from "views/examples/EditOffer";
 import EventsList from "views/examples/Events/EventsList";
 import EventLandingPage from "views/examples/Events/EventsLandingPage";
 import CondidatNavbar from "components/Navbars/CompanyNavbar";
+import ProfileView from "views/examples/ProfileView";
+import AllCourses from "views/examples/AllCourses";
+import CondidatCourses from "views/examples/CondidatCourses";
+import ManageClasses from "views/examples/ManageClasses";
+import ListCAndidiesOffer from "views/examples/ListCandidaciesOffer";
+import QuestionsQuiz from "views/examples/QuestionsQuiz";
+import Condidatquizzes from "views/examples/Condidatquizzes";
+import CondidatQuestions from "views/examples/CondidatQuestions";
+import InterviewCompany from "views/examples/InterviewCompany";
 
 // others
 
@@ -133,6 +142,12 @@ root.render(
         render={(props) => <OfferDetails {...props} />}
       />
 
+  <Route
+        path="/ListCandidaciesOffer/:id"
+        render={(props) => <ListCAndidiesOffer {...props} />}
+      />
+
+
       <Route
         path="/ListCandidaciesIntern"
         render={(props) => <ListCAndidiesIntern {...props} />}
@@ -151,6 +166,57 @@ root.render(
         path="/eventslist"
         render={(props) => <EventLandingPage {...props} />}
       />
+
+
+      <Route
+        path="/profile/:id"
+        render={(props) => <ProfileView {...props} />}
+      />
+      
+      <Route
+        path="/profile"
+        render={(props) => <ProfileView {...props} />}
+      />
+      
+
+       
+      <Route
+        path="/Classes/:id"
+        render={(props) => <ManageClasses {...props} />}
+      />
+
+      
+      <Route
+        path="/AllCourses"
+        render={(props) => <AllCourses {...props} />}
+      />
+
+      <Route
+        path="/CondidatCourses"
+        render={(props) => <CondidatCourses {...props} />}
+      />
+
+<Route
+        path="/offres"
+        render={(props) => <QuestionsQuiz {...props} />}
+      />
+<Route
+        path="/offre/condidat/questions"
+        render={(props) => <CondidatQuestions {...props} />}
+      />
+<Route
+        path="/quizzes/offres/condidat"
+        render={(props) => <Condidatquizzes {...props} />}
+      />
+<Route
+        path="/InterviewCompany"
+        render={(props) => <InterviewCompany {...props} />}
+      />
+<Route
+        path="/UserEvent"
+        render={(props) => <EventLandingPage {...props} />}
+      />
+            <Route path="/Events" render={(props) => <EventsList {...props} />} />
 
       <Redirect to="/index" />
     </Switch>

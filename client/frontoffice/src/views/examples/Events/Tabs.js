@@ -11,7 +11,13 @@ const Tabs = (props) => {
 
   return (
     <TabsWrapper>
+      
       <div className="tabs">
+      <div className="tabs-body">
+          {events.map((event) => (
+            <Event key={event._id} {...event} />
+          ))}
+        </div>
         <ul className="flex flex-wrap">
           <li className="tabs-head-item">
             <button
