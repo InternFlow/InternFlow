@@ -22,9 +22,7 @@ import {
 } from "reactstrap";
 import Swal from "sweetalert2";
 
-//function EditOffer({ offer = { title: "", type_offre: "", description: "", availability: "", duration: "", location:"", languages: "" } }) {
 function EditOffer({ offer}) {
-      // const { title, type_Offer, description, availability, duration, location } = req.body;
 
 
 
