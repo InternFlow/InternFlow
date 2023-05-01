@@ -492,19 +492,50 @@ router.post('/companies/:companyId/offers',upload.single('image') ,async (req, r
 
 //AI
 // router.route("/getRecommendation").get(AiController.getRecommendation);
-router.get("/getRecommendation", AiController.getRecommendation)
+// router.get("/getRecommendation", AiController.getRecommendation)
 
 
 
 //---------------------------- AI ----------------------------------------//
 //OK 5/5
 // Entraînement du modèle de recommandation et stockage dans la base de données
+// router.post('/offers/train-recommendation-model', async (req, res) => {
+//   try {
+//     //    const offers = await Offer.find({}, 'title description skills type_offre');
+//     const offers = await Offer.find({ company: { $exists: true } }, 'skills ').populate('company');
+//     const corpus = offers.map((offer) => {
+//       const text = ` ${offer.skills.join(' ')}`;
+//       return text.toLowerCase();
+//     });
+//     const tfidf = new natural.TfIdf();
+//     corpus.forEach((doc) => {
+//       tfidf.addDocument(doc);
+//     });
+//     const model = {};
+//     offers.forEach((offer, index) => {
+//       const tfidfScores = {};
+//       tfidf.listTerms(index).forEach((term) => {
+//         tfidfScores[term.term] = term.tfidf;
+//       });
+//       model[offer._id] = tfidfScores;
+//     });
+//     // Enregistrement du modèle dans la base de données
+//     const Model = mongoose.model('RecommendationOffers', new mongoose.Schema({
+//       model: Object,
+//     }));
+//     const recommendationModel = new Model({ model: model });
+//     await recommendationModel.save();
+//     res.status(200).json({ message: 'Le modèle de recommandation a été entraîné et enregistré avec succès.' });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
 router.post('/offers/train-recommendation-model', async (req, res) => {
   try {
-    //    const offers = await Offer.find({}, 'title description skills type_offre');
-    const offers = await Offer.find({ company: { $exists: true } }, 'skills type_offre').populate('company');
+    const offers = await Offer.find({ company: { $exists: true } }, 'skills ').populate('company');
     const corpus = offers.map((offer) => {
-      const text = ` ${offer.skills.join(' ')} ${offer.type_offre}`;
+      const text = ` ${offer.skills.join(' ')}`;
       return text.toLowerCase();
     });
     const tfidf = new natural.TfIdf();
@@ -519,12 +550,11 @@ router.post('/offers/train-recommendation-model', async (req, res) => {
       });
       model[offer._id] = tfidfScores;
     });
-    // Enregistrement du modèle dans la base de données
-    const Model = mongoose.model('RecommendationOffers', new mongoose.Schema({
-      model: Object,
-    }));
-    const recommendationModel = new Model({ model: model });
+
+    // Use the pre-defined schema and model to save the data
+    const recommendationModel = new RecommendationModel({ model: model });
     await recommendationModel.save();
+
     res.status(200).json({ message: 'Le modèle de recommandation a été entraîné et enregistré avec succès.' });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -532,64 +562,437 @@ router.post('/offers/train-recommendation-model', async (req, res) => {
 });
 
 
-//GET Recommendation
+//---------------------  SKill les plus demandées -------------------------------------------//
+// router.get('/offers/company-skills/:companyId', async (req, res) => {
+//   try {
+//     const companyId = req.params.companyId;
+//     const Model = mongoose.model('RecommendationOffers');
+//     const recommendationModel = await Model.findOne({});
+//     const model = recommendationModel.model;
+//     const companyOffers = await Offer.find({ company: companyId });
+//     const companySkills = {};
 
-const getRecommendations = async (id) => {
+//     companyOffers.forEach((offer) => {
+//       const offerId = offer._id.toString();
+//       if (model.hasOwnProperty(offerId)) {
+//         const offerSkills = model[offerId];
+//         for (const skill in offerSkills) {
+//           if (companySkills.hasOwnProperty(skill)) {
+//             companySkills[skill] += offerSkills[skill];
+//           } else {
+//             companySkills[skill] = offerSkills[skill];
+//           }
+//         }
+//       }
+//     });
+
+//     const sortedSkills = Object.entries(companySkills).sort((a, b) => b[1] - a[1]);
+//     const topSkills = sortedSkills.slice(0, 10).map((skill) => skill[0]);
+
+//     res.status(200).json({ topSkills });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+
+//------------------------------ GetRecommendations -------------------------------------------------------//
+// Création du schéma pour le modèle RecommendationOffers
+// router.get('/offers/company-skills/:companyId', async (req, res) => {
+//   try {
+//     const companyId = req.params.companyId;
+//     const company = await User.findById(companyId);
+//     const companyOffers = await Offer.find({ company: companyId });
+//     const Model = mongoose.model('RecommendationOffers');
+//     const recommendationModel = await Model.findOne({});
+//     const model = recommendationModel.model;
+
+//     const result = [];
+
+//     companyOffers.forEach((offer) => {
+//       const offerId = offer._id.toString();
+//       if (model.hasOwnProperty(offerId)) {
+//         const offerSkills = model[offerId];
+//         const sortedSkills = Object.entries(offerSkills).sort((a, b) => b[1] - a[1]);
+//         const topSkills = sortedSkills.slice(0, 10).map((skill) => skill[0]);
+
+//         result.push({
+//           offer: offer,
+//           topSkills: topSkills,
+//         });
+//       }
+//     });
+
+//     res.status(200).json({ company: company.name, offers: result });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// router.get('/offers/company-skills/:companyId', async (req, res) => {
+//   try {
+//     const companyId = req.params.companyId;
+//     const company = await User.findById(companyId);
+//     const companyOffers = await Offer.find({ company: companyId });
+//     const Model = mongoose.model('RecommendationOffers');
+//     const recommendationModel = await Model.findOne({});
+//     const model = recommendationModel.model;
+
+//     const result = [];
+
+//     companyOffers.forEach((offer) => {
+//       const offerId = offer._id.toString();
+//       if (model.hasOwnProperty(offerId)) {
+//         const offerSkills = model[offerId];
+//         const sortedSkills = Object.entries(offerSkills).sort((a, b) => b[1] - a[0]);
+//         const topSkills = sortedSkills.slice(0, 10).map((skill) => {
+//           return { name: skill[0], score: skill[1] };
+//         });
+
+//         result.push({
+//           offer: offer,
+//           topSkills: topSkills,
+//         });
+//       }
+//     });
+
+//     res.status(200).json({ company: company.name, offers: result });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// router.get('/offers/company-skills/:companyId', async (req, res) => {
+//   try {
+//     const companyId = req.params.companyId;
+//     const company = await User.findById(companyId);
+//     const companyOffers = await Offer.find({ company: companyId });
+//     const Model = mongoose.model('RecommendationOffers');
+//     const recommendationModel = await Model.findOne({});
+//     const model = recommendationModel.model;
+
+//     const result = [];
+
+//     companyOffers.forEach((offer) => {
+//       const offerId = offer._id.toString();
+//       if (model.hasOwnProperty(offerId)) {
+//         const offerSkills = model[offerId];
+//         const sortedSkills = Object.entries(offerSkills).sort((a, b) => b[1] - a[0]);
+//         const topSkills = sortedSkills.slice(0, 10).map((skill) => {
+//           return { name: skill[0], score: skill[1] };
+//         });
+
+//         result.push({
+//           offer: offer,
+//           topSkills: topSkills,
+//         });
+//       }
+//     });
+
+//     res.status(200).json({ company: company.name, offers: result });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// router.get('/company-skills', async (req, res) => {
+//   try {
+//     const companies = await User.find({ role: 'company' });
+//     const Model = mongoose.model('RecommendationOffers');
+//     const recommendationModel = await Model.findOne({});
+//     const model = recommendationModel.model;
+
+//     const companySkills = {};
+
+//     for (const company of companies) {
+//       const companyOffers = await Offer.find({ company: company._id });
+//       companySkills[company.name] = {};
+      
+//       companyOffers.forEach((offer) => {
+//         const offerId = offer._id.toString();
+//         if (model.hasOwnProperty(offerId)) {
+//           const offerSkills = model[offerId];
+//           for (const skill in offerSkills) {
+//             if (companySkills[company.name].hasOwnProperty(skill)) {
+//               companySkills[company.name][skill] += offerSkills[skill];
+//             } else {
+//               companySkills[company.name][skill] = offerSkills[skill];
+//             }
+//           }
+//         }
+//       });
+
+//       const sortedSkills = Object.entries(companySkills[company.name]).sort((a, b) => b[1] - a[1]);
+//       const topSkills = sortedSkills.slice(0, 10).map((skill) => {
+//         return { name: skill[0], score: skill[1] };
+//       });
+      
+//       companySkills[company.name] = topSkills;
+//     }
+
+//     res.status(200).json({ companySkills });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// router.get('/company-skills', async (req, res) => {
+//   try {
+//     const companies = await User.find({ role: 'company' });
+//     const Model = mongoose.model('RecommendationOffers');
+//     const recommendationModel = await Model.findOne({});
+//     const model = recommendationModel.model;
+
+//     const companySkills = {};
+
+//     for (const company of companies) {
+//       const companyOffers = await Offer.find({ company: company._id });
+//       companySkills[company.name] = {};
+      
+//       companyOffers.forEach((offer) => {
+//         const offerId = offer._id.toString();
+//         if (model.hasOwnProperty(offerId)) {
+//           const offerSkills = model[offerId];
+//           for (const skill in offerSkills) {
+//             if (companySkills[company.name].hasOwnProperty(skill)) {
+//               companySkills[company.name][skill] += offerSkills[skill];
+//             } else {
+//               companySkills[company.name][skill] = offerSkills[skill];
+//             }
+//           }
+//         }
+//       });
+
+//       const totalScore = Object.values(companySkills[company.name]).reduce((acc, cur) => acc + cur, 0);
+//       const sortedSkills = Object.entries(companySkills[company.name]).sort((a, b) => b[1] - a[1]);
+//       const topSkills = sortedSkills.slice(0, 10).map((skill) => {
+//         const percentage = (skill[1] / totalScore) * 100;
+//         return { name: skill[0], score: skill[1], percentage: percentage.toFixed(2) };
+//       });
+      
+//       companySkills[company.name] = topSkills;
+//     }
+
+//     res.status(200).json({ companySkills });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+router.get('/company-skills', async (req, res) => {
   try {
-    // Récupération du modèle de recommandation depuis la base de données
-    const Model = mongoose.model('RecommendationModel', new mongoose.Schema({
-      model: Object,
-    }));
-    const recommendationModel = await Model.findOne();
-    if (!recommendationModel) {
-      return [];
-    }
+    const companies = await User.find({ role: 'company' });
+    const Model = mongoose.model('RecommendationOffers');
+    const recommendationModel = await Model.findOne({});
     const model = recommendationModel.model;
 
-    // Calcul des scores de similarité entre l'offre donnée et toutes les autres offres
-    const scores = [];
-    const tfidf = new natural.TfIdf();
-    tfidf.addDocument(await getOfferText(id));
-    for (const offerId in model) {
-      const tfidfScores = model[offerId];
-      let score = 0;
-      tfidf.listTerms().forEach((term) => {
-        if (tfidfScores[term.term]) {
-          score += term.tfidf * tfidfScores[term.term];
-        }
-      });
-      if (score > 0) {
-        scores.push({ offerId, score });
-      }
-    }
+    const companySkills = {};
 
-    // Tri des offres selon leurs scores de similarité décroissants
-    scores.sort((a, b) => b.score - a.score);
+    for (const company of companies) {
+      const companyOffers = await Offer.find({ company: company._id });
+      if (companyOffers.length > 0) {
+        companySkills[company.name] = {};
 
-    // Récupération des offres recommandées
-    const recommendations = [];
-    for (const score of scores) {
-      const recommendedOffer = await Offer.findById(score.offerId);
-      if (recommendedOffer && recommendedOffer._id.toString() !== id) {
-        recommendations.push({
-          offerId: recommendedOffer._id.toString(),
-          title: recommendedOffer.title,
-          description: recommendedOffer.description,
-          company: recommendedOffer.company.toString(),
-          type_offre: recommendedOffer.type_offre,
-          score: score.score,
+        companyOffers.forEach((offer) => {
+          const offerId = offer._id.toString();
+          if (model.hasOwnProperty(offerId)) {
+            const offerSkills = model[offerId];
+            for (const skill in offerSkills) {
+              if (companySkills[company.name].hasOwnProperty(skill)) {
+                companySkills[company.name][skill] += offerSkills[skill];
+              } else {
+                companySkills[company.name][skill] = offerSkills[skill];
+              }
+            }
+          }
         });
-      }
-      if (recommendations.length === 10) {
-        break;
+
+        const totalScore = Object.values(companySkills[company.name]).reduce((acc, cur) => acc + cur, 0);
+        const sortedSkills = Object.entries(companySkills[company.name]).sort((a, b) => b[1] - a[1]);
+        const topSkills = sortedSkills.slice(0, 10).map((skill) => {
+          const percentage = (skill[1] / totalScore) * 100;
+          return { name: skill[0], score: skill[1], percentage: percentage.toFixed(2) };
+        });
+
+        companySkills[company.name] = topSkills;
       }
     }
-    return recommendations;
+
+    res.status(200).json({ companySkills });
   } catch (err) {
-    console.log(err);
-    return [];
+    res.status(500).json({ error: err.message });
   }
-};
+});
+
+
+const recommendationSchema = new mongoose.Schema({
+  model: Object,
+});
+
+// Enregistrement du modèle avec Mongoose
+const RecommendationModel = mongoose.model('RecommendationOffers', recommendationSchema);
+
+async function getRecommendations(offerId) {
+  // Recherche du modèle de recommandation dans la base de données
+  const Model = RecommendationModel;
+  const recommendationModel = await Model.findOne();
+
+  // Obtention des scores de similarité pour l'offre donnée
+  const offerScores = recommendationModel.model[offerId];
+
+  // Tri des scores de similarité par ordre décroissant
+  const sortedScores = Object.keys(offerScores).sort((a, b) => offerScores[b] - offerScores[a]);
+
+  // Création de la liste d'offres recommandées
+  const recommendations = [];
+  for (const offerId of sortedScores) {
+    const offer = await Offer.findById(offerId).populate('company', 'name');
+    if (offer) {
+      recommendations.push({
+        offerId: offer._id,
+        companyId: offer.company._id,
+        companyName: offer.company.name,
+        score: offerScores[offerId],
+        skills: offer.skills
+      });
+    }
+    if (recommendations.length >= 5) {
+      break;
+    }
+  }
+
+  return recommendations;
+}
+//-------------------- GET SKILLS BY COMPANY -------------------------------------------//
+async function getSkillsByCompanyOffers(offerIds) {
+  try {
+    // Recherche des offres correspondantes
+    const offers = await Offer.find({ _id: { $in: offerIds } }).populate('company');
+
+    // Construction d'un objet contenant les scores pour chaque compétence
+    const skillsScores = {};
+    offers.forEach((offer) => {
+      offer.skills.forEach((skill) => {
+        skillsScores[skill] = skillsScores[skill] || 0;
+        skillsScores[skill] += offer.modelScore;
+      });
+    });
+
+    // Tri des compétences par score décroissant
+    const sortedSkills = Object.keys(skillsScores).sort((a, b) => skillsScores[b] - skillsScores[a]);
+
+    // Récupération des noms de sociétés
+    const companies = offers.map((offer) => offer.company.name);
+
+    // Retour des résultats
+    return { companies: companies, skills: sortedSkills };
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+
+//------------------------- GET 2 ---------------------------//
+router.get('/company/:companyId/offers/recommendations/:offerId', async (req, res) => {
+  try {
+    const { companyId, offerId } = req.params;
+
+    // Vérification que l'entreprise existe
+    const company = await User.findById(companyId);
+    if (!company) {
+      return res.status(404).json({ error: "L'entreprise n'existe pas." });
+    }
+
+    // Vérification que l'offre appartient à l'entreprise
+    const offer = await Offer.findOne({ _id: offerId, company: companyId });
+    if (!offer) {
+      return res.status(404).json({ error: "L'offre n'existe pas ou n'appartient pas à l'entreprise." });
+    }
+
+    // Obtention des recommandations pour l'offre donnée
+    const recommendations = await getRecommendations(offerId);
+
+    // Filtrage des recommandations pour ne garder que celles appartenant à l'entreprise
+    const companyRecommendations = [];
+    for (const recommendation of recommendations) {
+      const recommendedOffer = await Offer.findById(recommendation.offerId);
+      if (recommendedOffer && recommendedOffer.company.equals(companyId)) {
+        companyRecommendations.push(recommendation);
+      }
+    }
+
+    // Obtention des compétences les plus demandées parmi les offres recommandées
+    const recommendedOfferIds = companyRecommendations.map((rec) => rec.offerId);
+    const { companies, skills } = await getSkillsByCompanyOffers(recommendedOfferIds);
+
+    res.status(200).json({ recommendations: companyRecommendations, companies: companies, skills: skills });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+//GET Recommendation
+
+// const getRecommendations = async (id) => {
+//   try {
+//     // Récupération du modèle de recommandation depuis la base de données
+//     const Model = mongoose.model('RecommendationModel', new mongoose.Schema({
+//       model: Object,
+//     }));
+//     const recommendationModel = await Model.findOne();
+//     if (!recommendationModel) {
+//       return [];
+//     }
+//     const model = recommendationModel.model;
+
+//     // Calcul des scores de similarité entre l'offre donnée et toutes les autres offres
+//     const scores = [];
+//     const tfidf = new natural.TfIdf();
+//     tfidf.addDocument(await getOfferText(id));
+//     for (const offerId in model) {
+//       const tfidfScores = model[offerId];
+//       let score = 0;
+//       tfidf.listTerms().forEach((term) => {
+//         if (tfidfScores[term.term]) {
+//           score += term.tfidf * tfidfScores[term.term];
+//         }
+//       });
+//       if (score > 0) {
+//         scores.push({ offerId, score });
+//       }
+//     }
+
+//     // Tri des offres selon leurs scores de similarité décroissants
+//     scores.sort((a, b) => b.score - a.score);
+
+//     // Récupération des offres recommandées
+//     const recommendations = [];
+//     for (const score of scores) {
+//       const recommendedOffer = await Offer.findById(score.offerId);
+//       if (recommendedOffer && recommendedOffer._id.toString() !== id) {
+//         recommendations.push({
+//           offerId: recommendedOffer._id.toString(),
+//           title: recommendedOffer.title,
+//           description: recommendedOffer.description,
+//           company: recommendedOffer.company.toString(),
+//           type_offre: recommendedOffer.type_offre,
+//           score: score.score,
+//         });
+//       }
+//       if (recommendations.length === 10) {
+//         break;
+//       }
+//     }
+//     return recommendations;
+//   } catch (err) {
+//     console.log(err);
+//     return [];
+//   }
+// };
 
 
 //----------------------------- GET AI -----------------------------------------//
