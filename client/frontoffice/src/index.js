@@ -62,6 +62,7 @@ import Condidatquizzes from "views/examples/Condidatquizzes";
 import CondidatQuestions from "views/examples/CondidatQuestions";
 import InterviewCompany from "views/examples/InterviewCompany";
 import CandidateStats from "views/examples/CandidateStats";
+import SkillStats from "views/examples/SkillStats";
 
 // others
 
@@ -183,6 +184,10 @@ root.render(
       <Route
         path="/candidateSkillState"
         render={(props) => <CandidateStats {...props} />}
+      />
+      <Route
+        path="/SkillStats"
+        render={(props) => <SkillStats {...props} />}
       />
        
       <Route

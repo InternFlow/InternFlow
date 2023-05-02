@@ -8,6 +8,8 @@ import Accordion from "components/Accordion";
 import { BsPencilSquare, BsXSquare } from "react-icons/bs";
 import { PlusCircleFill } from "react-bootstrap-icons";
 import moment from "moment";
+import "./style.css";
+
 import offerImage from "../uploads/offers/1681389235310-offers.jpg";
 import {
   InputGroup,
@@ -303,6 +305,18 @@ function EditCompanyProfile() {
     setSearchText(e.target.value);
   };
 
+// useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const res = await axios.get(${BASE_URL}/visits/search?query=${searchText});
+//         setVisites(res.data);
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     };
+//     fetchData();
+//   }, [searchText]);
+
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -349,6 +363,7 @@ function EditCompanyProfile() {
       <ProfilePageHeader />
       <div className="section profile-content">
         <Container>
+
           <div className="owner">
             <div className="avatar">
               <img
@@ -366,6 +381,7 @@ function EditCompanyProfile() {
                 />
               )}
             </div>
+            
             <Row>
               <Col md="4">
                 <Card className="text-center text-md-left">
@@ -474,12 +490,25 @@ function EditCompanyProfile() {
             </Form>
             <br></br>
 
+            <Button color="danger" type="submit" onClick={handleAddOffer}>
+              <FontAwesomeIcon icon={faPlus} /> New Offer{" "}
+            </Button>
+
+            <br></br>
+            <br></br>
+            <br></br>
             <Row>
               <Col md="9">
-                <Row>
+              {/* <Row> */}
+
+              <Row className="justify-content-center my-4">
                   {currentItems.map((offer) => (
-                    <Col md="5" key={offer.id}>
-                      <Card className="mb-4 h-100" key={offer.id}  style={{ marginBottom: "20px", alignItems: "center" }}>
+                      // <Col md="5" key={offer.id}>
+
+                      <Col xs="12" sm="7" md="8" lg="5" key={offer.id} className="mb-4">
+                      {/* <Card className="mb-4 h-100" key={offer.id}  style={{ marginBottom: "20px", alignItems: "center" }}> */}
+
+                      <Card className="mb-1 h-100" key={offer.id}  style={{ marginBottom: "180px", alignItems: "center",  margin: "20px" }}>
                         <CardImg
                           top
                           width="100%"
@@ -511,8 +540,13 @@ function EditCompanyProfile() {
                           </p>
                           <br></br>
 
+                          <div className="d-flex justify-content-between">
+
                           <Button
                             color="primary"
+                            size="sm"
+                            style={{ height: "35px", marginRight: "35px" }} // Ajout de la propriété CSS height avec une valeur de 30px
+
                             onClick={() =>
                               history.push(`/DetailsOffers/${offer._id}`)
                             }
@@ -526,6 +560,8 @@ function EditCompanyProfile() {
                           <br></br>
                           <Button
                             color="success"
+                            size="sm"
+                            style={{ height: "35px", marginRight: "35px" }} // Ajout de la propriété CSS height avec une valeur de 30px
                             onClick={() =>
                               history.push(
                                 `/EditOfferCompany/${id}/offers/${offer._id}`
@@ -540,12 +576,15 @@ function EditCompanyProfile() {
                           <br></br>
                           <Button
                             color="danger"
+                            size="sm"
+                            style={{ height: "35px", marginRight: "35px" }} // Ajout de la propriété CSS height avec une valeur de 30px
                             onClick={() => handleDelete(offer._id)}
                           >
                             {/* Delete Offer */}
                             <FontAwesomeIcon icon={faTrash} />{" "}
                             {/* icône "poubelle" */}
                           </Button>
+                        </div>
                         </CardBody>
                       </Card>
                     </Col>
@@ -556,13 +595,7 @@ function EditCompanyProfile() {
             <br></br>
             <br></br>
 
-            <Button color="danger" type="submit" onClick={handleAddOffer}>
-              <FontAwesomeIcon icon={faPlus} /> New Offer{" "}
-            </Button>
-
-            <br></br>
-            <br></br>
-            <br></br>
+          
 
             {/* Pagination */}
             <nav className="d-flex justify-content-center">

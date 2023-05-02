@@ -28,6 +28,8 @@ import {
 } from "reactstrap";
 import ImageUpload from "./ImageUpload";
 import CondidatNavbar from "components/Navbars/CondidatNavbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartColumn } from "@fortawesome/free-solid-svg-icons";
 function EditCondidatProfile() {
   const [userd, setUserData] = useState({
     name: "",
@@ -1023,6 +1025,20 @@ React.useEffect(()=>{
             </ModalFooter>
             </Modal>
 
+            <div style={{textAlign: 'right'}}>
+            <Button
+             color="success"
+             style={{marginLeft: '10px'}}
+             onClick={() =>
+               history.push("/SkillStats")
+             }
+            >
+              <FontAwesomeIcon icon={faChartColumn} /> 
+              {" "}The Skills of the MarketPlace{" "}
+            </Button>
+
+            </div>
+           
            </div>
         </Container>
       </div>

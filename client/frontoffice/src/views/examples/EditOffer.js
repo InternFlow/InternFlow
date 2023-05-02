@@ -1,5 +1,5 @@
 import { API } from "../../config";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
@@ -47,6 +47,7 @@ function EditOffer() {
 
 
 
+   
     
 
 
@@ -68,6 +69,37 @@ function EditOffer() {
         languages: '',
         skills: ''
     });
+
+    // useEffect(() => {
+    //   const fetchVisit = async () => {
+    //     console.log("Fetching visit data for ID:", companyId);
+    //     try {
+    //       const { data } = await axios.get(
+    //         `http://localhost:5000/Affichercompanies/${companyId}/offers}`
+    //       );
+    //       console.log("Fetched visit data:", data);
+    //       offerData.title(data.title);
+    //       offerData.type_offre(data.type_Offer);
+    //       offerData.description(data.description);
+    //       offerData.availability(data.availability);
+
+    //       offerData.startDate(data.startDate);
+    //       offerData.endDate(data.endDate);
+    //       offerData.location(data.location);
+    //       offerData.nb_places_available(data.nb_places_available);
+    //       offerData.languages(data.languages);
+    //       offerData.skills(data.skills);
+
+
+
+    //       // setPhoto(data.photo);
+          
+    //     } catch (error) {
+    //       console.error("There was a problem with the fetch operation:", error);
+    //     }
+    //   };
+    //   fetchVisit();
+    // }, [companyId]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -145,7 +177,7 @@ function EditOffer() {
 
     return(
         <>
-<CondidatNavbar></CondidatNavbar>
+<CondidatNavbar />
              <ProfilePageHeader />
 
              <div className="section profile-content" >
