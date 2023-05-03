@@ -40,6 +40,7 @@ const InterviewRoutes = require('./Routes/InterviewRoute');
 const CandidacyRoutes = require('./Routes/CandidacyRoute');
 const CourseRoute = require('./Routes/CourseRoute');
 const imageUploadRoute = require('./Routes/ImageUploadRoute');
+const NotificationRoutes = require('./Routes/NotificationRoute');
 
 const config = require('./config');
 
@@ -86,6 +87,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/Course',CourseRoute);
     app.use('/uploadImage',imageUploadRoute);
     app.use("/Event", EventRoutes);
+    app.use("/Notification", NotificationRoutes);
 
 
     app.use('/Quiz',QuizRoute);

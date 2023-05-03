@@ -11,6 +11,7 @@ const router = express.Router();
 const multer = require("multer");
 const Offer = require("../models/Offer");
 const path = require('path');
+const Notification = require("../Models/Notification");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -288,7 +289,7 @@ router.post('/offer/:offerId/quiz/:quizId/submit', requireAuth, checkRole("condi
 
 
 //ahmed
-router.get('/notifications', requireAuth,checkRole("condidat") ,async (req, res) => {
+router.get('/notifications', requireAuth,async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     console.log(user);
@@ -732,6 +733,8 @@ console.log("step 1 apply");
     const educations = JSON.parse(req.body.selectedEducation);
     const { lettre, offer, intern, description ,oui} = req.body;
 const date=new Date();
+
+const ff=await Offer.findById(offer);
       if(oui==="spec"){
 console.log(req.file==null);
 if (req.file==null){
@@ -739,12 +742,16 @@ if (req.file==null){
   const resume = await Resume.create({ description:description ,experiences:experiences,
     skills:skills,educations:educations})
     const candidacy = await Candidacy.create({ dateApply:date,lettre,offer:offer,intern:intern,resume:resume._id,status:"pending",resumeType:"spec"}); 
+    const notification = await Notification.create({message:" applied at your offer",userR:ff.company,userS:intern,candidacy:candidacy}); 
+
     console.log(candidacy);
 
 }else {
       const resume = await Resume.create({ description:description ,experiences:experiences,
         skills:skills,educations:educations,filePath:req.file.filename})
         const candidacy = await Candidacy.create({ dateApply:date,lettre,offer:offer,intern:intern,resume:resume._id,status:"pending",resumeType:"spec"}); 
+        const notification = await Notification.create({message:" applied at your offer",userR:ff.company,userS:intern,candidacy:candidacy}); 
+
         console.log(candidacy);
 
       }
@@ -760,7 +767,9 @@ if (req.file==null){
       } else {
         console.log("general");
     const candidacy = await Candidacy.create({dateApply:date, lettre,offer:offer,intern:intern,status:"pending",resumeType:"gen"}); 
-console.log(candidacy);
+    const notification = await Notification.create({message:" applied at your offer",userR:ff.company,userS:intern,candidacy:candidacy}); 
+
+    console.log(candidacy);
 const user2 = await User.updateOne({ _id: intern,role:"condidat" }, { OfferIdI: offer });
 
 const user = await User.updateOne({ _id: intern, role:"company"}, { OfferIdC: offer });

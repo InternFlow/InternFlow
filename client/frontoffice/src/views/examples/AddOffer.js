@@ -1,5 +1,5 @@
 import { API } from "../../config";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
@@ -41,6 +41,8 @@ function AddOffer() {
   });
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [categories, setCategories] = React.useState([]);
+  const [sumDays, setSumDays] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -56,11 +58,15 @@ function AddOffer() {
     // image: null,
     skills: [],
     offre_file: "",
+    category_offre:""
   });
 
   const OffreData = new FormData();
   OffreData.append("file", formData.offre_file);
   OffreData.append("upload_preset", "ce5nvvl8");
+
+
+  
 
   const validate = async (values) => {
     const errors = {};
@@ -75,6 +81,12 @@ function AddOffer() {
     //   });
     // }
 
+
+
+
+
+
+    
 
     //----------------- Availability --------------------------------//
 
@@ -144,7 +156,7 @@ function AddOffer() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(id);
+    console.log(formData);
 
     const config = {
       headers: {
@@ -275,6 +287,32 @@ function AddOffer() {
     }
   };
 
+  React.useEffect(() => {
+      
+    fetch('http://localhost:5000/Category/allCategories', {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            setCategories(data);
+        })
+        .catch((error) => console.error(error));
+
+}, []);
+
+console.log(categories);
+
+
+const calcDuration=(date)=>{
+  const dd= moment(formData.startDate);
+  const df= moment(date);
+  const diffInDays = df.diff(dd, 'days');
+  setSumDays(diffInDays);
+console.log(diffInDays);
+};
   return (
     <>
 <CondidatNavbar></CondidatNavbar>
@@ -282,20 +320,13 @@ function AddOffer() {
       <div className="section profile-content">
         <Container>
           <div className="owner">
-            <div className="avatar">
-              <img
-                alt="..."
-                className="img-circle img-no-padding img-responsive"
-                // src={userd.pfpPath}
-              />
-            </div>
+            
             <br></br>
-            <h1>Add Offer</h1>
             <br></br>
 
             <Row>
-              <Col md="8" className="mx-auto text-center">
-                <Card className="card-user">
+              <Col md="12" className="mx-auto text-center">
+                <Card className="card-user col-md-12">
                   <CardHeader>
                     <CardTitle tag="h5" style={{ fontWeight: "bold" }}>
                       Add a new Offer
@@ -303,34 +334,47 @@ function AddOffer() {
                   </CardHeader>
                   <CardBody>
                     <Form onSubmit={handleSubmit}>
-                      <Row>
+                    <Row>
+
                         <Col md="6">
-                          <FormGroup>
-                            <label>Title</label>
-                            <Input
-                              placeholder="Title"
-                              type="text"
-                              value={formData.title}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  title: e.target.value,
-                                })
-                              }
-                            />
-                            {/* {!formData.title && (
-                              <div style={{ color: "red", fontWeight: "bold" }}>
-                                Title is required!
-                              </div>
-                            )} */}
-                          </FormGroup>
+                        <div class="form-group">
+  <label class="form-label">Title</label>
+  <input
+    class="form-input"
+    placeholder="Title"
+    type="text"
+    value={formData.title}
+    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+  />
+
+</div>
                         </Col>
-                      </Row>
+                        <Col md="6">
+                        <div class="form-group">
+  <label class="form-label" for="category-offer-select">Category of Offer</label>
+  <select
+    class="form-select"
+    id="category-offer-select"
+    name="select category"
+    value={formData.category_offre}
+    onChange={(e) => setFormData({ ...formData, category_offre: e.target.value })}
+  >
+    <option value="">Select your Category of Offer</option>
+    {categories.map((category) => (
+      <option key={category._id} value={category._id}>{category.name}</option>
+    ))}
+  </select>
+  
+</div>
+                        </Col>
+</Row>
                       <Row>
                         <Col md="6">
-                          <FormGroup>
-                            <label>Type of Offer</label>
-                            <Input
+                        <div class="form-group">
+                            <label class="form-label" for="category-offer-select">Type of Offer</label>
+                            <select
+                                class="form-select"
+
                               id="type_offre"
                               type="select"
                               name="select type"
@@ -343,31 +387,25 @@ function AddOffer() {
                               }
                             >
                               <option value="">
-                                Select your Category of Offer
+                                Select your type of Offer
                               </option>
                               <option value="summer">Summer</option>
                               <option value="worker">Worker</option>
                               <option value="pre-hiring">Pre-Hiring</option>
                               <option value="PFE">PFE</option>
                               <option value="recherche">Recherche</option>
-                              {/* {!formData.type_offre && (
-                                <div
-                                  style={{ color: "red", fontWeight: "bold" }}
-                                >
-                                  Category is required!
-                                </div>
-                              )} */}
-                            </Input>
-                          </FormGroup>
+                              
+                              </select>
+                          </div>
                         </Col>
-                      </Row>
-                      <Row>
+                      
                         <Col md="6">
-                          <FormGroup>
-                            <label>Description</label>
-                            <Input
-                              placeholder="description"
-                              type="textarea"
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <input
+                                class="form-field"
+                                      placeholder="description"
+                              type="text"
                               value={formData.description}
                               onChange={(e) =>
                                 setFormData({
@@ -377,20 +415,21 @@ function AddOffer() {
                               }
                               
                             />
-                            {/* {!formData.description && (
-                              <div style={{ color: "red", fontWeight: "bold" }}>
-                                Description is required!
-                              </div>
-                            )} */}
-                          </FormGroup>
-                        </Col>
+                     </div>              
+                               </Col>
+
                       </Row>
+
+                      
+
+
 
                       <Row>
                         <Col md="6">
-                          <FormGroup>
-                            <label>Availability</label>
-                            <Input
+                        <div class="form-group">
+                            <label class="form-label">Availability</label>
+                            <input 
+                              class="form-input"
                               placeholder="availability"
                               type="text"
                               value={formData.availability}
@@ -407,15 +446,15 @@ function AddOffer() {
                                 Availability is required!
                               </div>
                             )} */}
-                          </FormGroup>
+                          </div>
                         </Col>
-                      </Row>
-
-                      <Row>
+                      
                         <Col md="6">
-                          <FormGroup>
-                            <label>StartDate</label>
-                            <Input
+                        <div class="form-group">
+                            <label class="form-label">StartDate</label>
+                            <input
+                                                  class="form-input"
+
                               type="date"
                               name="date"
                               id="exampleDate"
@@ -431,42 +470,41 @@ function AddOffer() {
                             />
                               {/* {!formData.startDate && <div style={{ color: 'red', fontWeight: 'bold' }}>StartDate is required!</div>} */}
 
-                          </FormGroup>
+                          </div>
                         </Col>
                       </Row>
 
                       <Row>
                         <Col md="6">
-                          <FormGroup>
-                            <label>EndDate</label>
-                            <Input
+                        <div class="form-group">
+                            <label class="form-label">EndDate</label>
+                            <input
+                                                          class="form-input"
+
                               type="date"
                               name="date"
                               id="exampleDate"
                               placeholder="date placeholder"
                               value={formData.endDate}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  endDate: e.target.value,
-                                })
-                              }
+                              onChange={(e) => {
+                                setFormData({ ...formData, endDate: e.target.value });
+                                calcDuration(e.target.value); // Appeler une autre fonction
+                              }}
                               
                             />
                               {/* {!formData.endDate && <div style={{ color: 'red', fontWeight: 'bold' }}>EndDate is required!</div>} */}
 
-                          </FormGroup>
+                          </div>
                         </Col>
-                      </Row>
-
-                      <Row>
+                     
                         <Col md="6">
-                          <FormGroup>
-                            <label>Duration</label>
-                            <Input
-                              placeholder="duration"
+                        <div class="form-group">
+                            <label class="form-label">Duration</label>
+                            <input
+                                                          class="form-input readonly"
+                              placeholder={sumDays}
                               type="text"
-                              value={formData.duration}
+                              value={sumDays}
                               onChange={(e) =>
                                 setFormData({
                                   ...formData,
@@ -475,14 +513,16 @@ function AddOffer() {
                               }
                             />
 
-                          </FormGroup>
+                          </div>
                         </Col>
                       </Row>
                       <Row>
                         <Col md="6">
                           <FormGroup>
-                            <label>Location</label>
-                            <Input
+                            <label class="form-label">Location</label>
+                            <input
+                                                          class="form-input"
+
                               placeholder="location"
                               type="text"
                               value={formData.location}
@@ -498,13 +538,13 @@ function AddOffer() {
 
                           </FormGroup>
                         </Col>
-                      </Row>
-
-                      <Row>
+                     
                         <Col md="6">
                           <FormGroup>
-                            <label>Nb of Places</label>
-                            <Input
+                            <label class="form-label">Nb of Places</label>
+                            <input
+                                                          class="form-input"
+
                               placeholder="nb_places_available"
                               type="number"
                               value={formData.nb_places_available}
@@ -524,8 +564,10 @@ function AddOffer() {
                       <Row>
                         <Col md="6">
                           <FormGroup>
-                            <label>Languages</label>
-                            <Input
+                            <label class="form-label">Languages</label>
+                            <select
+                                                            class="form-select"
+
                               id="languages"
                               type="select"
                               name="select offer"
@@ -545,15 +587,14 @@ function AddOffer() {
                               <option value="german">German</option>
                               <option value="italian">Italian</option>
                               <option value="chinese">Chinese</option>
-                            </Input>
+                            </select>
                           </FormGroup>
                         </Col>
-                      </Row>
 
 
                       {/** Skills */}
 
-                      <Row style={{ marginBottom: "20px" }}>
+                      <div style={{ marginBottom: "20px" }}>
                         {updatedUserData.skills.map((skill, index) => {
                           return (
                             <Col
@@ -566,7 +607,7 @@ function AddOffer() {
                                   alignItems: "center",
                                 }}
                               >
-                                <label>Skills:</label>
+                                <label class="form-label">Skills:</label>
                                 <Input
                                   name="skill"
                                   data-index={index}
@@ -599,14 +640,14 @@ function AddOffer() {
                                     fontWeight: "bolder",
                                   }}
                                 >
-                                  X
+                                  
                                 </button>
                               </div>
                             </Col>
                           );
                         })}
-                      </Row>
-                      <Row>
+                      </div>
+
                         <label>
                           <strong>Skills</strong>
                         </label>

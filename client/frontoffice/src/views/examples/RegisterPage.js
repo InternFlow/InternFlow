@@ -86,7 +86,7 @@ if(verif=="mail used")
     }
 
 
-    else if (name.length<5 || name>16){
+    else if (name.length<2 || name>16){
       errors.name = 'name is invalid';
       setAlertMessage(' Name must be between 5 and 16 characters ');
       setShowAlert(true); 
@@ -122,7 +122,7 @@ if(verif=="mail used")
     const response = fetch('http://localhost:5000/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, role })
+      body: JSON.stringify({ name, email, password, role,lastName })
 
     })
     .then(()=>{
@@ -204,7 +204,18 @@ if(verif=="mail used")
                       />
                       {errors.name && <span>{errors.name}</span>}
                     </div>
-                  
+                    <div>
+                      <label>Last Name</label>
+                      <Input
+                        type="text"
+                        id="lastname"
+                        name="username"
+                        value={lastName}
+                        onChange={e => setLastName(e.target.value)}
+
+                      />
+                      {errors.name && <span>{errors.name}</span>}
+                    </div>
                     <div>
                       <label>Email</label>
                       <Input

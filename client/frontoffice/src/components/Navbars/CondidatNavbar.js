@@ -42,8 +42,9 @@ import { useState } from 'react';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 function CondidatNavbar() {
   const [role, setRole] = useState("");
+  const [notifs, setNotifs] = useState([]);
 
-  console.log(role);
+  console.log(notifs);
 
     
   const history = useHistory();
@@ -66,6 +67,70 @@ console.log(roleToken)
   const [modal, setModal] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [numNotifications, setNumNotifications] = useState(0);
+console.log(notifications);
+
+
+
+
+
+
+
+
+// seif
+
+
+
+
+
+
+
+React.useEffect(() => {
+  const fetchNotifications = async () => {
+      try {
+          const token = localStorage.getItem("token");
+          const id = localStorage.getItem("id");
+console.log(id);
+          const response = await fetch(`http://localhost:5000/Notification/notifications?id=${id}`, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+              },
+              credentials: 'include',
+          });
+
+          if (response.status === 200) {
+              const data = await response.json();
+              console.log(data);
+              setNotifs(data);
+          } else {
+              throw new Error(`Error fetching notifications. Status: ${response.status}`);
+          }
+      } catch (error) {
+          console.error(error);
+      }
+  };
+if(!token){
+setRole("guest");
+}
+else{
+ fetchNotifications();
+}
+ 
+}, []);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const toggle = async () => {
     setModal(!modal);
@@ -308,7 +373,7 @@ const toggle2 = () => setModal2(!modal2);
 
             <NavItem>
             <NavLink  onClick={toggle}>
-        <i className="fa fa-bell" />
+            <i className="nc-icon nc-planet"></i>
         <Badge pill color="danger">
              {numNotifications}
 
@@ -319,6 +384,20 @@ const toggle2 = () => setModal2(!modal2);
 
             )}
 
+{roleToken==="company" && (
+
+<NavItem>
+<NavLink  onClick={toggle}>
+<i className="fa fa-bell" />
+<Badge pill color="danger">
+ {numNotifications}
+
+</Badge>
+<span className="d-md-none ml-1">Notifications</span>
+</NavLink>
+</NavItem>
+
+)}
 
 
       <Modal isOpen={modal} toggle={toggle}>

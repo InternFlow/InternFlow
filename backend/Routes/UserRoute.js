@@ -252,7 +252,7 @@ router.post('/AjoutercompaniesFil/:id/offers',parser.single('file'),async (req, 
     // const { companyId } = req.params;
     const companyId = req.params.id;
 
-    console.log(companyId);
+    console.log(req.body.category_offre);
 
     // Créer une nouvelle offre à partir des données envoyées dans la requête
     const newOffer = new Offer({
@@ -270,6 +270,8 @@ router.post('/AjoutercompaniesFil/:id/offers',parser.single('file'),async (req, 
       skills: req.body.skills,
       // image: req.file,
       offre_file:req.file,
+      category:req.body.category_offre,
+
       //offre_file
 
 
@@ -385,7 +387,7 @@ router.get("/login", async (req, res) => {
 //-------------------------- Register -----------------------------------//
 
 router.post("/register", async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role,lastName } = req.body;
   let errors = {};
   if (!name) {
     errors.name = "donner le nom";
@@ -420,7 +422,7 @@ router.post("/register", async (req, res) => {
   }
 
   try {
-    const user = await User.create({ name, email, password, role });
+    const user = await User.create({ name, email, password, role,lastName });
 
     await user.hashPassword(user.password);
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {

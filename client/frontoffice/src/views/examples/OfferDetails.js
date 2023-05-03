@@ -20,9 +20,11 @@ function OfferDetails() {
   const [showQuizzes, setShowQuizzes] = useState(false);
   const itemsPerPage = 6;
   const token = localStorage.getItem("token");
-
+  const [modalQuizz, setModalQuizz] = useState(false);
   const handleAddQuizClick = (offerId) => {
     console.log("add quiz")
+     setModalQuizz(!modalQuizz);
+
     setSelectedOfferId(offerId);
     setShowQuizForm(true);
 };
@@ -161,6 +163,7 @@ const [currentPage, setCurrentPage] = useState(0);
     const [isSelected2, setIsSelected2] = useState(false);
     const [isSelected, setIsSelected] = useState(false);
     const history = useHistory();
+    
 
     const [modalCv, setModalCv] = useState(false);
     const [modal, setModal] = useState(false);
@@ -172,6 +175,8 @@ const [currentPage, setCurrentPage] = useState(0);
     const [description, setDescription] = useState('');
     const [showBoolean, setShowBoolean] = useState();
     const [userd, setUserData] = useState({});
+    const [category, setCategory] = useState({});
+
     const handleFileChange = (event) => {
       setFile(event.target.files[0]);
     };
@@ -373,6 +378,7 @@ const handleCheckboxChange = (event) => {
     axios.get(`http://localhost:5000/Offer/displayOffer/${id}`)
     .then((res)=>{
       setOffers(res.data);
+      setCategory(res.data.category)
     })
     .catch((err)=> {
       console.log("Error from OfferDetails");
@@ -393,21 +399,10 @@ const handleCheckboxChange = (event) => {
       <Container style={{ marginTop: "30px" }}>
         <Row>
           <Col md={4}>
-          <br></br>
-            <br></br>
-            <br></br>
-            <CardImg
-              variant="top"
-              // src={`../uploads/offers/${offer.image}`}
-            //   src={`../../assets/uploads/offers/${offers.image}`}
-              // src={offer.image}
-              src={offerImage}
-              alt="offer Img"
-              height={330}
-              width={250}
-            />
+          
+            
           </Col>
-          <Col md={8}>
+          <Col md={12}>
           <Card className="mb-4"  key={offer._id}>
                   
           <CardBody>
@@ -418,28 +413,44 @@ const handleCheckboxChange = (event) => {
                     </CardTitle>
                     <br></br>
                     <br></br>
+<Row>
+                    <CardText className="h6 col-md-6">Category of Offer: <span className="off">{category.name} </span></CardText>   
+                    <CardText className="h6">Type of Offer: <span className="off">{offer.type_offre} </span></CardText>   
 
-                    <CardText className="h6">Type of Offer: {offer.type_offre} </CardText>                    
-                    <CardText className="h6">Description: 
-                    <br></br>
-                    {offer.description} </CardText>
-                    <CardText className="h6"> Availability: {offer.availability} </CardText>                    
-                    <CardText className="h6">Duration: {offer.duration} </CardText>                    
-                    <CardText className="h6">Location: {offer.location} </CardText>                    
-                    <CardText className="h6">Requisted Languages:{offer.languages} </CardText>                    
+                       </Row>   
+                       
+                    <Row>                  
+                    <CardText className="h6 col-md-6">Duration: <span className="off"> {offer.duration} </span></CardText>                    
+                    <CardText className="h6">Location:<span className="off"> {offer.location}</span> </CardText>          
+                    </Row>    
+                    <Row>      
+                    <CardText className="h6 col-md-6">Requisted Languages:<span className="off">{offer.languages} </span></CardText>                    
+                    <CardText className="h6">Duration: <span className="off">{offer.duration} Days </span></CardText>                    
 
-                
+                    </Row>
+                    <Row>      
+                    <CardText className="h6 col-md-6">Number places available : <span className="off"> {offer.nb_places_available} </span></CardText>                    
+                    <CardText className="h6"> Availability:<span className="off"> {offer.availability} </span></CardText>  
+
+                    </Row>
+                    <Row>      
+                    <CardText className="h6 col-md-6">Start Date: <span className="off">{new Date(offer.startDate).toLocaleDateString()}</span> </CardText>                    
+                    <CardText className="h6">End Date: <span className="off"> {new Date(offer.endDate).toLocaleDateString()}</span> </CardText>                    
+
+                    </Row>
+                    <Row>           
+                    <CardText className="h6 col-md-6">Description: <span className="off">{offer.description} </span></CardText>
+                    </Row>
                   </CardBody>
                 </Card>
                 <div>
-                <Button color="primary" onClick={() => history.goBack()}>
+
+                <Button color="secondary" onClick={() => history.goBack()}>
               Go back
             </Button>
-            <span style={{ marginRight: '120px' }} />
-      <Form onSubmit={handleSubmit} className="register-form" method="POST">
-
-
-
+            <span style={{ marginRight: '60px' }} />
+    
+                  
                   {showBoolean==false &&  role!="company" &&(
         <Button color="primary" onClick={openForm}>
           Apply
@@ -450,30 +461,25 @@ const handleCheckboxChange = (event) => {
           Consult your apply
         </Button>
       )}
-                { role=="company" && (
-        <Button color="primary" onClick={redirectToApplies}>
+                  { role=="company" && (
+        <Button className="bbt2" color="primary" onClick={redirectToApplies}>
           Consult the applies
                   </Button>
       )}
-{/* ahmed*/}
-{ role=="company" && (
+                  { role=="company" && (
 
-                     <div className="d-flex justify-content-between">
-                                                <Button color="primary" onClick={() => handleAddQuizClick(offer._id)}
-                                                >
-                                                    Add Quizz
-                                                </Button>
-                                                <Button color="secondary" onClick={() => handleViewQuizzesClick(offer._id)}
-                                                >
-                                                    Voir Quizs
-                                                </Button>
-                                            </div>
+<>                           <Button className="bbt" color="success" onClick={() => handleAddQuizClick(offer._id)
+                           }
+                           >
+                               Add Quizz
+                           </Button>
+                           <Button className="bbt2" color="info" onClick={() => handleViewQuizzesClick(offer._id)}
+                           >
+                               Voir Quizs
+                           </Button>
+                       </>
 )}
-
-{/* ahmed*/}
-
-
-                  </Form>
+                  
                 </div>
           </Col>
         </Row>
@@ -481,25 +487,26 @@ const handleCheckboxChange = (event) => {
       
       <div>
       <Modal isOpen={modal} toggle={openForm}>
-        <ModalHeader toggle={openForm}>Apply for this offer</ModalHeader>
+        <ModalHeader className="h4" toggle={openForm}>Apply for this offer</ModalHeader>
         <ModalBody>
           <Form>
-          <Button color="danger" className={`oui mb-2 mr-3 ${isSelected ? "selected" : ""}`} 
+          <Button color="danger" className={`oui bb mb-2 mr-3 ${isSelected ? "selected" : ""}`} 
 
           onClick={() => handleClick()}>
 
               <div>CV general</div>
             </Button>
-          <Button  className={`oui mb-2 mr-3 ${isSelected2 ? "selected" : ""}`} onClick={() => {
+          <Button  className={`oui bb mb-2 mr-3 ${isSelected2 ? "selected" : ""}`} onClick={() => {
   openFormCv();
   handleClick2();
 }}>
           <div>Bespoke CV</div>
           </Button>
             <FormGroup>
-              <Label for="lettre">Cover Letter</Label>
+              <Label for="lettre" className="form-label">Cover Letter</Label>
               <Input type="textarea" value={lettre} name="lettre" id="lettre" placeholder="Cover Letter"
-                                      onChange={e => setLettre(e.target.value)}
+                                    className="form-input"
+                                    onChange={e => setLettre(e.target.value)}
                                       />
             </FormGroup>
           </Form>
@@ -508,8 +515,7 @@ const handleCheckboxChange = (event) => {
                     )}
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={(event) => handleSubmit(event,"gen")} type="submit">Enregistrer</Button>
-          <Button color="secondary" >Annuler</Button>
+          <Button color="success" className="bbt" onClick={(event) => handleSubmit(event,"gen")} type="submit">Apply</Button>
         </ModalFooter>
       </Modal>
 
@@ -525,27 +531,33 @@ const handleCheckboxChange = (event) => {
           <FormGroup>
               <Label for="lettre"><h6>Cover Letter</h6></Label>
               <Input type="textarea" value={lettre} name="lettre" id="lettre" placeholder="Cover Letter"
-                                      onChange={e => setLettre(e.target.value)}
+                                   onChange={e => setLettre(e.target.value)}
+                                   className="form-input"
+
                                       />
             </FormGroup>
           <FormGroup>
               <Label for="lettre"><h6>Description :</h6></Label>
               <Input type="textarea" value={description} name="description" id="description" placeholder="Describe your self..."
-                                      onChange={e => setDescription(e.target.value)}
+                                                              className="form-input"
+
+                           onChange={e => setDescription(e.target.value)}
                                       />
             </FormGroup>
             <FormGroup>
 <h6> Skills: </h6>
             {userd && userd.skills && userd.skills.map((name, index) => (
-  <div key={index}>
+  <div  key={index}>
+
+
+    
     <input type="checkbox" id={`skill_${index}`} name={`skill_${index}`} value={name} 
-    onChange={handleCheckboxChange} />
-    <label htmlFor={`skill_${index}`}>{name}</label>
+    onChange={handleCheckboxChange}   />
+    <label className="form-label2 mr" htmlFor={`skill_${index}`}>{name}</label>
   </div>
 ))}
             </FormGroup>
-         
-
+          
             <FormGroup>
             <h6> Educations: </h6>
 
@@ -553,7 +565,7 @@ const handleCheckboxChange = (event) => {
   <div key={education._id}>
     <input type="checkbox" id={education._id} name={education._id} value={education} 
     onChange={handleCheckboxChangeeducations} />
-    <label htmlFor={`skill_${index}`}>Worked at: {education.company} from : {new Date(education.startDate).toLocaleDateString()} to: {new Date(education.endDate).toLocaleDateString()}</label>
+    <label className="form-label2 mr" htmlFor={`skill_${index}`}>Worked at: {education.company} from : {new Date(education.startDate).toLocaleDateString()} to: {new Date(education.endDate).toLocaleDateString()}</label>
   </div>
 ))}
             </FormGroup>
@@ -564,7 +576,7 @@ const handleCheckboxChange = (event) => {
   <div key={experience._id}>
     <input type="checkbox" id={experience._id} name={experience._id} value={experience} 
     onChange={handleCheckboxChangeexperieneces} />
-    <label htmlFor={`skill_${index}`}>Worked at: {experience.company} from : {new Date(experience.startDate).toLocaleDateString()} to: {new Date(experience.endDate).toLocaleDateString()}</label>
+    <label className="form-label2 mr" htmlFor={`skill_${index}`}>Worked at: {experience.company} from : {new Date(experience.startDate).toLocaleDateString()} to: {new Date(experience.endDate).toLocaleDateString()}</label>
   </div>
 ))}
             </FormGroup>
@@ -580,22 +592,68 @@ const handleCheckboxChange = (event) => {
                     )}
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={(event) => handleSubmit(event,"spec")}  type="submit">Apply</Button>
-          <Button color="secondary" >Annuler</Button>
+          <Button color="primary" className="bbt" onClick={(event) => handleSubmit(event,"spec")}  type="submit">Apply</Button>
         </ModalFooter>
       </Modal>
 
       
     </div>
 
-
-    {showQuizzes && (
+    <div>
+      <Modal isOpen={modalQuizz} toggle={handleAddQuizClick}>
+        <ModalHeader toggle={handleAddQuizClick}>Add new Quizz</ModalHeader>
+        <ModalBody>
                                             <CardBody>
-                                                <CardTitle tag="h5">Quiz</CardTitle>
+                                            
+                                    <Col lg="12">
+                                        <div className="mb-8">
+                                            {showQuizForm &&  (
+                                                <Card>
+                                                    <CardBody className="col-md-12">
+                                                        <Form onSubmit={handleQuizFormSubmit}>
+                                                            <FormGroup>
+                                                                <Label for="quizName">Name of quizz</Label>
+                                                                <Input type="text" id="quizName" name="name" value={quizData.name} onChange={handleInputChange} />
+                                                            </FormGroup>
+                                                            <FormGroup>
+                                                                <Label for="quizCoefficient">Coefficient</Label>
+                                                                <Input type="number" id="quizCoefficient" name="coefficient" value={quizData.coefficient} onChange={handleInputChange} />
+                                                            </FormGroup>
+                                                            <FormGroup>
+                                                                <Label for="quizTimeout">
+                                                                    Délai (en secondes)
+                                                                </Label>
+                                                                <Input type="number" id="quizTimeout" name="timeout" value={quizData.timeout} onChange={handleInputChange} />
+                                                            </FormGroup>
+                                                            <div className="d-flex justify-content-between">
+                                                                <Button type="submit">Add</Button>
+                                                                <Button color="secondary" onClick={() => setShowQuizForm(false)}
+                                                                >
+                                                                    Annuler
+                                                                </Button>
+                                                            </div>
+                                                        </Form>
+                                                        {showAlert && (
+                      <Alert color={couleur}>{alertMessage}</Alert>
+                    )}
+                                                    </CardBody>
+                                                </Card>
+                                            )}
+                                        </div>
+                                    </Col>
+                                    </CardBody>
+                                        </ModalBody>
+                                        </Modal>
+                                        </div>
+
+
+                                        
                                                 {quizzes.length === 0 ? (
                                                     <p>Aucune question pour le moment.</p>
-                                                ) : (
-                                                    <Table responsive>
+                                                ) : (<>
+                                                                                        <CardTitle className="titleQuiz col-md-12" tag="h5">List of Quiz</CardTitle>
+
+                                                    <Table  responsive className="col-md-10 tab">
                                                         <thead>
                                                             <tr>
                                                                 <th>No.</th>
@@ -612,14 +670,14 @@ const handleCheckboxChange = (event) => {
                                                                     (currentPage + 1) * itemsPerPage
                                                                 )
                                                                 .map((quiz, index) => (
-                                                                    <tr key={quiz._id}>
-                                                                        <th scope="row">{index + 1}</th>
+                                                                    <tr col-md-10 key={quiz._id}>
+                                                                        <th scope="row" className="col-md-1">{index + 1}</th>
                                                                         <td>{quiz.name}</td>
                                                                         <td>{quiz.coefficient}</td>
                                                                         <td>{quiz.timeout}</td>
-                                                                        <td>{quiz.scoremax}</td>
+                                                                        <td className="col-md-1">{quiz.scoremax}</td>
 
-                                                                        <td> <Button color="secondary" onClick={() => handleViewQuestionsClick(offer._id, quiz._id)}>
+                                                                        <td className="bttn"> <Button color="secondary" onClick={() => handleViewQuestionsClick(offer._id, quiz._id)}>
                                                                             Voir Questions
                                                                         </Button></td>
 
@@ -629,51 +687,10 @@ const handleCheckboxChange = (event) => {
                                                         </tbody>
                                                         <ReactPaginate previousLabel={"Précédent"} nextLabel={"Suivant"} breakLabel={"..."} breakClassName={"break-me"} pageCount={Math.ceil(quizzes.length / itemsPerPage)} marginPagesDisplayed={2} pageRangeDisplayed={5} onPageChange={handlePageClick} containerClassName={"pagination"} activeClassName={"active"} />
                                                     </Table>
-                                                )}
-                                                <div className="d-flex justify-content-end">
-                                                    <Button color="secondary" onClick={() => setShowQuizzes(false)}
-                                                    >
-                                                        Fermer
-                                                    </Button>
-                                                </div>
-                                            </CardBody>
-                                        )}
-                                    <Col lg="6">
-                                        <div className="mb-4">
-                                            {showQuizForm &&  (
-                                                <Card>
-                                                    <CardBody>
-                                                        <Form onSubmit={handleQuizFormSubmit}>
-                                                            <FormGroup>
-                                                                <Label for="quizName">Nom du quiz</Label>
-                                                                <Input type="text" id="quizName" name="name" value={quizData.name} onChange={handleInputChange} />
-                                                            </FormGroup>
-                                                            <FormGroup>
-                                                                <Label for="quizCoefficient">Coefficient</Label>
-                                                                <Input type="number" id="quizCoefficient" name="coefficient" value={quizData.coefficient} onChange={handleInputChange} />
-                                                            </FormGroup>
-                                                            <FormGroup>
-                                                                <Label for="quizTimeout">
-                                                                    Délai (en secondes)
-                                                                </Label>
-                                                                <Input type="number" id="quizTimeout" name="timeout" value={quizData.timeout} onChange={handleInputChange} />
-                                                            </FormGroup>
-                                                            <div className="d-flex justify-content-between">
-                                                                <Button type="submit">Ajouter</Button>
-                                                                <Button color="secondary" onClick={() => setShowQuizForm(false)}
-                                                                >
-                                                                    Annuler
-                                                                </Button>
-                                                            </div>
-                                                        </Form>
-                                                        {showAlert && (
-                      <Alert color={couleur}>{alertMessage}</Alert>
-                    )}
-                                                    </CardBody>
-                                                </Card>
-                                            )}
-                                        </div>
-                                    </Col>
+                                    
+                                    
+                                    </>
+                                    )}
     </>
   )
   

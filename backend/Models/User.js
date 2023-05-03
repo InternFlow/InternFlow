@@ -1,13 +1,21 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const Schema = mongoose.Schema;
 
 const notificationSchema = new mongoose.Schema({
   message: { type: String, required: true },
   link: { type: String },
-  offreid:{ type: String }
+  offreid:{ type: String },
+  userR: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  userS: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
 });
 
-const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   lastName: { type: String },
@@ -53,8 +61,11 @@ const userSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'Offer'
   }],
-  notifications: [notificationSchema]
-
+  notifications: [notificationSchema],
+  notif: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Notification'
+  }],
 });
 
 

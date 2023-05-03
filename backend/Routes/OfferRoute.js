@@ -25,6 +25,7 @@ const router = express.Router();
 router.post('/addOffer', async(req,res)=>{
     try {
        const offer = new Offer(req.body); 
+       console.log(offer);
        await offer.save();
 
        res.status(201).json('Offer created successfully');
@@ -51,8 +52,9 @@ router.get('/getOffers', async(req,res)=>{
 //Get One Offer
 router.get('/displayOffer/:id', async(req,res)=>{
     try {
-        const offer = await Offer.findById(req.params.id);
-
+        const offer = await Offer.findById(req.params.id).populate('category');
+        console.log("oferrrrrrrrr");
+console.log(offer);
         if (offer) {
             res.status(200).json(offer);
         } else {

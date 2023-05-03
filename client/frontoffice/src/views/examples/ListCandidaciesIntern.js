@@ -27,6 +27,7 @@ import ProfilePageHeader from "components/Headers/ProfilePageHeader";
 function ListCAndidiesIntern() {
   const id = localStorage.getItem("id");
   // const { id } = useParams(); // Récupère l'id de l'offre depuis l'URL
+  const [title, setTitle] = useState("");
 
   const [candidacies, setCandidacies] = useState([]);
 console.log(candidacies);
@@ -37,7 +38,9 @@ console.log(candidacies);
       credentials: 'include'
     })
     .then((response) => response.json())
-    .then((data) => setCandidacies(data));
+    .then((data) => setCandidacies(data))
+    .then(setTitle(candidacies.offer.title));
+
  }
 
   useEffect(()=>{
@@ -90,7 +93,7 @@ console.log(candidacies);
                 <Card className="mb-4"  key={candidacy._id}>
                   <CardBody>
 
-                    <CardTitle tag="h5">{candidacy.offer.title}</CardTitle>
+                    <CardTitle tag="h5">{title}</CardTitle>
                     <CardTitle tag="h5">{candidacy.status}</CardTitle>
 
                     <p>{new Date(candidacy.dateApply).toLocaleDateString()}</p>

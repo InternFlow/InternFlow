@@ -263,14 +263,17 @@ const file = () => {
 </ListGroup>
                   
 
+                  
+
                     
                     
                 </CardBody>
+                
               </Card >
-              {resume.filePath}
-              <button onClick={file}>file</button> 
-              <button onClick={openForm}>Delete your apply</button> 
-
+              <div col="4">
+              <Button className="mt-20" onClick={file}>file</Button> 
+              <Button color="danger"  onClick={openForm}>Delete your apply</Button>       
+              </div>     
             </Col>
             <Col md="8">
              

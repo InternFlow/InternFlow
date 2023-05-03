@@ -95,7 +95,7 @@ function Login() {
 
         localStorage.setItem("role", user.role);
         if (user.role !== "admin") {
-          history.push("/Profile");
+          history.push("/");
         } else {
           console.log("aaaaaaaaaaaa")
 

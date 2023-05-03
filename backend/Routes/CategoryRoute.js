@@ -24,6 +24,15 @@ router.post("/registerEducation/:id", async (req, res) => {
 */
 
 
+router.get('/allCategories', async (req, res) => {
+  try {
+    const categories = await Category.find();
+    res.json(categories);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Error getting categories');
+  }
+});
 
 router.delete('/delete/:id',requireAuth , async (req, res) => {
   try {
@@ -42,13 +51,11 @@ router.delete('/delete/:id',requireAuth , async (req, res) => {
 });
 
 
-  router.post('/registerCategory',requireAuth , async (req, res) => {
+  router.post('/registerCategory', async (req, res) => {
 
     try {
       const category = new Category({
-        name: req.body.name,
-        users:    [{ type: mongoose.Types.ObjectId, ref: 'User' }],
-
+        name: req.body.name
       
       });  
       await category.save();

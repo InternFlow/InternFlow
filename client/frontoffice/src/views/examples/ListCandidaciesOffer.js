@@ -365,7 +365,7 @@ console.log(selectedCandidate2);
 
 
              <Container>
-          <h2 className="title">*************</h2>
+          <h2 className="title">List of candidacies </h2>
           
           {selectedOfferId && (
             <Row>
