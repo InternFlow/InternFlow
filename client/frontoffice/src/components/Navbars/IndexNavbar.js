@@ -24,6 +24,14 @@ function IndexNavbar() {
   const [role, setRole] = useState("");
   const token = localStorage.getItem("token");
   const roleToken = localStorage.getItem("role");
+
+  const [notifications, setNotifications] = useState([]);
+  const [numNotifications, setNumNotifications] = useState(0);
+console.log(notifications);
+
+
+
+
   const toggleNavbarCollapse = () => {
     setNavbarCollapse(!navbarCollapse);
     document.documentElement.classList.toggle("nav-open");
@@ -86,10 +94,13 @@ function IndexNavbar() {
   const toEvents = async (event) => {
     history.push("/Events");
   };
+  const toProfil = async (event) => {
+    history.push("/Profile");
+  };
 
   return (
     <Navbar className={classnames("fixed-top", navbarColor)} expand="lg">
-      <Container>
+      <Container className="m-0">
         <div className="navbar-translate">
           <NavbarBrand
             data-placement="bottom"
@@ -121,13 +132,20 @@ function IndexNavbar() {
           isOpen={navbarCollapse}
         >
           <Nav navbar>
-            <NavItem style={{ cursor: "pointer" }}>
-              <NavLink>
-                <Link to="contactUs" smooth={true} duration={200}>
-                  <b>Contact Us</b>
-                </Link>
-              </NavLink>
-            </NavItem>
+
+
+
+          {role!="guest" && (
+
+<NavItem>
+<Button
+    
+    outline onClick={toEvents}
+  >
+     Events
+  </Button>
+</NavItem>
+)}
 
             {roleToken=="condidat" &&(
 
@@ -141,7 +159,7 @@ function IndexNavbar() {
             </NavItem>
             )}
 
-            
+  {/*          
 {roleToken=="condidat" &&(
 
 <NavItem>
@@ -152,7 +170,8 @@ function IndexNavbar() {
      All Offers
   </Button>
 </NavItem>
-)}
+)} */}
+
             {roleToken=="condidat" &&(
 
 <NavItem>
@@ -164,17 +183,14 @@ function IndexNavbar() {
   </Button>
 </NavItem>
 )}
-            {role!="guest" && (
-
-            <NavItem>
-            <Button
-                
-                outline onClick={toEvents}
-              >
-                 Events
-              </Button>
+                    <NavItem style={{ cursor: "pointer" }}>
+              <NavLink>
+                <Link to="contactUs" smooth={true} duration={200}>
+                  <b>Contact Us</b>
+                </Link>
+              </NavLink>
             </NavItem>
-            )}
+    
             <NavItem style={{ cursor: "pointer" }}>
               <NavLink>
                 <Link to="Project" smooth={true} duration={200} offset={-120}>
@@ -205,7 +221,20 @@ function IndexNavbar() {
             </NavItem>
             )}
 
+{role!="guest" && (
 
+<NavItem>
+<Button
+    className="btn-round"
+    color="primary"
+    target="_blank"
+    outline
+     onClick={toProfil}
+  >
+    <i className="nc-icon nc-spaceship"></i> My Profil
+  </Button>
+</NavItem>
+)}
             
     {role!="guest" && (
 
@@ -217,7 +246,7 @@ function IndexNavbar() {
     target="_blank"
     outline onClick={handleLogOut}
   >
-    <i className="nc-icon nc-spaceship"></i> LogOut
+     LogOut
   </Button>
 </NavItem>
 )}

@@ -379,6 +379,8 @@ console.log(selectedCandidate2);
                       <th scope="col">Status</th>
                       <th scope="col">StatusQuiz</th>
                       <th scope="col">Actions</th>
+                      <th scope="col"></th>
+
                     </tr>
                   </thead>
                   <tbody>
@@ -409,6 +411,11 @@ console.log(selectedCandidate2);
                                   Schedule an interview
                                 </Button>
                               )}
+                            </td>
+                            <td>
+                            <Button color="primary" onClick={() => handlePlanInterview(offerId, candidate)} >
+                                  Consult the apply
+                                </Button>
                             </td>
                           </tr>
                           {selectedCandidate && selectedCandidate.intern.email === candidate.intern.email && (

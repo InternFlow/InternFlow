@@ -280,6 +280,9 @@ else{
 const [modal2, setModal2] = useState(false);
 
 const toggle2 = () => setModal2(!modal2);
+const toProfil = async (event) => {
+  history.push("/Profile");
+};
 
   return (
     <>
@@ -293,7 +296,6 @@ const toggle2 = () => setModal2(!modal2);
           <NavbarBrand
             data-placement="bottom"
             to="/index"
-            target="_blank"
             title="Coded by Creative Tim"
             tag={Link}
           >
@@ -427,6 +429,20 @@ const toggle2 = () => setModal2(!modal2);
 
     {role!="guest" && (
 
+<NavItem>
+<Button
+    className="btn-round"
+    color="primary"
+    target="_blank"
+    outline
+     onClick={toProfil}
+  >
+    <i className="nc-icon nc-spaceship"></i> My Profil
+  </Button>
+</NavItem>
+)}
+    {role!="guest" && (
+
 
             <NavItem>
             <Button
@@ -435,7 +451,7 @@ const toggle2 = () => setModal2(!modal2);
                 target="_blank"
                 outline onClick={handleLogOut}
               >
-                <i className="nc-icon nc-spaceship"></i> LogOut
+                 LogOut
               </Button>
             </NavItem>
     )}
@@ -453,6 +469,9 @@ const toggle2 = () => setModal2(!modal2);
               </Button>
             </NavItem>
             )}
+
+
+
             {role=="guest" && (
 
             <NavItem>
