@@ -1,0 +1,10 @@
+.oui.selected,
+button.oui.selected:focus {
+  border: 2px solid blue !important;
+}
+
+.my-card {
+  height: 300px; /* ou la valeur souhaitée */
+  width: 100%;
+  /* Ajoutez d'autres propriétés CSS si nécessaire */
+}
