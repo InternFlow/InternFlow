@@ -50,7 +50,18 @@ import ListCAndidiesIntern from "views/examples/ListCandidaciesIntern";
 import AddOffer from "views/examples/AddOffer";
 import EditOffer from "views/examples/EditOffer";
 import EventsList from "views/examples/Events/EventsList";
-import EventLandingPage from "views/examples/Events/EventsLandingPage";
+import ProfileView from "views/examples/ProfileView";
+import AllCourses from "views/examples/AllCourses";
+import CondidatCourses from "views/examples/CondidatCourses";
+import ManageClasses from "views/examples/ManageClasses";
+import ListCAndidiesOffer from "views/examples/ListCandidaciesOffer";
+import QuestionsQuiz from "views/examples/QuestionsQuiz";
+import Condidatquizzes from "views/examples/Condidatquizzes";
+import CondidatQuestions from "views/examples/CondidatQuestions";
+import InterviewCompany from "views/examples/InterviewCompany";
+import InterviewCondidat from "views/examples/InterviewCondidat";
+import AddEvent from "views/examples/Events/AddEvent";
+import UserEventsList from "views/examples/Events/UserEvents/UserEventsList";
 
 // others
 
@@ -79,37 +90,30 @@ root.render(
         path="/new-passwordEmail"
         render={(props) => <NewPassEmail {...props} />}
       />
-
       <Route
         path="/linkedIn"
         render={(props) => <LinkedInLogin {...props} />}
       />
-
       <Route
         path="/profile-formateur-page"
         render={(props) => <FormateurProfile {...props} />}
       />
-
       <Route
         path="/profile-company-page"
         render={(props) => <CompanyProfile {...props} />}
       />
-
       <Route
         path="/Edit-condidat-page"
         render={(props) => <Editcondidat {...props} />}
       />
-
       <Route
         path="/Edit-company-page"
         render={(props) => <Editcompany {...props} />}
       />
-
       <Route
         path="/sign-up-Company"
         render={(props) => <RegisterCompanyPage {...props} />}
       />
-
       <Route
         path="/liste-candidacies"
         render={(props) => <ListeCandidacies {...props} />}
@@ -118,23 +122,22 @@ root.render(
         path="/sign-up-Trainer"
         render={(props) => <RegisterTrainerPage {...props} />}
       />
-
       <Route path="/offer" render={(props) => <OfferPage {...props} />} />
       <Route path="/showApply" render={(props) => <ApplyPage {...props} />} />
-
       <Route path="/AllOffers" render={(props) => <AllOffers {...props} />} />
-
       <Route
         path="/DetailsOffers/:id"
         render={(props) => <OfferDetails {...props} />}
       />
-
+      <Route
+        path="/ListCandidaciesOffer/:id"
+        render={(props) => <ListCAndidiesOffer {...props} />}
+      />
       <Route
         path="/ListCandidaciesIntern"
         render={(props) => <ListCAndidiesIntern {...props} />}
       />
       <Route path="/Events" render={(props) => <EventsList {...props} />} />
-
       <Route
         path="/AddOfferCompany"
         render={(props) => <AddOffer {...props} />}
@@ -143,10 +146,43 @@ root.render(
         path="/EditOfferCompany/:id/offers/:id"
         render={(props) => <EditOffer {...props} />}
       />
-
       <Route
-        path="/UserEvent"
-        render={(props) => <EventLandingPage {...props} />}
+        path="/profile/:id"
+        render={(props) => <ProfileView {...props} />}
+      />
+      <Route path="/profile" render={(props) => <ProfileView {...props} />} />
+      <Route
+        path="/Classes/:id"
+        render={(props) => <ManageClasses {...props} />}
+      />
+      <Route path="/AllCourses" render={(props) => <AllCourses {...props} />} />
+      <Route
+        path="/CondidatCourses"
+        render={(props) => <CondidatCourses {...props} />}
+      />
+      <Route path="/offres" render={(props) => <QuestionsQuiz {...props} />} />
+      <Route
+        path="/offre/condidat/questions"
+        render={(props) => <CondidatQuestions {...props} />}
+      />
+      <Route
+        path="/quizzes/offres/condidat"
+        render={(props) => <Condidatquizzes {...props} />}
+      />
+      <Route
+        path="/InterviewCompany"
+        render={(props) => <InterviewCompany {...props} />}
+      />
+      <Route
+        path="/CondidatInterview"
+        render={(props) => <InterviewCondidat {...props} />}
+      />
+      /Events Routes
+      <Route path="/Events" render={(props) => <EventsList {...props} />} />
+      <Route path="/AddEvent" render={(props) => <AddEvent {...props} />} />
+      <Route
+        path="/EventStatus"
+        render={(props) => <UserEventsList {...props} />}
       />
       <Redirect to="/index" />
     </Switch>

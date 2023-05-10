@@ -20,7 +20,10 @@ const categoryRoutes = require("./routes/CategoryRoute");
 const skillsRoutes = require("./routes/SkillsRoute");
 const uploadRoutes = require("./routes/UploadRoute");
 const adminRoutes = require("./routes/AdminRoute");
-const EventRoutes = require("./Routes/EventRoute");
+const EventRoutes = require("./routes/EventRoute");
+
+const applicationInterviewRoute = require("./Routes/InterviewRoute");
+const QuizRoute = require("./Routes/QuizRoute");
 dotenv.config();
 
 const app = express();
@@ -35,6 +38,8 @@ const ProfileUserRoutes = require("./Routes/ProfileUserRoutes");
 const OfferRoutes = require("./Routes/OfferRoute");
 const InterviewRoutes = require("./Routes/InterviewRoute");
 const CandidacyRoutes = require("./Routes/CandidacyRoute");
+const CourseRoute = require("./Routes/CourseRoute");
+const imageUploadRoute = require("./Routes/ImageUploadRoute");
 
 const config = require("./config");
 
@@ -69,6 +74,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use("/uploads", express.static("uploads"));
+
 //---------------------- Connecting to MongoDB --------------------------//
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -90,7 +97,12 @@ mongoose
     app.use("/Offer", OfferRoutes);
     app.use("/Interview", InterviewRoutes);
     app.use("/Candidacy", CandidacyRoutes);
+    app.use("/Course", CourseRoute);
+    app.use("/uploadImage", imageUploadRoute);
     app.use("/Event", EventRoutes);
+
+    app.use("/Quiz", QuizRoute);
+    app.use("/userinterview", applicationInterviewRoute);
 
     passport.serializeUser((user, done) => {
       done(null, user.id);
@@ -230,6 +242,7 @@ passport.use(new LinkedInStrategy({
         }
       )
     );
+
     // ****** SEND API
     app.post("/send", async (req, res) => {
       try {

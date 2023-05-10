@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Form, FormGroup, Label, Input, Alert, InputGroup, InputGroupAddon, Row, Col} from 'reactstrap';
 
 import { PlusCircleFill } from "react-bootstrap-icons";
+
 const UpdateCourseForm = (props) => {
 
   const {onCourseUpdated} = props;

@@ -17,20 +17,18 @@ import {
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { BsLine } from "react-icons/bs";
 import Accordion from "components/Accordion";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
-function ProfilePage() {
-  const id = localStorage.getItem("id");
+function ProfilePage(props) {
+  const id = props.userId;
 
   const history = useHistory();
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
-  const [Open, setOpen] = React.useState(1);
-
-  console.log(role);
 
   const [userd, setUserData] = useState({
     name: "",
@@ -78,7 +76,7 @@ function ProfilePage() {
   React.useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      fetch("http://localhost:5000/profile", {
+      fetch("http://localhost:5000/profile/" + id, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +95,7 @@ function ProfilePage() {
 
   return (
     <>
-      <ExamplesNavbar />
+      <CondidatNavbar></CondidatNavbar>
       <ProfilePageHeader />
       <div className="section profile-content">
         <Container>
@@ -139,16 +137,6 @@ function ProfilePage() {
                     </ListGroup>
                   </CardBody>
                 </Card>
-                <Link to="/ListCandidaciesIntern">
-                  <button className="btn-round btn btn-success btn-block">
-                    Consult your applies
-                  </button>
-                </Link>
-                <Link to="/Events">
-                  <button className="btn-round btn btn-success btn-block">
-                    Events
-                  </button>
-                </Link>
               </Col>
               <Col md="8">
                 <Card className="text-center text-md-left">

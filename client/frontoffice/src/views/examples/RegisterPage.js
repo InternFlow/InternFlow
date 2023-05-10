@@ -23,8 +23,31 @@ import { Button, Card, Form, Input, Container, Row, Col, Alert } from "reactstra
 import { useForm } from "react-hook-form";
 // core components
 import LoginNavbar from "components/Navbars/LoginNavBar";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
+import ProfilePageHeader from "components/Headers/ProfilePageHeader";
 
 function RegisterPage() {
+  const [verif, setVerif] = useState("");
+function verifMail(mail){
+  console.log(mail);
+    fetch(`http://localhost:5000/verifMail/${mail}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+      ,credentials: 'include'
+    })
+      .then(response => response.json())
+      .then(data => {
+        setVerif(data.successMessage);
+        
+      })
+      .catch(error => console.error(error));
+  
+}
+
+console.log(verif);
+
 
   document.documentElement.classList.remove("nav-open");
   React.useEffect(() => {
@@ -50,7 +73,12 @@ function RegisterPage() {
     event.preventDefault();
     // validate the form fields
     let errors = {};
-
+if(verif=="mail used")
+{
+  errors.email = 'this email is used';
+      setAlertMessage(' this email is used ! ');
+      setShowAlert(true); 
+}
     if (name.trim() === '') {
       errors.name = 'name is required';
       setAlertMessage(' Please Fill in with your whole name ! ');
@@ -85,12 +113,10 @@ function RegisterPage() {
       setShowAlert(true); 
     }
     
-
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
       return;
     }
-
     // submit the form data
     // ...
     const response = fetch('http://localhost:5000/register', {
@@ -125,13 +151,13 @@ function RegisterPage() {
   }
   return (
     <>
-      <LoginNavbar />
-      <div
+<CondidatNavbar></CondidatNavbar>
+            <div
         className="page-header"
         style={{
           backgroundImage: "url(" + require("assets/img/intern.jpg") + ")",
         }}
-      >
+              >
         <div className="filter" />
         <Container>
           <Row>
@@ -187,6 +213,7 @@ function RegisterPage() {
                         name="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
+                        onBlur={e => verifMail(e.target.value)}
                       />
                       {errors.email && <span>{errors.email}</span>}
                     </div>

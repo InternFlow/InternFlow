@@ -1,7 +1,25 @@
+/*!
+
+=========================================================
+* Paper Kit React - v1.3.1
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/paper-kit-react
+
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/paper-kit-react/blob/main/LICENSE.md)
+
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+*/
 import React from "react";
 
 // reactstrap components
-import { Container } from "reactstrap";
+import { Button, Container } from "reactstrap";
 
 // core components
 
@@ -24,32 +42,35 @@ function LandingPageHeader() {
 
   return (
     <>
-      <div id="mainheader">
-        <div
-          className="page-header section-dark"
-          style={{
-            backgroundImage:
-              "url(" + require("assets/img/internship2.jpg") + ")",
-          }}
-        >
-          <div className="filter" />
-          <div className="content-center">
-            <Container>
-              <div className="title-brand">
-                <h1 className="presentation-title">InternFlow</h1>
-              </div>
-              <h2 className="presentation-subtitle text-center">
-                The First Plateform of Internships in Tunisia
-              </h2>
-            </Container>
+      <div
+        style={{
+          backgroundImage: "url(" + require("assets/img/daniel-olahh.jpg") + ")"
+        }}
+        className="page-header"
+        data-parallax={true}
+        ref={pageHeader}
+      >
+        <div className="filter" />
+        <Container>
+          <div className="motto text-center">
+            <h1>Example page</h1>
+            <h3>Start designing your landing page here.</h3>
+            <br />
+            <Button
+              href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+              className="btn-round mr-1"
+              color="neutral"
+              target="_blank"
+              outline
+            >
+              <i className="fa fa-play" />
+              Watch video
+            </Button>
+            <Button className="btn-round" color="neutral" type="button" outline>
+              Download
+            </Button>
           </div>
-          <div
-            className="moving-clouds"
-            style={{
-              backgroundImage: "url(" + require("assets/img/clouds.png") + ")",
-            }}
-          />
-        </div>
+        </Container>
       </div>
     </>
   );

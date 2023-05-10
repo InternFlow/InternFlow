@@ -29,16 +29,16 @@ import ExamplesNavbar from "components/Navbars/ExamplesNavbar";
 import OfferHeader from "components/Headers/OfferHeader";
 
 function ListCAndidiesOffer() {
-
   const history = useHistory();
   const { id } = useParams();
-
+const idd=id;
+console.log(idd);
 //ahmed
 const [currentPage, setCurrentPage] = useState(0);
 
   const token = localStorage.getItem("token");
   const [offers, setOffers] = useState([]);
-  const [selectedOfferId, setSelectedOfferId] = useState(null);
+  const [selectedOfferId, setSelectedOfferId] = useState(true);
   const itemsPerPage = 6;
   const offerId = selectedOfferId;
   const [candidates, setCandidates] = useState([]);
@@ -48,19 +48,19 @@ const [currentPage, setCurrentPage] = useState(0);
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-
+console.log(alertMessage);
   const [newStatus, setNewStatus] = useState("pending");
   const [newStatus2, setNewStatus2] = useState("pending");
-
   const [couleur, setcouleur] = useState("");
 
+  console.log(selectedCandidate);
 
 
-  const handleViewCandidatesClick = async (offerId) => {
+  const handleViewCandidatesClick = async () => {
     try {
+console.log(offerId);
 
-
-      const response = await fetch(`http://localhost:5000/Candidacy/getListCandidaciesOffer/${offerId}/applications`, {
+      const response = await fetch(`http://localhost:5000/Candidacy/getListCandidaciesOffer/${id}/applications`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -69,8 +69,8 @@ const [currentPage, setCurrentPage] = useState(0);
         credentials: "include",
       });
       const data = await response.json();
-      setCandidates(data.users);
-      setSelectedOfferId(offerId);
+      setCandidates(data);
+      setSelectedOfferId(true);
     } catch (error) {
       console.error(error);
     }
@@ -78,9 +78,8 @@ const [currentPage, setCurrentPage] = useState(0);
 
 
   const handlePlanInterview = (offerId, candidate) => {
-    history.push(`/InterviewCompany?offerId=${offerId}&candidateId=${candidate.intern._id}`);
+    history.push(`/InterviewCompany?offerId=${idd}&candidateId=${candidate.intern._id}`);
   };
-
 
 
 
@@ -90,7 +89,7 @@ const [currentPage, setCurrentPage] = useState(0);
 
     
     try {
-      const response = await fetch(`http://localhost:5000/Candidacy/offer/${offerId}/users/${selectedCandidate.intern._id}/status`, {
+      const response = await fetch(`http://localhost:5000/Candidacy/offer/${idd}/users/${selectedCandidate.intern._id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -100,10 +99,13 @@ const [currentPage, setCurrentPage] = useState(0);
         body: JSON.stringify({ status: newStatus })
       });
       const data = await response.json();
+      console.log(response.status);
+      console.log(selectedCandidate)
+      console.log(response.status);
       if(response.status==200)
       {
           const updatedCandidates = candidates.map((candidate) => {
-        if (candidate.inter._id === selectedCandidate.intern._id) {
+        if (candidate.intern === selectedCandidate.intern._id) {
           return { ...candidate, status: newStatus };
         }
         return candidate;
@@ -119,7 +121,7 @@ const [currentPage, setCurrentPage] = useState(0);
       }
       else if(response.status==400){
         const updatedCandidates = candidates.map((candidate) => {
-          if (candidate.intern._id === selectedCandidate.intern._id) {
+          if (candidate.intern === selectedCandidate.intern._id) {
             return { ...candidate, status: candidate.status };
           }
           return candidate;
@@ -142,12 +144,15 @@ const [currentPage, setCurrentPage] = useState(0);
     }
     
   };
+  
+
+  
   const handleSave2 = async () => {
 
-    ///console.log(newStatus2)
+    console.log(newStatus2)
 
     try {
-      const response = await fetch(`http://localhost:5000/Candidacy/offer/${offerId}/users/${selectedCandidate2.intern._id}/statusQuiz`, {
+      const response = await fetch(`http://localhost:5000/Candidacy/offer/${idd}/users/${selectedCandidate2.intern._id}/statusQuiz`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -161,7 +166,7 @@ const [currentPage, setCurrentPage] = useState(0);
 
       if(!data.error){
         const updatedCandidates1 = candidates.map((candidate) => {
-          if (candidate.intern._id === selectedCandidate2.intern._id) {
+          if (candidate.intern === selectedCandidate2.intern._id) {
             return { ...candidate, statusQuiz: newStatus2 };
           }
           return candidate;
@@ -180,7 +185,7 @@ const [currentPage, setCurrentPage] = useState(0);
       else{
 
         const updatedCandidates = candidates.map((candidate) => {
-          if (candidate.intern._id === selectedCandidate2.intern._id) {
+          if (candidate.intern === selectedCandidate2.intern._id) {
             return { ...candidate, statusQuiz: candidate.statusQuiz };
           }
           return candidate;
@@ -232,7 +237,7 @@ const [currentPage, setCurrentPage] = useState(0);
     setSelectedCandidate2(candidate);
 console.log(selectedCandidate2);
     try {
-      const response = await fetch(`http://localhost:5000/Candidacy/applications/${candidate.intern._id}/offers/${offerId}/quiz-scores`, {
+      const response = await fetch(`http://localhost:5000/Candidacy/applications/${candidate.intern._id}/offers/${idd}/quiz-scores`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -267,11 +272,11 @@ console.log(selectedCandidate2);
       })
         .then((response) => response.json())
         .then((data) => {
-          setCandidacies(data);
+          setCandidates(data);
         })
         .catch((error) => console.error(error));
     }
-  }, [history, token]);
+  }, [history, token,candidates]);
 
 
 
@@ -279,17 +284,7 @@ console.log(selectedCandidate2);
 
   // const { id } = useParams(); // Récupère l'id de l'offre depuis l'URL
 
-console.log(id);
-  const [candidacies, setCandidacies] = useState([]);
-console.log(candidacies);
 
-  async function getListCandidaciesOffer(){
-    fetch(`${API}/Candidacy/getListCandidaciesOffer/${id}`, {
-      credentials: 'include'
-    })
-    .then((response) => response.json())
-    .then((data) => setCandidacies(data));
- }
 
  // useEffect(()=>{
    // console.log("wa");
@@ -371,27 +366,7 @@ console.log(candidacies);
 
              <Container>
           <h2 className="title">*************</h2>
-          <Row>
-            {candidacies.map((candidacy, index) => (
-              <React.Fragment key={candidacy._id}>
-                <Col lg="6">
-                  <Card className="mb-3">
-                    <CardBody>
-                      <CardTitle tag="h5">{candidacy.status}</CardTitle>
-                      <div className="d-flex justify-content-between">
-                        <Button
-                          color="secondary"
-                          onClick={() => handleViewCandidatesClick(candidacy._id)}
-                        >
-                          Voir candidats
-                        </Button>
-                      </div>
-                    </CardBody>
-                  </Card>
-                </Col>
-              </React.Fragment>
-            ))}
-          </Row>
+          
           {selectedOfferId && (
             <Row>
               <Col>
@@ -407,7 +382,7 @@ console.log(candidacies);
                     </tr>
                   </thead>
                   <tbody>
-                    {candidacies
+                    {candidates
                       .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
                       .map((candidate, index) => (
                         <React.Fragment key={index}>

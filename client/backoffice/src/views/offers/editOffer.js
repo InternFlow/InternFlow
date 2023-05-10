@@ -68,7 +68,6 @@ function EditOffer({ offer}) {
         duration: duration,
         location: location,
         languages: languages,
-
     };
 
 

@@ -25,7 +25,19 @@ const eventSchema = new mongoose.Schema({
   imagePath: { type: String, required: false },
   startDate: { type: Date, required: false },
   moreInfo: { type: String, required: false },
+  status: {
+    type: String,
+    enum: ["Pending", "Approved", "Rejected"],
+    default: "Pending",
+  },
   user: { type: String, required: false },
+  participants: [
+    {
+      name: { type: String, required: false },
+      lastName: { type: String, required: false },
+      email: { type: String, required: false },
+    },
+  ],
 });
 
 const Event = mongoose.model("Event", eventSchema);

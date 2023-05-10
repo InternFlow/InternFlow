@@ -25,7 +25,9 @@ import {
 import { useHistory, useLocation } from "react-router-dom";
 import { FaCalendarAlt } from "react-icons/fa";
 //import MapTunisie from "components/Maps/MapTunisie.js"
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
+import { FaEnvelope } from "react-icons/fa";
 // core components
 import CompanyNavbar from "components/Navbars/CompanyNavbar.js";
 import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
@@ -50,7 +52,8 @@ function InterviewCompany() {
     const [alertMessage, setAlertMessage] = useState("");
 
     const [couleur, setcouleur] = useState("");
-    
+    const [isChatOpen, setIsChatOpen] = useState(false);
+
 
     const [showNotificationButton, setShowNotificationButton] = useState(false);
 
@@ -268,7 +271,15 @@ function InterviewCompany() {
     };
 
 
+    const handleCloseChat = () => {
+        setIsChatOpen(false);
+    };
 
+
+    const handleOpenChat = async (id) => {
+        setIsChatOpen(true);
+        
+    };
 
     return (
         <>
@@ -291,14 +302,44 @@ function InterviewCompany() {
                     />
 
                     <hr className="my-4" />
+                    <Modal isOpen={isChatOpen} toggle={handleCloseChat}>
+                        <ModalHeader toggle={handleCloseChat}>Messagerie</ModalHeader>
+                        <ModalBody>
+                            <ul className="messages-list">
+                               
+                            </ul>
 
+
+                            <Input
+                                type="text"
+                                placeholder="Écrire un nouveau message"
+                               
+                            />
+                        </ModalBody>
+                        <ModalFooter>
+                            <div className="d-flex">
+                         
+                                <Button color="primary" >
+                                    Envoyer
+                                </Button>
+                            </div>
+                            <Button color="secondary" onClick={handleCloseChat}>
+                                Fermer
+                            </Button>
+                        </ModalFooter>
+
+                    </Modal>
                     <div className="d-flex justify-content-between">
+                    <Button color="primary" onClick={() => handleOpenChat()}>
+                                        <FaEnvelope className="mr-2" />
+                                        Messagerie
+                                    </Button>
                         <Button color="primary" onClick={() => setShowForm(true)}>
                             <FaCalendarAlt className="mr-2" />
                             Nouvelle date d'entretien
                         </Button>
                     </div>
-
+                    
                     {showForm && (
                         <form onSubmit={handleFormSubmit}>
                             <FormGroup>
@@ -338,6 +379,8 @@ function InterviewCompany() {
 
                 </Container>
             </div>
+            <DemoFooter />
+
         </>
     );
 }

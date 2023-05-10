@@ -1,7 +1,7 @@
 import { API } from "../../config";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 // reactstrap components
 import {
@@ -9,17 +9,19 @@ import {
   Card,
   CardHeader,
   CardBody,
-  CardFooter,
   CardTitle,
   FormGroup,
   Form,
   Input,
   Row,
-  Col, CardText, ListGroup,
+  Col,
+  CardText,
+  ListGroup,
   ListGroupItem,
-
 } from "reactstrap";
-function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "condidat" } }) {
+function EditProfileUser({
+  user = { name: "", lastName: "", email: "", role: "condidat" },
+}) {
   const [newSkill, setNewSkill] = useState("");
   const [skills, setSkills] = useState([]);
 
@@ -29,19 +31,19 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
     setNewSkill("");
   };
 
-  const [name, setName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [role, setRole] = useState(user.role);
   const [educations, setEducations] = useState([]);
   const [experiences, setExperiences] = useState([]);
-  const [schoolName, setSchoolName] = useState('');
-  const [degree, setDegree] = useState('');
-  const [fieldOfStudy, setFieldOfStudy] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
-  const [company, setCompany] = useState('');
-  const [description, setDescription] = useState('');
+  const [schoolName, setSchoolName] = useState("");
+  const [degree, setDegree] = useState("");
+  const [fieldOfStudy, setFieldOfStudy] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [company, setCompany] = useState("");
+  const [description, setDescription] = useState("");
 
   const addEducation = () => {
     const newEducation = {
@@ -74,7 +76,7 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
   const location = useLocation();
 
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get('id');
+  const id = searchParams.get("id");
   //console.log(id);
 
   const history = useHistory();
@@ -96,9 +98,8 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
       console.log(body);
 
       console.log(educations);
-      console.log(experiences)
-      console.log(skills)
-
+      console.log(experiences);
+      console.log(skills);
 
       body.password = body.password === "" ? undefined : body.password;
       const requestOptions = {
@@ -107,17 +108,19 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
-        credentials: 'include'
+        credentials: "include",
       };
 
-      const response = await fetch(`${API}/Condidat/editprofile/${id}`, requestOptions);
+      const response = await fetch(
+        `${API}/Condidat/editprofile/${id}`,
+        requestOptions
+      );
       const data = await response.json();
       //   onUpdate(data.user);
       history.push("/admin/dashboard");
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
-
   };
 
   const handleEducationsChange = (index, e) => {
@@ -187,7 +190,6 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
                     </Col>
                   </Row>
 
-
                   <Row>
                     <Col md="6">
                       <FormGroup>
@@ -197,12 +199,10 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
                           type="password"
                           value={password}
                           onChange={(event) => setPassword(event.target.value)}
-
                         />
                       </FormGroup>
                     </Col>
                   </Row>
-
 
                   <Row>
                     <Col md="12">
@@ -269,7 +269,6 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
                   </Row>
                   <Row>
                     <Col md="12">
-
                       <FormGroup>
                         <label>Expérience professionnelle</label>
                         {experiences.map((experience, index) => (
@@ -279,21 +278,27 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
                               placeholder="Entreprise"
                               type="text"
                               value={experience.company}
-                              onChange={(e) => handleExperiencesChange(index, e)}
+                              onChange={(e) =>
+                                handleExperiencesChange(index, e)
+                              }
                             />
                             <Input
                               name="jobtitle"
                               placeholder="Poste"
                               type="text"
                               value={experience.jobTitle}
-                              onChange={(e) => handleExperiencesChange(index, e)}
+                              onChange={(e) =>
+                                handleExperiencesChange(index, e)
+                              }
                             />
                             <Input
                               name="description"
                               placeholder="description"
                               type="text"
                               value={experience.description}
-                              onChange={(e) => handleExperiencesChange(index, e)}
+                              onChange={(e) =>
+                                handleExperiencesChange(index, e)
+                              }
                             />
                           </div>
                         ))}
@@ -333,8 +338,6 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
                     </Col>
                   </Row>
 
-
-
                   <Row>
                     <Col md="12">
                       <h1>Compétences</h1>
@@ -343,23 +346,24 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
                           <ListGroupItem key={index}>{skill}</ListGroupItem>
                         ))}
                       </ListGroup>
-                      <Form >
+                      <Form>
                         <FormGroup>
                           <Input
                             type="text"
                             name="skill"
                             placeholder="Ajouter une compétence"
                             value={newSkill}
-                            onChange={(event) => setNewSkill(event.target.value)}
+                            onChange={(event) =>
+                              setNewSkill(event.target.value)
+                            }
                           />
                         </FormGroup>
-                        <Button color="primary" onClick={handleAddSkill}>Ajouter</Button>
+                        <Button color="primary" onClick={handleAddSkill}>
+                          Ajouter
+                        </Button>
                       </Form>
                     </Col>
                   </Row>
-
-
-
 
                   <Button className="btn-fill" color="primary" type="submit">
                     Enregistrer
@@ -373,10 +377,10 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
               <CardBody>
                 <CardText />
                 <div className="author">
-
                   <a href="#pablo" onClick={(e) => e.preventDefault()}>
-
-                    <h5 className="title">{name} {lastName}</h5>
+                    <h5 className="title">
+                      {name} {lastName}
+                    </h5>
                   </a>
                   <p className="description">{email}</p>
                 </div>
@@ -404,7 +408,6 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
                             <p>{experience.position}</p>
                             <p>{experience.company}</p>
                             <p>{experience.description}</p>
-
                           </li>
                         ))}
                       </ul>
@@ -418,13 +421,11 @@ function EditProfileUser({ user = { name: "", lastName: "", email: "", role: "co
                         {experiences.map((sk, index) => (
                           <li key={index}>
                             <p>sk</p>
-
                           </li>
                         ))}
                       </ul>
                     </div>
                   )}
-
                 </div>
               </CardBody>
             </Card>

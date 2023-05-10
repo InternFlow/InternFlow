@@ -25,9 +25,10 @@ import {
   Col
 } from "reactstrap";
 import axios from "axios";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 
 function EditOffer() {
-  
+    const history = useHistory();
     const companyId = localStorage.getItem("id");
     // const [offers, setOffers] = useState([]);
     // console.log(offers._id);
@@ -144,7 +145,7 @@ function EditOffer() {
 
     return(
         <>
-             <ExamplesNavbar />
+<CondidatNavbar></CondidatNavbar>
              <ProfilePageHeader />
 
              <div className="section profile-content" >
@@ -418,7 +419,7 @@ function EditOffer() {
                       <Button 
                         className="btn-round"
                         color="danger" 
-                        onClick={() => useHistory.goBack()}>
+                        onClick={() => history.goBack()}>
                           Go back
                       </Button>
                     </div>

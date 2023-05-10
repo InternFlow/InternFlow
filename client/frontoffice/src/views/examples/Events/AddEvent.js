@@ -4,16 +4,20 @@ import "react-phone-number-input/style.css";
 import { useState } from "react";
 import axios from "axios";
 import "./Events.css";
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar";
-import ProfilePageHeader from "components/Headers/ProfilePageHeader";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import ProfilePageHeader from "components/Headers/ProfilePageHeader";
+import CondidatNavbar from "components/Navbars/CompanyNavbar";
 
 // reactstrap components
 import { Button, Form, Input, Container, Row, Col } from "reactstrap";
+
 function AddEvent() {
+  //get formateur id
   const location = useLocation();
-  const id = JSON.parse(new URLSearchParams(location.search).get("data"));
+  const searchParams = new URLSearchParams(location.search);
+  const id = JSON.parse(searchParams.get("data"));
+
   //add event
   const [title, setTitle] = useState("");
   const [creator, setCreator] = useState("");
@@ -23,16 +27,9 @@ function AddEvent() {
   const [category, setCategory] = useState("");
   const [date, setStartdate] = useState("");
   const [phone, setPhone] = useState("");
-  const [imageBase64, setBase64] = useState("");
+  const [image, setPicture] = useState("");
 
-  function fileBrowseHandler(e) {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      setBase64(event.target.result);
-    };
-    reader.readAsDataURL(file);
-  }
+  //get image url
 
   const Locations = [
     { value: "Onsite", label: "Onsite" },
@@ -65,28 +62,27 @@ function AddEvent() {
     setStartdate(event.target.value);
   };
 
+  //submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const URL = `http://localhost:5000/Event/addevent`;
 
-    const data = {
-      title: title,
-      description: description,
-      creator: creator,
-      location: place,
-      address: address,
-      category: category,
-      startDate: date,
-      moreInfo: phone,
-      imageBase64: imageBase64,
-      userid: id,
-    };
+    const formData = new FormData();
+    formData.append("imagePath", image);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("creator", creator);
+    formData.append("location", place);
+    formData.append("category", category);
+    formData.append("startDate", date);
+    formData.append("moreInfo", phone);
+    formData.append("user", id);
+    formData.append("status", "Pending");
 
     try {
-      const response = await axios.post(URL, data);
+      const response = await axios.post(URL, formData);
       if (response.status === 200) {
-        // window.alert(JSON.stringify(response.data));
         Swal.fire("success", JSON.stringify(response.data.message), "success");
       } else {
         window.alert(response.data.message);
@@ -99,9 +95,11 @@ function AddEvent() {
 
   return (
     <div id="AddEvent">
+      <CondidatNavbar></CondidatNavbar>
+      <ProfilePageHeader />
       <Container>
         <Row>
-          <Col className="ml-auto mr-auto" md="8">
+          <Col className="ml-auto mr-auto" md="6">
             <h2 className="text-center">Add Event</h2>
             <Form
               className="contact-form"
@@ -151,7 +149,7 @@ function AddEvent() {
                   <Select options={Locations} onChange={handleLocationChange} />
                 </Col>
                 {place === "Hybride" || place === "Onsite" ? (
-                  <Col>
+                  <Col md="6">
                     <label>Address</label>
                     <Input
                       placeholder="Address"
@@ -177,7 +175,8 @@ function AddEvent() {
                   <label>Poster</label>
                   <input
                     type="file"
-                    onChange={fileBrowseHandler}
+                    name="image"
+                    onChange={(e) => setPicture(e.target.files[0])}
                     className="form-control"
                   />
                 </Col>

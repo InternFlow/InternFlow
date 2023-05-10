@@ -3,86 +3,87 @@ import styled from "styled-components";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import UserEvents from "./UserEvents";
-import "./UserEvents.css";
+import CondidatNavbar from "components/Navbars/CompanyNavbar";
+import ProfilePageHeader from "components/Headers/ProfilePageHeader";
+import { useLocation } from "react-router-dom";
 
 const UserEventsList = () => {
+  //get formateur id
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const userid = JSON.parse(searchParams.get("data"));
+
   const [data, setData] = useState([]);
+
   useEffect(() => {
     const fetchProducts = async () => {
-      const response = await axios.get("http://localhost:5000/Event/allEvents");
+      const response = await axios.get(
+        `http://localhost:5000/Event/UserEvents/${userid}`
+      );
       setData(response.data);
     };
     fetchProducts();
-  }, []);
+  }, [userid]);
 
-  const handleDeleteEvent = async (id) => {
-    await axios.delete(`http://localhost:5000/Event/deleteevent/${id}`);
-    setData(data.filter((event) => event._id !== id));
+  const handleDeleteEvent = async (eventid) => {
+    await axios.delete(`http://localhost:5000/Event/deleteevent/${eventid}`);
+    setData(data.filter((event) => event._id !== eventid));
   };
 
+  const fetchEvents = async () => {
+    const response = await axios.get(
+      `http://localhost:5000/Event/UserEvents/${userid}`
+    );
+    setData(response.data);
+  };
+
+  async function updateEvent(eventid, updatedEvent) {
+    axios
+      .put(`http://localhost:5000/Event/updateevent/${eventid}`, updatedEvent)
+
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    await fetchEvents();
+  }
+
   return (
-    <CartWrapper>
+    <>
+      {" "}
+      <CondidatNavbar></CondidatNavbar>
+      <ProfilePageHeader />
       <div className="container">
-        <div className="cart-pg-title">
-          <h3>My events</h3>
-        </div>
         <div className="cart-grid grid">
-          <div className="cart-items-list grid">
+          <h3>My events</h3>
+          <EventsListContainer>
             {data.map((event) => (
               <UserEvents
                 key={event._id}
                 data={event}
                 onDelete={handleDeleteEvent}
+                updateEvent={updateEvent}
               />
             ))}
-          </div>
+          </EventsListContainer>
         </div>
       </div>
-    </CartWrapper>
+    </>
   );
 };
 
-const CartWrapper = styled.div`
-  .card-pg-title {
-    padding: 20px 0 6px 0;
-  }
-  .cart-grid {
-    row-gap: 40px;
-    .cart-grid-left {
-      margin-bottom: 30px;
-    }
+const EventsListContainer = styled.div`
+  display: flex;
 
-    .cart-clear-btn {
-      span {
-        margin-left: 6px;
-      }
-    }
+  flex-wrap: wrap;
+  justify-content: space-around;
 
-    .cart-items-list {
-      margin-top: 20px;
-      row-gap: 12px;
-    }
-    .cart-total-value {
-      font-size: 34px;
-    }
-    .checkout-btn {
-      padding: 14px 28px;
-      letter-spacing: 1px;
-      margin-top: 12px;
-      transition: var(--transition);
-
-      &:hover {
-        background-color: var(--clr-dark);
-      }
-    }
-    .cart-total {
-      padding-bottom: 50px;
-    }
-
-    @media screen and (min-width: 992px) {
-      grid-template-columns: 70% 30%;
-      column-gap: 32px;
-    }
+  @media (max-width: 771px) {
+    width: 58%;
+    padding: 0;
   }
 `;
 

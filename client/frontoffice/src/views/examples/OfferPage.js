@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faBuilding,faUserTie,faSchool,faCheckCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 // core components
 import LoginNavbar from "components/Navbars/LoginNavBar";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
 function RegisterPage() {
   const idIntern = localStorage.getItem("id");
   console.log(idIntern);
@@ -192,7 +193,7 @@ function RegisterPage() {
 
   return (
     <>
-      <LoginNavbar />
+   <CondidatNavbar />
       <div
         className="page-header"
         style={{

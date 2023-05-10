@@ -32,7 +32,6 @@ function CondidatQuestions() {
   const [timerId, setTimerId] = useState(null);
 
 
-
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [tempup, settempup] = useState(false);
@@ -148,7 +147,7 @@ useEffect(() => {
 }, [Countdown]);
 
 useEffect(() => {
-  if ( Countdown===1190) {
+  if ( Countdown===0) {
     // Envoyer les données ici
 handleSubmit();
 

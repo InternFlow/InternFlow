@@ -4,7 +4,7 @@ import Event from "./Event";
 
 const Tabs = (props) => {
   const { events } = props;
-  const [activeTab, setActiveTab] = useState("TECHNOLOGY");
+  const [activeTab, setActiveTab] = useState("ALL");
   const tabHandler = (category) => {
     setActiveTab(category);
   };
@@ -72,6 +72,7 @@ const Tabs = (props) => {
         <div className="tabs-body">
           {events
             .filter((Event) => Event.category === activeTab)
+            .filter((Event) => Event.status === "Approved")
             .map((event) => (
               <Event key={event._id} {...event} />
             ))}

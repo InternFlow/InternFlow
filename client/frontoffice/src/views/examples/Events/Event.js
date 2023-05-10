@@ -3,6 +3,7 @@ import styled from "styled-components";
 import MyEventModal from "./MyEventModel";
 import { useState } from "react";
 import "./Events.css";
+import ParticipatInfo from "./participateInfo";
 
 const Event = (props) => {
   const Eventdata = props;
@@ -19,7 +20,7 @@ const Event = (props) => {
 
       <EventCard>
         <div className="item-img">
-          <img src={imagePath} alt=""></img>
+          <img src={`http://127.0.0.1:5000/uploads/${imagePath}`} alt=""></img>
         </div>
         <div className="item-body">
           <h5 className="item-name">{title}</h5>
@@ -36,7 +37,7 @@ const Event = (props) => {
           >
             See details
           </button>
-          <button className="item-btn add-to-cart-btn">Participate</button>
+          <ParticipatInfo eventinfo={Eventdata} />
         </div>
       </EventCard>
     </>

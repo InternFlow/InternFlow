@@ -24,7 +24,6 @@ import PerfectScrollbar from "perfect-scrollbar";
 
 import logo from "logo.svg";
 
-
 var ps;
 
 function Sidebar(props) {
@@ -37,7 +36,7 @@ function Sidebar(props) {
     if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(sidebar.current, {
         suppressScrollX: true,
-        suppressScrollY: false
+        suppressScrollY: false,
       });
     }
     return function cleanup() {
@@ -53,18 +52,12 @@ function Sidebar(props) {
       data-active-color={props.activeColor}
     >
       <div className="logo">
-        <a
-          className="simple-text logo-mini"
-        >
+        <a className="simple-text logo-mini">
           <div className="logo-img">
             <img src={logo} alt="react-logo" />
           </div>
         </a>
-        <a
-          className="simple-text logo-normal"
-        >
-          InternFlow
-        </a>
+        <a className="simple-text logo-normal">InternFlow</a>
       </div>
       <div className="sidebar-wrapper" ref={sidebar}>
         <Nav>

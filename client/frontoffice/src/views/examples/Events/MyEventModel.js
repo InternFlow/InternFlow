@@ -11,7 +11,11 @@ export default function MyEventModel(props) {
     >
       <EventModal>
         <Modal.Header closeButton>
-          <img src={props.data.imagePath} alt="" />;
+          <img
+            src={`http://127.0.0.1:5000/uploads/${props.data.imagePath}`}
+            alt=""
+          />
+          ;
         </Modal.Header>
         <Modal.Body>
           <ul style={{ margin: "10px 0" }}>
