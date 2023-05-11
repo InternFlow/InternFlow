@@ -5,10 +5,376 @@ const { requireAuth } = require("../middlewares/requireAuth");
 const { checkRole } = require("../middlewares/checkRole");
 const twilio = require("twilio");
 const path = require("path");
+const multer = require("multer");
 
 const config = require("../config");
-
+const Offer = require("../Models/Offer");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const router = express.Router();
+
+require("dotenv").config();
+
+//------------------------- VerifMail -----------------------------------------------//
+router.get("/verifMail/:mail", async (req, res) => {
+  const mail = req.params.mail;
+  console.log(mail);
+  try {
+    const user = await User.find({ email: mail });
+    if (user.length == 0) {
+      console.log("bien");
+
+      res.status(200).json({ successMessage: "mail not used" });
+    } else {
+      console.log("non");
+
+      res.status(200).json({ successMessage: "mail used" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching offers for company");
+  }
+});
+//-------------------------------- Moodifier Offre de Company ----------------------------------------------//
+// Route pour modifier une offre d'une société
+router.put(
+  "/Modifiercompanies/:companyId/offers/:offerId",
+  async (req, res) => {
+    try {
+      const { companyId, offerId } = req.params;
+
+      // Récupérer l'offre à modifier
+      const offer = await Offer.findById(offerId);
+
+      if (!offer) {
+        return res.status(404).send("Offre non trouvée");
+      }
+
+      // Vérifier que l'offre appartient à la société spécifiée
+      if (offer.company.toString() !== companyId.toString()) {
+        return res.status(403).send("Accès refusé");
+      }
+
+      // Mettre à jour les propriétés de l'offre
+      offer.title = req.body.title;
+      offer.type_offre = req.body.type_offre;
+      offer.description = req.body.description;
+      offer.availability = req.body.availability;
+      offer.startDate = req.body.startDate;
+      offer.endDate = req.body.endDate;
+      offer.duration = req.body.duration;
+      offer.location = req.body.location;
+      offer.nb_places_available = req.body.nb_places_available;
+      offer.languages = req.body.languages;
+      offer.skills = req.body.skills;
+
+      // Sauvegarder les modifications dans la base de données
+      const savedOffer = await offer.save();
+
+      res.status(200).json(savedOffer);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Erreur serveur");
+    }
+  }
+);
+
+// Fonction pour retirer une offre d'une société
+async function removeOfferFromCompany(companyId, offerId) {
+  // Récupérer la société avec l'identifiant donné
+  const company = await User.findById(companyId.trim());
+
+  // Retirer l'identifiant de l'offre de la liste des offres de la société
+  company.offers.pull(offerId);
+
+  // Sauvegarder les modifications dans la base de données
+  await company.save();
+}
+
+// Route pour supprimer une offre d'une société
+// router.delete('/Deletecompanies/:companyId/offers/:offerId', async (req, res) => {
+//   try {
+//     const { companyId, offerId } = req.params;
+
+//     // Vérifier si la société existe
+//     const company = await User.findById(companyId);
+//     const offer = await Offer.findById(offerId);
+
+//     if (!company) {
+//       return res.status(404).send('Société non trouvée');
+//     }
+
+//     // Vérifier si l'offre existe dans la liste des offres de la société
+//     if (!company.offers.includes(offer)) {
+//       return res.status(404).send('Offre non trouvée');
+//     }
+
+//     // Retirer l'offre de la liste des offres de la société
+//     await removeOfferFromCompany(companyId, offerId);
+
+//     res.status(200).send('Offre retirée avec succès');
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send('Erreur serveur');
+//   }
+// });
+router.delete(
+  "/Deletecompanies/:companyId/offers/:offerId",
+  async (req, res) => {
+    try {
+      const { companyId, offerId } = req.params;
+
+      // Verify that the company exists
+      const company = await User.findById(companyId);
+      if (!company) {
+        return res.status(404).send("Company not found");
+      }
+
+      // Remove the offer from the company object
+      await User.findByIdAndUpdate(companyId, { $pull: { offers: offerId } });
+
+      // Remove the offer from the list of offers
+      await Offer.findByIdAndRemove(offerId);
+
+      res.status(200).send("Offer removed successfully");
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Server error");
+    }
+  }
+);
+
+//----------------------------- Cloudinary --------------------------------------------------------------//
+// configuration de cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+
+  secure: true,
+  cors: {
+    origins: ["http://localhost:3001", "http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
+    allowed_headers: [
+      "Content-Type",
+      "Origin",
+      "X-Requested-With",
+      "Accept",
+      "x-client-key",
+      "x-client-token",
+      "x-client-secret",
+      "Authorization",
+    ],
+    credentials: true,
+  },
+});
+
+// configuration de multer et du stockage de Cloudinary
+const storageC = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "Offer",
+    allowed_formats: ["jpg", "jpeg", "png", "gif"],
+  },
+});
+
+//FILE
+const storageFile = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "Offer",
+    resource_type: "auto",
+  },
+});
+
+const parser = multer({ storage: storageFile });
+
+const uploadC = multer({ storage: storageC });
+
+const upload = multer({ storage: storageC });
+
+//------------------------- Consulter Offre de Company -----------------------------------------------//
+router.get("/Affichercompanies/:companyId/offers", async (req, res) => {
+  const companyId = req.params.companyId;
+
+  try {
+    const offers = await Offer.find({ company: companyId });
+    res.status(200).send(offers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching offers for company");
+  }
+});
+
+//----------------------- Assign Offers to Company2 -------------------------------------------------//
+// Fonction pour associer une offre à une société
+async function assignOfferToCompany(companyId, offerId) {
+  // Récupérer la société avec l'identifiant donné
+  const company = await User.findById(companyId.trim());
+
+  // Ajouter l'identifiant de la nouvelle offre à la liste des offres de la société
+  company.OfferIdC.push(offerId);
+
+  // Sauvegarder les modifications dans la base de données
+  await company.save();
+}
+
+//---------------------------------- Upload File --------------------------------------------------//
+
+//CLOUDINARY
+router.post("/uploadF", parser.single("file"), (req, res) => {
+  res.json({ url: req.file.path });
+});
+//FILE
+const storageF = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, "uploads/offers");
+  },
+  filename: function(req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const uploadF = multer({ storage: storageF });
+
+//CLOUDINARY
+router.post(
+  "/AjoutercompaniesFil/:id/offers",
+  parser.single("file"),
+  async (req, res) => {
+    try {
+      console.log("aaaaaaa");
+      // const { companyId } = req.params;
+      const companyId = req.params.id;
+
+      console.log(req.body.category_offre);
+
+      // Créer une nouvelle offre à partir des données envoyées dans la requête
+      const newOffer = new Offer({
+        title: req.body.title,
+        type_offre: req.body.type_offre,
+        description: req.body.description,
+        availability: req.body.availability,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
+
+        duration: req.body.duration,
+        location: req.body.location,
+        nb_places_available: req.body.nb_places_available,
+        languages: req.body.languages,
+        skills: req.body.skills,
+        // image: req.file,
+        offre_file: req.file,
+        category: req.body.category_offre,
+
+        //offre_file
+
+        company: companyId,
+      });
+
+      // Sauvegarder la nouvelle offre dans la base de données
+      const savedOffer = await newOffer.save();
+
+      // Appeler la fonction pour associer l'offre à la société
+      await assignOfferToCompany(companyId, savedOffer._id);
+
+      console.log(res.public_id);
+
+      res.status(201).json(savedOffer);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Erreur serveur");
+    }
+  }
+);
+// Route pour ajouter une offre à une société
+router.post(
+  "/AjoutercompaniesFile/:id/offers",
+  uploadF.single("offre_file"),
+  async (req, res) => {
+    try {
+      console.log("aaaaaaa");
+      // const { companyId } = req.params;
+      const companyId = req.params.id;
+
+      console.log(companyId);
+
+      // Créer une nouvelle offre à partir des données envoyées dans la requête
+      const newOffer = new Offer({
+        title: req.body.title,
+        type_offre: req.body.type_offre,
+        description: req.body.description,
+        availability: req.body.availability,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
+
+        duration: req.body.duration,
+        location: req.body.location,
+        nb_places_available: req.body.nb_places_available,
+        languages: req.body.languages,
+        skills: req.body.skills,
+        // image: req.file,
+        offre_file: req.file,
+        //offre_file
+
+        company: companyId,
+      });
+
+      // Sauvegarder la nouvelle offre dans la base de données
+      const savedOffer = await newOffer.save();
+
+      // Appeler la fonction pour associer l'offre à la société
+      await assignOfferToCompany(companyId, savedOffer._id);
+
+      res.status(201).json(savedOffer);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Erreur serveur");
+    }
+  }
+);
+
+// Route pour ajouter une offre à une société
+router.post("/Ajoutercompanies/:id/offers", async (req, res) => {
+  try {
+    console.log("aaaaaaa");
+    // const { companyId } = req.params;
+    const companyId = req.params.id;
+
+    console.log(companyId);
+
+    // Créer une nouvelle offre à partir des données envoyées dans la requête
+    const newOffer = new Offer({
+      title: req.body.title,
+      type_offre: req.body.type_offre,
+      description: req.body.description,
+      availability: req.body.availability,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+
+      duration: req.body.duration,
+      location: req.body.location,
+      nb_places_available: req.body.nb_places_available,
+      languages: req.body.languages,
+      skills: req.body.skills,
+      // image: req.file,
+      //offre_file
+
+      company: companyId,
+    });
+
+    // Sauvegarder la nouvelle offre dans la base de données
+    const savedOffer = await newOffer.save();
+
+    // Appeler la fonction pour associer l'offre à la société
+    await assignOfferToCompany(companyId, savedOffer._id);
+
+    res.status(201).json(savedOffer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erreur serveur");
+  }
+});
 
 router.get("/login", async (req, res) => {
   res.status(200).json({ Message: "bonjour" });
@@ -16,14 +382,13 @@ router.get("/login", async (req, res) => {
 //-------------------------- Register -----------------------------------//
 
 router.post("/register", async (req, res) => {
-  const { name, email, password, role } = req.body;
-
+  const { name, email, password, role, lastName } = req.body;
   let errors = {};
   if (!name) {
     errors.name = "donner le nom";
   } else {
     // Vérifier que le nom contient au moins 8 caractères sans les chiffres
-    if (!/^[a-zA-Z]{8,}$/.test(name)) {
+    if (!/^[a-zA-Z]{3,}$/.test(name)) {
       errors.name = "Name should contain at least 8 characters without numbers";
     }
   }
@@ -52,7 +417,7 @@ router.post("/register", async (req, res) => {
   }
 
   try {
-    const user = await User.create({ name, email, password, role });
+    const user = await User.create({ name, email, password, role, lastName });
 
     await user.hashPassword(user.password);
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
@@ -69,6 +434,26 @@ router.post("/register", async (req, res) => {
       console.log(err);
       res.status(500).json({ errors: { server: "Server error" } });
     }
+  }
+});
+
+router.get("/verifMail/:mail", async (req, res) => {
+  const mail = req.params.mail;
+  console.log(mail);
+  try {
+    const user = await User.find({ email: mail });
+    if (user.length == 0) {
+      console.log("bien");
+
+      res.status(200).json({ successMessage: "mail not used" });
+    } else {
+      console.log("non");
+
+      res.status(200).json({ successMessage: "mail used" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching offers for company");
   }
 });
 
@@ -134,11 +519,9 @@ router.post("/login", async (req, res) => {
       } else {
         if (user.confirmed == false) {
           if (user.confirmExpiration < Date.now()) {
-            res
-              .status(400)
-              .json({
-                errors: { expiration: "vous aves passé la date limite " },
-              });
+            res.status(400).json({
+              errors: { expiration: "vous aves passé la date limite " },
+            });
           } else {
             res
               .status(400)
@@ -170,12 +553,10 @@ router.delete(
       const user = req.user;
       const verif = await User.findByEmail(req.user.email);
       if (user.role !== "admin" || verif) {
-        res
-          .status(403)
-          .json({
-            errorMessage:
-              "You do not have the necessary permissions to perform this action.",
-          });
+        res.status(403).json({
+          errorMessage:
+            "You do not have the necessary permissions to perform this action.",
+        });
       } else {
         const userId = req.params.userId;
         await User.findByIdAndUpdate(userId, { isActive: false });
@@ -183,11 +564,9 @@ router.delete(
       }
     } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .json({
-          errorMessage: "An error occurred while processing your request.",
-        });
+      res.status(500).json({
+        errorMessage: "An error occurred while processing your request.",
+      });
     }
   }
 );
@@ -205,11 +584,9 @@ router.put("/updateUser", requireAuth, async (req, res) => {
     res.status(200).json(updatedUser);
   } catch (err) {
     console.log(err);
-    res
-      .status(500)
-      .json({
-        errorMessage: "An error occurred while processing your request.",
-      });
+    res.status(500).json({
+      errorMessage: "An error occurred while processing your request.",
+    });
   }
 });
 
@@ -246,6 +623,21 @@ router.get("/profile", requireAuth, (req, res) => {
   res.status(200).json({ user: user });
 });
 
+router.get("/profile/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    res.status(200).json({ user: user });
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+});
+router.get("/company", requireAuth, (req, res) => {
+  var user = req.user;
+  res.status(200).json({ user: user });
+});
+
 router.get("/logout", async (req, res) => {
   // Supprime le cookie jwt
   res.clearCookie("jwt");
@@ -253,8 +645,22 @@ router.get("/logout", async (req, res) => {
   res.clearCookie("connect.sid");
 
   // Redirige vers la page de connexion
-  return res.status(200).redirect('/login');
+  return res.status(200).redirect("/login");
+});
 
+//get USer by Id
+router.get("/users/:id", async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).send("User not found");
+    } else {
+      res.json(user);
+    }
+  } catch (err) {
+    res.status(500).send(err);
+  }
 });
 
 module.exports = router;

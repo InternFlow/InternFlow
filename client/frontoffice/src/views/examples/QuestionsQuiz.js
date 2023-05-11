@@ -178,7 +178,7 @@ function QuestionsQuiz() {
         <CardHeader>
           <Row>
             <Col xs="8">
-              <h1 className="profile-title text-left">les Questions de {namequiz}</h1>
+              <h3 className="profile-title text-left" style={{ fontWeight: 'bold' }}>les Questions de {namequiz}</h3>
             </Col>
             <Col xs="4">
               <Button
@@ -274,6 +274,7 @@ function QuestionsQuiz() {
                 />
               </FormGroup>
               <Button
+                                          className="btn-round"
                 color="primary"
                 onClick={handleAddQuestion}
                 disabled={
@@ -285,6 +286,15 @@ function QuestionsQuiz() {
                 >
                 Ajouter la question
                 </Button>
+                <span style={{ marginRight: '60px' }} />
+
+                <Button
+                            className="btn-round"
+                            color="danger"
+                            onClick={() => history.goBack()}
+                          >
+                            Go back
+                          </Button>
                 
                 </Form>
                 

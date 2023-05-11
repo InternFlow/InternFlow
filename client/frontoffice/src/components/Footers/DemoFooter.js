@@ -58,7 +58,10 @@ function DemoFooter() {
           <div className="credits ml-auto">
             <span className="copyright">
               © {new Date().getFullYear()}, made with{" "}
-              <i className="fa fa-heart heart" /> by Creative Tim
+              <i className="fa fa-heart heart" /> 
+              {/* <img src={require("assets/img/logoS.png")} alt="Logo de SolutionsMakers" className="logo"  width={15} height={15}/> */}
+
+              by SolutionsMakers
             </span>
           </div>
         </Row>

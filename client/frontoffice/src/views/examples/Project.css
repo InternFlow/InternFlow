@@ -1,0 +1,48 @@
+.title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #f35d12;
+  }
+  
+  .description {
+    font-size: 1.2rem;
+    color: #4f4f4f;
+  }
+  
+  .info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem;
+  }
+  
+  .icon-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f35d12;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+  }
+  
+  .icon-info i {
+    font-size: 2rem;
+    color: #fff;
+  }
+  
+  .info-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #f35d12;
+    margin-bottom: 1rem;
+  }
+
+  .quote {
+    font-style: italic;
+    /* border-left: 5px solid #ccc; */
+    padding-left: 10px;
+  }
+  
+  

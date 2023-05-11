@@ -1,29 +1,9 @@
-/*!
-
-=========================================================
-* Paper Kit React - v1.3.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-kit-react
-
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/paper-kit-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 // nodejs library that concatenates strings
 import classnames from "classnames";
 // reactstrap components
 
 import { useHistory } from "react-router-dom";
-
-
 import {
   Button,
   Collapse,
@@ -32,21 +12,51 @@ import {
   NavItem,
   NavLink,
   Nav,
-  Container
+  Container,
 } from "reactstrap";
+import { Link, scroller } from "react-scroll";
+import { useState } from 'react';
 
 function IndexNavbar() {
-
-
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [navbarCollapse, setNavbarCollapse] = React.useState(false);
   const history = useHistory();
+  const [role, setRole] = useState("");
+  const token = localStorage.getItem("token");
+  const roleToken = localStorage.getItem("role");
+
+  const [notifications, setNotifications] = useState([]);
+  const [numNotifications, setNumNotifications] = useState(0);
+console.log(notifications);
+
+
+
 
   const toggleNavbarCollapse = () => {
     setNavbarCollapse(!navbarCollapse);
     document.documentElement.classList.toggle("nav-open");
   };
+  const handleLogOut = async (event) => {
+    try {
+      const res = await fetch('http://127.0.0.1:5000/logout', {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
 
+      if (res.status === 200) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push('/');
+      }
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
   React.useEffect(() => {
     const updateNavbarColor = () => {
       if (
@@ -61,7 +71,9 @@ function IndexNavbar() {
         setNavbarColor("navbar-transparent");
       }
     };
-
+    if(!token){
+      setRole("guest");
+    }
     window.addEventListener("scroll", updateNavbarColor);
 
     return function cleanup() {
@@ -69,29 +81,43 @@ function IndexNavbar() {
     };
   });
 
-
-
   const handleLogin = async (event) => {
+    history.push("/sign-in");
+  };
 
-        history.push('/sign-in');
+  const toCourses = async (event) => {
+    history.push("/AllCourses");
+  };
+  const toOffers = async (event) => {
+    history.push("/Alloffers");
+  };
+  const toEvents = async (event) => {
+    history.push("/Events");
+  };
+  const toProfil = async (event) => {
+    history.push("/Profile");
+  };
 
-  }
   return (
     <Navbar className={classnames("fixed-top", navbarColor)} expand="lg">
-      <Container>
+      <Container className="m-0">
         <div className="navbar-translate">
           <NavbarBrand
             data-placement="bottom"
-            href="/index"
+            onClick={() => {
+              history.push("./index");
+            }}
             target="_blank"
-            title="Coded by Creative Tim"
+            style={{ cursor: "pointer" }}
           >
-            InternFlow
+            <Link to="mainheader" smooth={true} duration={200}>
+              <b> InternFlow</b>
+            </Link>
           </NavbarBrand>
           <button
             aria-expanded={navbarCollapse}
             className={classnames("navbar-toggler navbar-toggler", {
-              toggled: navbarCollapse
+              toggled: navbarCollapse,
             })}
             onClick={toggleNavbarCollapse}
           >
@@ -106,71 +132,141 @@ function IndexNavbar() {
           isOpen={navbarCollapse}
         >
           <Nav navbar>
-            <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://twitter.com/CreativeTim?ref=creativetim"
-                target="_blank"
-                title="Follow us on Twitter"
-              >
-                <i className="fa fa-twitter" />
-                <p className="d-lg-none">Twitter</p>
+
+
+
+          <NavItem style={{ cursor: "pointer" }}>
+              <NavLink>
+                <Link to="Project" smooth={true} duration={200} offset={-120}>
+                  <b>What is InternFlow</b>
+                </Link>
               </NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://www.facebook.com/CreativeTim?ref=creativetim"
-                target="_blank"
-                title="Like us on Facebook"
-              >
-                <i className="fa fa-facebook-square" />
-                <p className="d-lg-none">Facebook</p>
+
+            <NavItem style={{ cursor: "pointer" }}>
+              <NavLink>
+                <Link to="Team" smooth={true} duration={200} offset={-100}>
+                  <b>Team</b>
+                </Link>
               </NavLink>
             </NavItem>
+
+          {role!="guest" && (
+
+<NavItem>
+<Button style={{color:"black"}}
+    
+    outline onClick={toEvents}
+  >
+     Events
+  </Button>
+</NavItem>
+)}
+
+            {roleToken=="condidat" &&(
+
             <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://www.instagram.com/CreativeTimOfficial?ref=creativetim"
-                target="_blank"
-                title="Follow us on Instagram"
+            <Button
+                
+                outline onClick={toCourses}
               >
-                <i className="fa fa-instagram" />
-                <p className="d-lg-none">Instagram</p>
+                <i className="nc-icon nc-spaceship"></i> All Courses
+              </Button>
+            </NavItem>
+            )}
+
+  {/*          
+{roleToken=="condidat" &&(
+
+<NavItem>
+<Button
+    
+    outline onClick={toOffers}
+  >
+     All Offers
+  </Button>
+</NavItem>
+)} */}
+
+            {roleToken=="condidat" &&(
+
+<NavItem>
+<Button
+    
+    outline onClick={toCourses}
+  >
+     My Courses
+  </Button>
+</NavItem>
+)}
+                    <NavItem style={{ cursor: "pointer" }}>
+              <NavLink>
+                <Link to="contactUs" smooth={true} duration={200}>
+                  <b>Contact Us</b>
+                </Link>
               </NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink
-                data-placement="bottom"
-                href="https://www.github.com/CreativeTimOfficial/paper-kit-react?ref=creativetim"
-                target="_blank"
-                title="Star on GitHub"
-              >
-                <i className="fa fa-github" />
-                <p className="d-lg-none">GitHub</p>
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                href="https://demos.creative-tim.com/paper-kit-react/#/documentation?ref=pkr-index-navbar"
-                target="_blank"
-              >
-                <i className="nc-icon nc-book-bookmark" /> Documentation
-              </NavLink>
-            </NavItem>
+    
+            {role=="guest" && (
+
             <NavItem>
               <Button
                 className="btn-round"
                 color="danger"
                 target="_blank"
                 outline
-                 onClick={handleLogin}
+                onClick={handleLogin}
               >
-                <i className="nc-icon nc-spaceship"></i> login
+                login
               </Button>
-
-
             </NavItem>
+            )}
+
+{roleToken =="condidat" && (
+
+<NavItem>
+<Button
+    className="btn-round"
+    color="primary"
+    target="_blank"
+    outline
+     onClick={toOffers}
+  >
+    <i className="nc-icon nc-spaceship"></i> All Offers
+  </Button>
+</NavItem>
+)}
+
+{role!="guest" && (
+
+<NavItem>
+<Button
+    className="btn-round"
+    color="primary"
+    target="_blank"
+    outline
+     onClick={toProfil}
+  >
+    <i className="nc-icon nc-spaceship"></i> My Profil
+  </Button>
+</NavItem>
+)}
+            
+    {role!="guest" && (
+
+
+<NavItem>
+<Button
+    className="btn-round"
+    color="danger"
+    target="_blank"
+    outline onClick={handleLogOut}
+  >
+     LogOut
+  </Button>
+</NavItem>
+)}
+
           </Nav>
         </Collapse>
       </Container>

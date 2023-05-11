@@ -1,7 +1,6 @@
 const express = require("express");
 const User = require("../models/User");
 const { requireAuth } = require("../middlewares/requireAuth");
-const Education = require("../models/Education");
 const router = express.Router();
 /*
 router.post("/registerEducation/:id", async (req, res) => {

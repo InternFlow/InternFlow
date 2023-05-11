@@ -39,6 +39,8 @@ import SectionDark from "views/index-sections/SectionDark.js";
 import SectionLogin from "views/index-sections/SectionLogin.js";
 import SectionExamples from "views/index-sections/SectionExamples.js";
 import SectionDownload from "views/index-sections/SectionDownload.js";
+import CondidatNavbar from "components/Navbars/CondidatNavbar";
+import LandingPage from "./examples/LandingPage";
 
 function Index() {
 
@@ -54,13 +56,11 @@ function Index() {
   });
   return (
     <>
-      <IndexNavbar />
+     <IndexNavbar />
       <IndexHeader />
 
       <div className="main">
-        <SectionNavbars />
-
-        <DemoFooter />
+<LandingPage></LandingPage>
       </div>
     </>
   );

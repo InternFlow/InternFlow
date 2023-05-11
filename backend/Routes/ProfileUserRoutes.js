@@ -5,6 +5,8 @@ const { requireAuth } = require("../middlewares/requireAuth");
 const { checkRole } = require("../middlewares/checkRole");
 const twilio = require('twilio');
 const path = require('path');
+const natural = require('natural');
+
 
 
 const config = require('../config');
@@ -43,14 +45,20 @@ async function getUser(req, res, next) {
     if (req.body.email != null) {
       res.user.email = req.body.email;
     }
+    if (req.body.occupation != null) {
+      res.user.occupation = req.body.occupation;
+    }
     if (req.body.role != null) {
       res.user.role = req.body.role;
+    }
+    if (req.body.local != null) {
+      res.user.local = req.body.local;
     }
     if (req.body.educations != null) {
       res.user.educations = req.body.educations;
     }
     if (req.body.experiences != null) {
-      res.user.experiences = req.body.experiences;
+      res.user.experiences = req.body.experiences; 
     }
     if (req.body.skills != null) {
       res.user.skills = req.body.skills;
@@ -115,6 +123,20 @@ async function getUser(req, res, next) {
   });
 
 
+  router.patch('/editmyprofilepicture', requireAuth, async (req, res) => {
+    res.user = req.user;
+    if (req.body.pfpPath != null) {
+      res.user.pfpPath = req.body.pfpPath;
+    }
+    try {
+      
+       await res.user.save();
+      res.status(200).json("Pfp updated successfully");
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  });
+
 
 
 
@@ -142,6 +164,9 @@ router.get('/getUser/:id', async (req, res) => {
     res.status(500).json({ message: 'Une erreur est survenue lors de la récupération des informations du user.' });
   }
 });
+
+
+
 
 
 

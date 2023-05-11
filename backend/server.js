@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const User = require("./models/User");
+const EmailSender = require("./sendEmail.js");
 
 //----------------- Passport & Authentification ------------------------//
 const session = require('express-session');
@@ -19,8 +20,10 @@ const categoryRoutes = require('./routes/CategoryRoute');
 const skillsRoutes = require('./routes/SkillsRoute');
 const uploadRoutes = require('./routes/UploadRoute');
 const adminRoutes =require('./routes/AdminRoute');
+const EventRoutes = require("./routes/EventRoute");
 
-
+const applicationInterviewRoute = require('./Routes/InterviewRoute');
+const QuizRoute = require('./Routes/QuizRoute');
 dotenv.config();
 
 const app = express();
@@ -32,11 +35,16 @@ const linkedInRoute = require('./routes/LinkedInUserRoute');
 const googleFacebookRoutes = require('./routes/GoogleFacebookRoute');
 const githubRoutes = require('./Routes/GithubRoute');
 const ProfileUserRoutes = require('./Routes/ProfileUserRoutes');
-const QuizRoute = require('./Routes/QuizRoute');
-const applicationcondidatRoute = require('./Routes/ApplicationconditaRoute');
+const OfferRoutes = require('./Routes/OfferRoute');
+const InterviewRoutes = require('./Routes/InterviewRoute');
+const CandidacyRoutes = require('./Routes/CandidacyRoute');
+const CourseRoute = require('./Routes/CourseRoute');
+const imageUploadRoute = require('./Routes/ImageUploadRoute');
+const NotificationRoutes = require('./Routes/NotificationRoute');
+const VideoCallRoute = require('./Routes/VideoCallRoute')
+const FileUploadRoute = require('./Routes/FileUploadRoute')
 
 const config = require('./config');
-const { application } = require('express');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -75,11 +83,19 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     app.use('/upload', uploadRoutes);
     app.use('/Admin', adminRoutes);
     app.use('/Condidat',ProfileUserRoutes);
+    app.use('/Offer',OfferRoutes);
+    app.use('/Interview',InterviewRoutes);
+    app.use('/Candidacy',CandidacyRoutes);
+    app.use('/Course',CourseRoute);
+    app.use('/uploadImage',imageUploadRoute);
+    app.use("/Event", EventRoutes);
+    app.use("/Notification", NotificationRoutes);
+    app.use("/video-call", VideoCallRoute);
+    app.use("/file", FileUploadRoute);
+
+
     app.use('/Quiz',QuizRoute);
-    app.use('/applicationquiz',applicationcondidatRoute);
-
-
-
+    app.use('/userinterview',applicationInterviewRoute);
 
 passport.serializeUser((user, done) => {
       done(null, user.id);
@@ -210,6 +226,16 @@ passport.use(new GitHubStrategy({
 }));
 
 
+    // ****** SEND API
+    app.post("/send", async (req, res) => {
+      try {
+        const { fullName, email, phone, message } = req.body;
+        EmailSender({ fullName, email, phone, message });
+        res.json({ msg: "Your message sent successfully" });
+      } catch (error) {
+        res.status(404).json({ msg: "Error ❌" });
+      }
+    });
 
 //---------------- Server Listening -----------------------------//
     app.listen(port, () => {

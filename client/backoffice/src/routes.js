@@ -25,10 +25,21 @@ import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
 import SignUp from "views/SignUp";
-import ViewUsers from "views/users/ViewUsers";
-import CreateUsers from "views/users/CreateUsers";
-import EditUser from "views/users/EditUser";
+import ViewUsers from "views/users/viewUsers";
+import CreateUsers from "views/users/createUsers";
+import EditUser from "views/users/editUser";
 import EditProfileUser from "views/users/EditProfileUser";
+import candidaciesList from "views/candidacies/candidaciesList";
+import ApplyPage from "views/candidacies/ApplyPage";
+import CreateOffer from "views/offers/createOffer";
+import ViewOffers from "views/offers/viewOffer";
+import EditOffer from "views/offers/editOffer";
+import AddEvent from "views/Events/AddEvent";
+import EventPage from "views/Events/EventPage";
+import ConsultEvents from "views/Events/ConsultEvents";
+import ViewCourses from "views/courses/ViewCourses";
+import AddCourse from "views/courses/AddCourse";
+import EditCourse from "views/courses/EditCourse";
 
 var routes = [
   {
@@ -36,28 +47,28 @@ var routes = [
     name: "Dashboard",
     icon: "nc-icon nc-bank",
     component: Dashboard,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/icons",
     name: "Icons",
     icon: "nc-icon nc-diamond",
     component: Icons,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/notifications",
     name: "Notifications",
     icon: "nc-icon nc-bell-55",
     component: Notifications,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/user-page",
     name: "User Profile",
     icon: "nc-icon nc-single-02",
     component: UserPage,
-    layout: "/admin"
+    layout: "/admin",
   },
   // {
   //   path: "/tables",
@@ -71,25 +82,105 @@ var routes = [
     name: "Add A new User",
     icon: "nc-icon nc-simple-add",
     component: CreateUsers,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/viewUser",
     name: "Display Users",
     icon: "nc-icon nc-laptop",
     component: ViewUsers,
+    layout: "/admin",
+  },
+  {
+    path: "/viewCourses",
+    name: "Display Courses",
+    icon: "nc-icon nc-laptop",
+    component: ViewCourses,
     layout: "/admin"
+  },
+  {
+    path: "/createCourse",
+    name: "Add A new Course",
+    icon: "nc-icon nc-simple-add",
+    component: AddCourse,
+    layout: "/admin"
+  },
+  {
+    path: "/candidaciesList",
+    name: "candidacies List",
+    icon: "nc-icon nc-laptop",
+    component: candidaciesList,
+    layout: "/admin",
   },
   {
     path: "/editUser",
     component: EditUser,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/editProfileCondidat",
     component: EditProfileUser,
+    layout: "/admin",
+  },
+  {
+    path: "/showApply",
+    component: ApplyPage,
+    layout: "/admin",
+  },
+  {
+    path: "/createOffer",
+    name: "Add A new Offer",
+    icon: "nc-icon nc-simple-add",
+    component: CreateOffer,
+    layout: "/admin",
+  },
+
+  {
+    path: "/editOffer",
+    component: EditOffer,
+    layout: "/admin",
+  },
+  {
+    path: "/viewOffer",
+    name: "Display Offers",
+    icon: "nc-icon nc-laptop",
+    component: ViewOffers,
+    layout: "/admin",
+  },
+
+  {
+    path: "/editUser",
+    component: EditUser,
+    layout: "/admin",
+  },
+  {
+    path: "/editProfileCondidat",
+    component: EditProfileUser,
+    layout: "/admin",
+  },
+  {
+    path: "/addEvent",
+    component: AddEvent,
+    layout: "/admin",
+  },
+  {
+    path: "/eventPage",
+    component: EventPage,
+    layout: "/admin",
+  },
+
+  {
+    path: "/consultevents",
+    component: ConsultEvents,
+    layout: "/admin",
+  },
+
+  {
+    path: "/editCourse",
+    name: "Edit A Course",
+    component: EditCourse,
     layout: "/admin"
-  }
+  },
 
 ];
 export default routes;

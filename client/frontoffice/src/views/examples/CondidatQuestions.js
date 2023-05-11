@@ -27,11 +27,14 @@ function CondidatQuestions() {
   const [newQuestionScore, setNewQuestionScore] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [offer, setOffer] = useState({});
-  const [countDown, setCountDown] = useState(0);
+
+  const [Countdown, setCountdown] = useState(null);
+  const [timerId, setTimerId] = useState(null);
 
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [tempup, settempup] = useState(false);
 
 
 const [answers, setAnswers] = useState(Array.from({length: questions.length}, () => ''));
@@ -53,10 +56,10 @@ const [couleur, setcouleur] = useState("");
 
     const offerId = searchParams.get("ido");
     const quizId = searchParams.get("idq");
-    console.log(offerId);
     if (!token) {
       history.push("/sign-in");
     } else {
+
       fetch(
         `http://localhost:5000/Quiz/offer/condidat/${offerId}/quizzes/${quizId}/questions`,
         {
@@ -78,7 +81,6 @@ const [couleur, setcouleur] = useState("");
         })
         .then((data) => {
           setQuestions(data);
-          console.log(questions.questions);
         })
         .catch((error) => {
           console.log(error);
@@ -100,10 +102,9 @@ const [couleur, setcouleur] = useState("");
           }
         })
         .then((data) => {
-          console.log(data)
+          
           setOffer(data);
-          setCountDown((data.timeout * 60) + 60);
-
+          setCountdown(data.timeout * 60); // Convertir en secondes
 
         })
         .catch((error) => {
@@ -113,17 +114,6 @@ const [couleur, setcouleur] = useState("");
   }, []);
 
 
-
-
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCountDown((countDown) => countDown - 1);
-    }, 1000);
-    console.log(intervalId)
-
-    return () => clearInterval(intervalId);
-  }, []);
 
 
 
@@ -141,7 +131,27 @@ const [couleur, setcouleur] = useState("");
 
 
 
+useEffect(() => {
+  const timer = setInterval(() => {
+    setCountdown(countdown => {
+      if (countdown > 0) {
+        return countdown - 1;
+      } else {
+        clearInterval(timer); // Arrêter le minuteur
+        return 0;
+      }
+    });
+  }, 1000);
 
+  return () => clearInterval(timer);
+}, [Countdown]);
+
+useEffect(() => {
+  if ( Countdown===0) {
+    // Envoyer les données ici
+handleSubmit();
+
+  }}, [Countdown]);
 
 
 const handleSubmit = () => {
@@ -150,7 +160,7 @@ const handleSubmit = () => {
   const offerId = searchParams.get("ido");
   const quizId = searchParams.get("idq");
   console.log(quizId);
-  fetch(`http://localhost:5000/applicationquiz/offer/${offerId}/quiz/${quizId}/submit`, {
+  fetch(`http://localhost:5000/Candidacy/offer/${offerId}/quiz/${quizId}/submit`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -168,7 +178,6 @@ const handleSubmit = () => {
     .then((data) => {
       console.log(data)
       setOffer(data);
-   //   setCountDown((data.timeout * 60) + 60);
 if(data.error)
 {
   setAlertMessage(data.error);
@@ -189,9 +198,7 @@ else
     history.push(`/quizzes/offres/condidat?ido=${offerId}`)
   }, 3000);
 }
-//const MaClasse = data.error ? "bestProduct"  : "text-center"
-    
-     // history.push(`/quizzes/offres/condidat?ido=${offerId}`);
+
 
     })
     .catch((error) => {
@@ -209,8 +216,8 @@ else
             <Card>
               <CardHeader>
                 <div className="text-center">
-                  {countDown > 0 ? (
-                    <h4>Remaining Time: {Math.floor(countDown / 60) - 1} minutes {(countDown % 60)} seconds</h4>
+                {Countdown > 0 ? (
+                    <h4>Remaining Time: {Math.floor((Countdown+60) / 60) - 1} minutes {((Countdown+60) % 60)} seconds</h4>
                   ) : (
                     <h4>Time is up!</h4>
                   )}

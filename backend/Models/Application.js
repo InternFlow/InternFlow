@@ -28,7 +28,11 @@ const applicationSchema = new mongoose.Schema({
       score: { type: Number, default: 0, required: true },
     }
   ],
-  interviewScheduled: { type: Date },
-});
+  interviewScheduled: { 
+    date: { type: Date },
+    time: { type: String },
+    duration: { type: Number }, // duration in minutes
+    location: { type: String }
+  },});
 
 module.exports = mongoose.model('Application', applicationSchema);

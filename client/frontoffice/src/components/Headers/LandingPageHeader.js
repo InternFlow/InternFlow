@@ -16,16 +16,21 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 // reactstrap components
-import { Button, Container } from "reactstrap";
+import { Button, Card, CardBody, CardImg, CardTitle, Col, Container, Row } from "reactstrap";
+import offerImage from "../uploads/offers/ll.png";
+import CourseListItem from "components/TrainerComponents/CourseListItem";
+
 
 // core components
 
 function LandingPageHeader() {
   let pageHeader = React.createRef();
-
+  const [offers, setOffers] = useState([]);
+  const history = useHistory()
   React.useEffect(() => {
     if (window.innerWidth < 991) {
       const updateScroll = () => {
@@ -40,38 +45,56 @@ function LandingPageHeader() {
     }
   });
 
+
+
+  const getOffers= async () =>{
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch(`http://localhost:5000/offer/getOffers`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          setOffers(data);
+        })
+        .catch(error => console.error(error));
+    }
+  }
+
+  useEffect(() => {
+    getOffers();
+  }, []);
+
   return (
     <>
-      <div
-        style={{
-          backgroundImage: "url(" + require("assets/img/daniel-olahh.jpg") + ")"
-        }}
-        className="page-header"
-        data-parallax={true}
-        ref={pageHeader}
-      >
-        <div className="filter" />
-        <Container>
-          <div className="motto text-center">
-            <h1>Example page</h1>
-            <h3>Start designing your landing page here.</h3>
-            <br />
-            <Button
-              href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-              className="btn-round mr-1"
-              color="neutral"
-              target="_blank"
-              outline
-            >
-              <i className="fa fa-play" />
-              Watch video
-            </Button>
-            <Button className="btn-round" color="neutral" type="button" outline>
-              Download
-            </Button>
-          </div>
-        </Container>
-      </div>
+    <Container>
+    <h4>Browse our internship offers</h4>
+    <Row>
+
+      {(offers.length !==0)  &&(<>{offers.slice(0,2).map((offer) => (
+              <Col md="3" key={offer.id} style={{margin:"80px"}}>
+              <Card className="mb-4"  key={offer.id}>
+              <CardImg top width="100%" src={offerImage} alt="Offer Image" />
+                <CardBody>
+                  <CardTitle tag="h5">{offer.title}</CardTitle>
+                  <p>{offer.description}</p>
+                  <Button color="primary" onClick={() => history.push(`/DetailsOffers/${offer._id}`)}>
+                    View Details
+                  </Button>
+                  <br></br>
+                  <br></br>
+                </CardBody>
+              </Card>
+            </Col>
+            ))} </>)}
+</Row>
+
+</Container>
+
     </>
   );
 }

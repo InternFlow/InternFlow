@@ -7,7 +7,7 @@ const Question = require("../models/Question");
 
 const { requireAuth } = require("../middlewares/requireAuth");
 const { checkRole } = require("../middlewares/checkRole");
-const Application = require("../models/Application");
+const Candidacy = require("../models/Candidacy");
 
 
 
@@ -117,7 +117,7 @@ router.post(
         return res.status(404).json({ message: "Offer not found" });
       }
 
-      const application = await Application.findOne({
+      const application = await Candidacy.findOne({
         offer: offer._id,
         status: "approved",
         statusQuiz: "pending"
@@ -265,7 +265,7 @@ router.post('/offer/:offerId/quiz/:quizId/addquestion', requireAuth, checkRole("
       }
   
 
-      const application = await Application.findOne({
+      const application = await Candidacy.findOne({
         offer: offer._id,
         status: "approved",
         statusQuiz: "pending"

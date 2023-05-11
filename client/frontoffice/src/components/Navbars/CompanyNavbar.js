@@ -34,7 +34,7 @@ import {
   Button
 } from "reactstrap";
 
-function CondidatNavbar() {
+function CompanyNavbar() {
   const history = useHistory();
 
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
@@ -230,4 +230,4 @@ function CondidatNavbar() {
   );
 }
 
-export default CondidatNavbar;
+export default CompanyNavbar;

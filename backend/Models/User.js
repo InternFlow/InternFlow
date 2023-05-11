@@ -1,12 +1,21 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const Schema = mongoose.Schema;
 
 const notificationSchema = new mongoose.Schema({
   message: { type: String, required: true },
   link: { type: String },
-  offreid:{ type: String }
+  offreid:{ type: String },
+  formationlink: { type: String },
+  userR: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  userS: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
 });
-
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -22,12 +31,17 @@ const userSchema = new mongoose.Schema({
     schoolName: { type: String },
     degree: { type: String},
     description: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
   }],
   experiences: [{
     jobTitle: { type: String},
     company: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
     description: { type: String }
   }],
+  occupation: {type:String},
   skills: [{ type: String }],
   local: [{ type: String }],
   companies: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
@@ -40,7 +54,19 @@ const userSchema = new mongoose.Schema({
 
   confirmationToken: { type: String },
   confirmExpiration: { type: Date },
-  notifications: [notificationSchema]
+  OfferIdC: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Offer'
+  }],
+  OfferIdI: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Offer'
+  }],
+  notifications: [notificationSchema],
+  notif: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Notification'
+  }],
 
 });
 

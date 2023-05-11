@@ -38,21 +38,31 @@ function Login() {
     let errors = {};
 
     if (!password) {
-      errors.password = "donner le password";
-    } else {
+      errors.password = 'Password is required';
+      setAlertMessage(' Please Fill in with your password! ');
+      setShowAlert(true); 
+    } 
+    else {
       // Vérifier que le mot de passe contient au moins 8 caractères et au moins un chiffre et une lettre
       if (!/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/.test(password)) {
         errors.password =
           "Password should contain at least 8 characters with at least one letter and one number";
+          setAlertMessage(' Please Fill in with a valid password! ');
+          setShowAlert(true); 
       }
     }
 
     if (!email) {
-      errors.email = "donner un email";
+      errors.email = 'Email is required';
+      setAlertMessage(' Please Fill in with your email! ');
+      setShowAlert(true); 
+
     } else {
       // Vérifier que l'adresse email est valide
       if (!/\S+@\S+\.\S+/.test(email)) {
         errors.email = "Invalid email address";
+        setAlertMessage(' your email is lacking ! ');
+        setShowAlert(true); 
       }
     }
 
@@ -68,9 +78,7 @@ function Login() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          
         },
-        
         body: JSON.stringify({
           email,
           password,
@@ -83,24 +91,25 @@ function Login() {
         localStorage.setItem("token", token);
         document.cookie = `jwt=${token}; max-age=86400*100; path=/`;
         localStorage.setItem("id", user._id);
+
+        localStorage.setItem('profile', JSON.stringify(user));
+
         console.log(user._id);
 
         localStorage.setItem("role", user.role);
-        if (user.role === "condidat") {
-          history.push("/profile-page");
-        } else if (user.role === "formateur") {
-          history.push("/profile-formateur-page");
-        } else if (user.role === "company") {
-          history.push("/profile-company-page");
-        } else if (user.role === "admin") {
+        if (user.role !== "admin") {
+          history.push("/Profile");
+        } else {
           console.log("aaaaaaaaaaaa")
-          document.location.href = "http://localhost:3001/admin/get-sesstion?token=" + token;
 
+          document.getElementById("admin-redirect").setAttribute("href","http://localhost:3001/admin/get-sesstion?token=" + token);
+          document.getElementById("admin-redirect").click();
         }
       } else if (res.status === 400) {
         const data = await res.json();
-       // console.log(data.errors);
-
+       console.log(data.errors);
+       setAlertMessage(data.errors.password);
+       setShowAlert(true); 
         setConfirmerr(data.errors.expiration);
         console.log(confirmerr);
       }
@@ -213,6 +222,7 @@ console.log(error);
                     Forgot password?
                   </Button>
 
+                  <a    href=""  id="admin-redirect"  style={{ display: "none" }} ></a>
                 </div>
               </Card>
             </Col>

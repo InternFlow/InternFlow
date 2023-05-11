@@ -113,6 +113,8 @@ function ResgisterNavbar() {
             target="_blank"
             title="Coded by Creative Tim"
           >
+               <img src={ require("assets/img/logoI.png")} alt="Logo de InternFlow" className="logo"  width={95} height={95}/>
+
             InternFlow
           </NavbarBrand>
           <button
